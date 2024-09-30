@@ -212,9 +212,16 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 						 * Seperators
 						 */
 						$seperator_priority = $priority - 1;
+						$control_priority = $seperator_priority;
+						$seperator_count = 1;
+						if($element === 'shop_page_title' || $element === 'single_product_title')
+						{
+							$seperator_count = 2;
+						}
+						responsive_horizontal_separator_control($wp_customize, $element . '_shop_typography_group_seperator', $seperator_count, $section, $seperator_priority , 1, );
 
-						responsive_addons_separator_control( $wp_customize, $element . '_seperator', $label, $section, $seperator_priority );
-
+						responsive_typography_group_control( $wp_customize, $element . '_shop_typography_group',  $label . ' Font', $section, $control_priority, $element . '_shop_typography' );
+						
 						/**
 						 * Font Family
 						 */
@@ -235,7 +242,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$element . '_shop_typography[font-family]',
 									array(
 										'name'            => $element . '_shop_typography[font-family]',
-										'label'           => esc_html__( 'Font Family', 'responsive' ),
+										'label'           => esc_html__( 'Family', 'responsive' ),
 										'section'         => $section,
 										'responsive_setting_id' => 'responsive_font_family',
 										'settings'        => $element . '_shop_typography[font-family]',
@@ -311,7 +318,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 							);
 
 							$wp_customize->add_control(
-								new Responsive_Customizer_Select_Control(
+								new Responsive_Customizer_Select_Button_Control(
 									$wp_customize,
 									$element . '_shop_typography[font-style]',
 									array(
@@ -321,14 +328,14 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 										'priority'        => $priority,
 										'active_callback' => $active_callback,
 										'choices'         => array(
-											'normal' => esc_html__( 'Normal', 'responsive' ),
-											'italic' => esc_html__( 'Italic', 'responsive' ),
+											'italic' => esc_html__( 'T', 'responsive' ),
+											'normal' => esc_html__( 'T', 'responsive' ),
 										),
 									)
 								)
 							);
-
 						}
+
 
 						/**
 						 * Text Transform
@@ -346,7 +353,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 							);
 
 							$wp_customize->add_control(
-								new Responsive_Customizer_Select_Control(
+								new Responsive_Customizer_Select_Button_Control(
 									$wp_customize,
 									$element . '_shop_typography[text-transform]',
 									array(
@@ -356,17 +363,15 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 										'priority'        => $priority,
 										'active_callback' => $active_callback,
 										'choices'         => array(
-											''           => esc_html__( 'Default', 'responsive' ),
-											'capitalize' => esc_html__( 'Capitalize', 'responsive' ),
-											'lowercase'  => esc_html__( 'Lowercase', 'responsive' ),
-											'uppercase'  => esc_html__( 'Uppercase', 'responsive' ),
+											'capitalize' => esc_html__( 'Aa', 'responsive' ),
+											'lowercase'  => esc_html__( 'aa', 'responsive' ),
+											'uppercase'  => esc_html__( 'AA', 'responsive' ),
 										),
 									)
 								)
 							);
-
 						}
-
+						
 						/**
 						 * Font Size
 						 */
@@ -382,42 +387,100 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									'default'           => $default,
 								)
 							);
-
+	
 							$wp_customize->add_setting(
 								$element . '_tablet_typography[font-size]',
 								array(
 									'transport'         => $transport,
 									'sanitize_callback' => 'sanitize_text_field',
+									'default'           => $default,
 								)
 							);
-
+	
 							$wp_customize->add_setting(
 								$element . '_mobile_typography[font-size]',
 								array(
 									'transport'         => $transport,
 									'sanitize_callback' => 'sanitize_text_field',
+									'default'           => $default,
 								)
 							);
-
+							$wp_customize->add_setting(
+								$element . '_shop_typography_font_size_value',
+								array(
+									'type'              => 'theme_mod',
+									'sanitize_callback' => 'responsive_sanitize_number',
+									'transport'         => $transport,
+									'default'           => '16',
+								)
+							);
+							$wp_customize->add_setting(
+								$element . '_tablet_typography_font_size_value',
+								array(
+									'sanitize_callback' => 'responsive_sanitize_number',
+									'transport'         => $transport,
+									'default'           => '16',
+								)
+							);
+							$wp_customize->add_setting(
+								$element . '_mobile_typography_font_size_value',
+								array(
+									'sanitize_callback' => 'responsive_sanitize_number',
+									'transport'         => $transport,
+									'default'           => '16',
+								)
+							);
+							$wp_customize->add_setting(
+								$element . '_shop_typography_font_size_unit',
+								array(
+									'type'              => 'theme_mod',
+									'sanitize_callback' => 'sanitize_text_field',
+									'transport'         => $transport,
+									'default'           => 'px',
+								)
+							);
+							$wp_customize->add_setting(
+								$element . '_tablet_typography_font_size_unit',
+								array(
+									'sanitize_callback' => 'sanitize_text_field',
+									'transport'         => $transport,
+									'default'           => 'px',
+								)
+							);
+							$wp_customize->add_setting(
+								$element . '_mobile_typography_font_size_unit',
+								array(
+									'sanitize_callback' => 'sanitize_text_field',
+									'transport'         => $transport,
+									'default'           => 'px',
+								)
+							);
+	
 							$wp_customize->add_control(
 								new Responsive_Customizer_Text_Control(
 									$wp_customize,
 									$element . '_shop_typography[font-size]',
 									array(
-										'label'           => esc_html__( 'Font Size', 'responsive' ),
+										'label'           => esc_html__( 'Size', 'responsive' ),
 										'description'     => esc_html__( 'You can add: px-em-%', 'responsive' ),
 										'section'         => $section,
 										'settings'        => array(
-											'desktop' => $element . '_shop_typography[font-size]',
-											'tablet'  => $element . '_tablet_typography[font-size]',
-											'mobile'  => $element . '_mobile_typography[font-size]',
+											'desktop'           => $element . '_shop_typography[font-size]',
+											'tablet'            => $element . '_tablet_typography[font-size]',
+											'mobile'            => $element . '_mobile_typography[font-size]',
+											'desktop_value'     => $element . '_shop_typography_font_size_value',
+											'tablet_value'      => $element . '_tablet_typography_font_size_value',
+											'mobile_value'      => $element . '_mobile_typography_font_size_value',
+											'desktop_font_unit' => $element . '_shop_typography_font_size_unit',
+											'tablet_font_unit'  => $element . '_tablet_typography_font_size_unit',
+											'mobile_font_unit'  => $element . '_mobile_typography_font_size_unit',
 										),
 										'priority'        => $priority,
 										'active_callback' => $active_callback,
 									)
 								)
 							);
-
+	
 						}
 
 						/**
@@ -510,7 +573,8 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 
 						}
 
-						/**
+
+						 /**
 						 * Font Color
 						 */
 						if ( in_array( 'font-color', $attributes, true ) ) {
@@ -528,15 +592,16 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 								)
 							);
 							$wp_customize->add_control(
-								new WP_Customize_Color_Control(
+								new Responsive_Customizer_Color_Control(
 									$wp_customize,
 									$element . '_shop_typography[color]',
 									array(
-										'label'           => esc_html__( 'Font Color', 'responsive' ),
-										'section'         => $section,
-										'settings'        => $element . '_shop_typography[color]',
-										'priority'        => $priority,
-										'active_callback' => $active_callback,
+										'label'            => esc_html__( 'Font Color', 'responsive' ),
+										'section'          => $section,
+										'is_hover_required'=> false,
+										'settings'         => $element . '_shop_typography[color]',
+										'priority'         => $priority,
+										'active_callback'  => $active_callback,
 									)
 								)
 							);

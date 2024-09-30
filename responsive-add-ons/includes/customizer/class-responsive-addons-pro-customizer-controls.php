@@ -37,7 +37,6 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 				$dir = RESPONSIVE_THEME_DIR . 'core/includes/customizer/controls/';
 
 				// Load customize control classes.
-				require_once RESPONSIVE_ADDONS_DIR . 'includes/customizer/controls/text/class-responsive-customizer-text-control.php';
 				require_once RESPONSIVE_ADDONS_DIR . 'includes/customizer/controls/heading/class-responsive-customizer-heading-control.php';
 				require_once RESPONSIVE_ADDONS_DIR . 'includes/customizer/controls/select/class-responsive-customizer-responsive-select-control.php';
 				require_once RESPONSIVE_ADDONS_DIR . 'includes/customizer/controls/checkbox/class-responsive-customizer-responsive-checkbox-control.php';
@@ -45,10 +44,13 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 				require_once $dir . 'toggle/class-responsive-customizer-responsive-toggle-control.php';
 				require_once $dir . 'color/class-responsive-customizer-color-control.php';
 				require_once $dir . 'typography/class-responsive-customizer-typography-control.php';
+				require_once $dir . 'typography_group/class-responsive-customizer-responsive-group-typography-control.php';
+				require_once $dir . 'text/class-responsive-customizer-text-control.php';
 				require_once $dir . 'slider/class-responsive-customizer-slider-control.php';
 				require_once $dir . 'range/class-responsive-customizer-range-control.php';
 				require_once $dir . 'sortable/class-responsive-customizer-sortable-control.php';
 				require_once $dir . 'dimensions/class-responsive-customizer-dimensions-control.php';
+				require_once $dir . 'horizontal-separator/class-responsive-customizer-responsive-horizontal-separator.php';
 
 				// Register JS control types.
 				$wp_customize->register_control_type( 'Responsive_Customizer_Color_Control' );
@@ -57,12 +59,14 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 				$wp_customize->register_control_type( 'Responsive_Customizer_Sortable_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Text_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Typography_Control' );
+				$wp_customize->register_control_type( 'Responsive_Customizer_Typography_Group_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Dimensions_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Heading_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Select_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Checkbox_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Select_Button_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Toggle_Control' );
+				$wp_customize->register_control_type( 'Responsive_Customizer_Horizontal_Separator' );
 			}
 		}
 

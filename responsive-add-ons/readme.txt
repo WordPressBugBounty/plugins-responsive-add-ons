@@ -1,11 +1,11 @@
-=== Responsive Addons - Starter Templates, Advanced Features and Customizer Settings for Responsive Theme. ===
+=== Responsive Plus - Starter Templates, Advanced Features and Customizer Settings for Responsive Theme. ===
 Contributors: cyberchimps
 Donate Link: https://cyberchimps.com
 Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.6
 Requires PHP: 5.6
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,11 +13,11 @@ Import free and pro Gutenberg and Elementor Templates for the Responsive WordPre
 
 == Description ==
 
-**The Responsive Addons plugin offers ready-to-import Starter Templates for Elementor and WordPress Block templates, which help you build WordPress websites with just a few clicks.**
+**The Responsive Plus plugin offers ready-to-import Starter Templates for Elementor and WordPress Block templates, which help you build WordPress websites with just a few clicks.**
 
 The Starter Templates feature gives you access to a library of 250+ professionally designed website templates built using the Elementor page builder and WordPress block editor. To use a template, you simply import it, edit the content, and launch your website.
 
-The Responsive Addons plugin extends the popular [Cyberchimps Responsive theme](https://cyberchimps.com/responsive-theme/). It adds the following features:
+The Responsive Plus plugin extends the popular [Cyberchimps Responsive theme](https://cyberchimps.com/responsive-theme/). It adds the following features:
 
 - One click demo import of ready-to-use Elementor & block templates.
 - Option to import the entire website or selected pages, which allows you to mix and match while building website.
@@ -44,7 +44,7 @@ You can also download single-page Starter Templates, pre-built Elementor section
 = Key Features =
 **Elementor Template Library:**
 
-Responsive Addons plugin offers 250+ ready-made templates.
+Responsive Plus plugin offers 250+ ready-made templates.
 
 You can import complete sites as well as single pages like:
 
@@ -53,7 +53,7 @@ You can import complete sites as well as single pages like:
 - Service Page
 - Contact page and any other available page.
 
-Responsive Addons plugin also has 500+ built-in sections that you can download for free. Deliver exceptional WordPress websites with niche-specific sections, impress clients, and boost your business.
+Responsive Plus plugin also has 500+ built-in sections that you can download for free. Deliver exceptional WordPress websites with niche-specific sections, impress clients, and boost your business.
 
 **White Label Feature:**
 
@@ -149,37 +149,37 @@ You'll find a variety of professionally designed starter templates categorized f
 
 
 
-= How to import Responsive Addons Plugin? =
+= How to import Responsive Plus Plugin? =
 Here's how it works:
 
 [youtube https://www.youtube.com/watch?v=JNeQKg1QJhk&t=2s]
 
 == Help Resources==
 
-Check out the following help resources to know more about Responsive Addons Plugin:
+Check out the following help resources to know more about Responsive Plus Plugin:
 [Product Documentation](https://cyberchimps.com/docs-category/responsive-starter-templates-plugin/)
 [Video Guides](https://www.youtube.com/watch?v=hHCSmEfINSo)
 
 == Frequently Asked Questions ==
 
 = 1. Are all the Starter Templates free? =
-With Responsive Addons plugin, you get access to 150+ free and premium Starter Templates for Elementor and WordPress block editor.
+With Responsive Plus plugin, you get access to 150+ free and premium Starter Templates for Elementor and WordPress block editor.
 
-= 2. Will Responsive Addons plugin work with my theme? =
-All the templates are built with customizer settings of Cyberchimps Responsive Theme to provide maximum control to you. Hence, to use the Responsive Addons plugin, we recommend you to install the free [Responsive Theme](https://wordpress.org/themes/responsive/).
+= 2. Will Responsive Plus plugin work with my theme? =
+All the templates are built with customizer settings of Cyberchimps Responsive Theme to provide maximum control to you. Hence, to use the Responsive Plus plugin, we recommend you to install the free [Responsive Theme](https://wordpress.org/themes/responsive/).
 
 = 3. Do I need to install any other plugins? =
 No! Once you install the plugin, it will take care of all other dependencies. You can sit back and let the Starter Templates plugin do the job for you.
 
 == Installation ==
 
-You can install the Responsive Addons plugin using any of the following two methods:
+You can install the Responsive Plus plugin using any of the following two methods:
 
 **WordPress Admin Dashboard Installation**
 
-To install the Responsive Addons plugin manually from the WordPress admin dashboard:
+To install the Responsive Plus plugin manually from the WordPress admin dashboard:
 
-1. Download the latest Responsive Addons plugin.
+1. Download the latest Responsive Plus plugin.
 2. Login to your WordPress Dashboard
 3. Go to Plugins > Add New
 4. Upload the downloaded plugin zip file
@@ -187,14 +187,14 @@ To install the Responsive Addons plugin manually from the WordPress admin dashbo
 
 **FTP Installation**
 
-To install the Responsive Addons plugin via FTP:
+To install the Responsive Plus plugin via FTP:
 
-1. Download Responsive Addons plugin zip
-2. Unzip the Responsive Addons zip file
+1. Download Responsive Plus plugin zip
+2. Unzip the Responsive Plus zip file
 3. Open your WordPress site via FTP. We would recommend you to use FileZilla
 4. From FTP, visit the root of the WordPress install
 5. Now visit wp-content folder > plugins
-6. Upload Responsive Addons unzipped folder from step 2
+6. Upload Responsive Plus unzipped folder from step 2
 
 **How to use the plugin?**
 
@@ -208,14 +208,14 @@ Preview & click on Import site to import the site.
 
 You can also choose to import a template, instead of the whole site.
 
-You can import any of the free templates using the Responsive Addons Plugin.
+You can import any of the free templates using the Responsive Plus Plugin.
 
 For importing the pro templates you need to install the Responsive Pro plugin that can be purchased from [CyberChimps Website](https://cyberchimps.com/pricing/?utm_source=wordpress-org&utm_medium=responsive-add-ons&utm_campaign=responsive-pricing&utm_content=faq-responsive-pro)
 
 With the Pro version you will get Premium templates, Priority support and automatic updates to Pro plugin.
 
 == What’s Next? ==
-If you like Responsive Addons Plugin, consider checking out our other WordPress Plugins:
+If you like Responsive Plus Plugin, consider checking out our other WordPress Plugins:
 
 - [Responsive Blocks](https://wordpress.org/plugins/responsive-block-editor-addons/): Responsive Blocks offers a library of fully functional 50+ creative blocks that extend the customizability of your WordPress block editor.
 
@@ -232,10 +232,12 @@ If you like Responsive Addons Plugin, consider checking out our other WordPress 
 5. Check connection status in settings tab.
 6. Template importing process.
 7. Template importing completion step.
-8. Responsive Addons advanced features.
+8. Responsive Plus advanced features.
 
 == Changelog ==
 
+= 3.1.1 - 30th September 2024 =
+* Fix : Made Compatible with latest responsive theme (v6.0.0).
 
 = 3.1.0 - 27th August 2024 =
 * Fix : Resolved PHP warning.
