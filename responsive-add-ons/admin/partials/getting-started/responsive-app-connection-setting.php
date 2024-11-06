@@ -38,12 +38,32 @@ $cc_app_auth = new Responsive_Add_Ons_App_Auth();
 							<p><strong><?php esc_html_e( 'Plan: ', 'responsive-addons' ); ?></strong><?php echo esc_html( $settings->get_plan() ); ?> </p>
 						</div>
 					</div>
+					<?php
+						$disabled = false;
+						if ( 'yes' === get_transient( 'resp_app_last_sync' ) ) {
+							$disabled = true;
+						}
+					?>
 					<div class="rst_app-after-connect-action-btns">
 							<a href="<?php echo esc_url( admin_url( 'admin.php?page=responsive_add_ons' ) ); ?>">
 								<button type="button" class="rst-go-to-templates"><?php esc_html_e( 'Start Importing Templates', 'responsive-addons' ); ?></button>
 							</a>
 							<button type="button" class="rst-delete-auth"><span id="loader"></span><?php esc_html_e( 'Disconnect', 'responsive-addons' ); ?></button>
+							<button type="button" class="rst-sync-auth <?php echo $disabled ? 'sync-not-allowed' : ''; ?>" <?php echo $disabled ? 'disabled' : ''; ?> data-tooltip="Syncs after every 24 hours"><span id="loader"></span><span class="dashicons dashicons-update"></span></button>
 					</div>
+					<?php
+						$notice_message = get_option( 'resp_plan_updated' );
+						if ( $notice_message ) {
+							?>
+							<div class="rst_app-sync-notice">
+								<div class="notice notice-success is-dismissible">
+									<p><?php echo esc_html( $notice_message ); ?></p>
+								</div>
+							</div>
+							<?php
+							delete_option( 'resp_plan_updated' );
+						}
+					?>
 				</div>
 			<?php else : ?>
 				<div class="container">

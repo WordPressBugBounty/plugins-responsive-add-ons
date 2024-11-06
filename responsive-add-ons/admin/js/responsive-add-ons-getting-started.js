@@ -2,6 +2,7 @@ jQuery(document).ready(function($) {
     $( document ).on( 'click' , '.rst-start-auth' , _startAppAuth );
 	$( document ).on( 'click' , '.rst-delete-auth' , _deleteAppAuth );
 	$( document ).on( 'click' , '.raddons-upgrade-the-plan' , _addonsUpgradePlan );
+    $( document ).on( 'click' , '.rst-sync-auth' , _syncAppAuth );
 
     $('#responsive-theme-setting-wl-tab').on('click', function() {
         $('#responsive-theme-setting-wl-tab span, #responsive-theme-setting-wl-tab p').addClass('responsive-theme-setting-active-tab');
@@ -171,4 +172,27 @@ jQuery(document).ready(function($) {
                 }
             );
     }
+
+    function _syncAppAuth(event) {
+        event.preventDefault();
+        $('.rst-sync-auth .dashicons-update').addClass('rst-syncing-auth');
+        $('.rst-sync-auth').prop('disabled', true);
+        $.ajax(
+            {
+                url  : responsiveAddonsGettingStarted.ajaxurl,
+                type : 'POST',
+                data : {
+                    action      : 'cyberchimps_app_sync_user_plan',
+                    _ajax_nonce : responsiveAddonsGettingStarted._ajax_nonce,
+                },
+            }
+        )
+        .done(
+            function ( response ) {
+                $('.rst-sync-auth .dashicons-update').removeClass('rst-syncing-auth');
+                window.location.reload()
+            }
+        );
+    }
+
 });

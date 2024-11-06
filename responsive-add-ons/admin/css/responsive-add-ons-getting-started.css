@@ -108,6 +108,56 @@
 	background: #FF0000;
 	color: #FFF;
 }
+.rst_app-after-connect-action-btns .rst-sync-auth {
+	color: #00a32a;
+	border: 1px solid #00a32a;
+	background: #FFF;
+	padding: 12px;
+	position: relative;
+}
+.rst_app-after-connect-action-btns .rst-sync-auth .dashicons.dashicons-update.rst-syncing-auth {
+	animation: rotation 2s infinite linear;
+}
+.rst_app-sync-notice .notice.notice-success {
+	margin-top: 16px;
+	margin-left: 0;
+}
+.rst_app-sync-notice .notice.notice-success button.notice-dismiss {
+	padding-top: 6px;
+    padding-right: 6px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+}
+.rst_app-after-connect-action-btns .rst-sync-auth {
+    position: relative;
+    cursor: pointer;
+}
+.rst_app-after-connect-action-btns .rst-sync-auth.sync-not-allowed {
+    color: #A8A8A8;
+    border-color: #A8A8A8;
+    cursor: not-allowed;
+}
+.rst_app-after-connect-action-btns .rst-sync-auth::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s;
+    margin-bottom: 5px;
+}
+.rst_app-after-connect-action-btns .rst-sync-auth:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
 
 
 @keyframes rotate {

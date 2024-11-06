@@ -65,6 +65,7 @@ class Responsive_Add_Ons_App_Auth {
 			add_action( 'wp_ajax_cyberchimps_app_store_auth', array( $this, 'store_app_auth' ) );
 			add_action( 'wp_ajax_cyberchimps_app_delete_auth', array( $this, 'delete_app_auth' ) );
 			add_action( 'wp_ajax_cyberchimps_app_upgrade_user_plan', array( $this, 'responsive_addons_upgrade_user_plan' ) );
+			add_action( 'wp_ajax_cyberchimps_app_sync_user_plan', array( $this, 'responsive_addons_sync_user_plan' ) );
 		}
 	}
 
@@ -346,5 +347,80 @@ class Responsive_Add_Ons_App_Auth {
 				'url' => $auth_url,
 			)
 		);
+	}
+
+	/**
+	 * Syncs the user's plan details with the external service and updates local settings if necessary.
+	 *
+	 * Checks the AJAX nonce for security and verifies the user's permissions.
+	 * If valid, retrieves the current user plan from an external API and compares it with local settings.
+	 * If the plan differs, updates the local settings with the new plan details.
+	 *
+	 * @return void
+	 */
+	public function responsive_addons_sync_user_plan() {
+		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permission.', 'responsive-addons' ) );
+		}
+
+		require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
+		$settings = new Responsive_Add_Ons_Settings();
+		
+		$response = wp_remote_post(
+			self::API_BASE_PATH. 'plugin/getuserplan',
+			array(
+				'method'    => 'POST',
+				'headers'   => array(
+					'Content-Type' => 'application/json',
+				),
+				'body'      => wp_json_encode(
+					array(
+						'user_id' => $settings->get_user_id(),
+					)
+				),
+			)
+		);
+		$response_code = wp_remote_retrieve_response_code( $response );
+		if ( 200 !== $response_code ) {
+			wp_send_json_error(
+				array(
+					'message'  => 'Cannot made request with Cyberchimps Responsive Domain. Some data is missing.',
+					'error'    => true,
+					'code'     => $response_code,
+					'response' => $response,
+				),
+				400
+			);
+		}
+		$response_body = json_decode( wp_remote_retrieve_body( $response ) );
+		$settings      = get_option( 'reads_app_settings' );
+		$message       = array(
+			'message' => 'No App Settings Found',
+			'status'  => 404,
+		);
+		if ( empty( $settings ) ) {
+			wp_send_json_error( $message );
+		}
+		if ( ( $settings['account']['plan'] !== $response_body->user_plan->plan ) && ( $settings['account']['product_id'] !== $response_body->user_plan->product_id ) ) {
+			$settings['account']['plan']       = $response_body->user_plan->plan;
+			$settings['account']['product_id'] = $response_body->user_plan->product_id;
+			$message = array(
+				'message' => 'Plan Updated',
+				'status'  => 200,
+			);
+			update_option( 'reads_app_settings', $settings );
+			update_option( 'resp_plan_updated', 'Your plan details are updated.' );
+			set_transient( 'resp_app_last_sync', 'yes', DAY_IN_SECONDS  );
+			wp_send_json_success( $message );
+		}
+		$message = array(
+			'message' => 'Plan Not Updated',
+			'status'  => 400,
+		);
+		update_option( 'resp_plan_updated', 'Your plan details are updated.' );
+		set_transient( 'resp_app_last_sync', 'yes', DAY_IN_SECONDS  );
+		wp_send_json_error( $message );
 	}
 }

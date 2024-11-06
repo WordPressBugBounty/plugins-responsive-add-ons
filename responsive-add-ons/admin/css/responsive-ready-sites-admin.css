@@ -742,7 +742,6 @@ responsive-ready-site-import-free.button.installing:before {
 #responsive-sites__type-filter{
 	display: inline-block;
 	border: 1px solid #DDDDDD;
-	border-right: 0;
 	border-radius: 6px 0 0 6px;
 	height: 54px;
 }
@@ -754,11 +753,11 @@ responsive-ready-site-import-free.button.installing:before {
 	padding-left: 16px;
 	padding-right: 16px;
 	border: 0;
-	width: 135px;
+	width: 90px;
 	justify-content: space-between;
 	align-items: center;
 	font-weight: 500;
-	border-radius: 6px 0 0 6px;
+	border-radius: 6px;
 	background-color: #ffffff;
 }
 #responsive-sites__type-filter .responsive-sites__type-filter-anchor:after{
@@ -779,7 +778,7 @@ responsive-ready-site-import-free.button.installing:before {
 	display: none;
 	margin: 0;
 	position: absolute;
-	width: 137px;
+	width: 90px;
 	top: 55px;
 	box-sizing: content-box;
 	border: 1px solid #e4e4e4;
