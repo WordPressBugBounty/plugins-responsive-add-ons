@@ -292,7 +292,7 @@ class Responsive_Add_Ons {
 					</div>
 				</div>',
 				esc_url( $image_path ),
-				'https://wordpress.org/support/theme/responsive/reviews/#new-post',
+				'https://wordpress.org/support/plugin/responsive-add-ons/reviews/#new-post',
 				esc_html__( 'Hello! Seems like you have used Responsive Starter Templates plugin to build this website — Thanks a ton!', 'responsive-addons' ),
 				esc_html__( 'Could you please do us a BIG favor and give it a 5-star rating on WordPress? This would boost our motivation and help other users make a comfortable decision while choosing the Responsive Starter Templates plugin.', 'responsive-addons' ),
 				esc_html__( 'Ok, you deserve it', 'responsive-addons' ),
@@ -500,10 +500,16 @@ class Responsive_Add_Ons {
 						</div>
 					</div>
 				</div>
-				<a href="<?php echo esc_url( 'https://cyberchimps.com/pricing/?utm_source=wpdash&utm_medium=RST_plugin&utm_campaign=intro_banner&utm_content=upgrade-to-pro' ); ?>" target="_blank" class="responsive-welcome_banner-upgrade-button">
+				
+				<?php
+				$user_details = get_option('reads_app_settings');
+				if(empty($user_details) || (!empty($user_details) && $user_details['account']['plan'] === 'free')) { ?>
+					<a href="<?php echo esc_url( 'https://cyberchimps.com/pricing/?utm_source=wpdash&utm_medium=RST_plugin&utm_campaign=intro_banner&utm_content=upgrade-to-pro' ); ?>" target="_blank" class="responsive-welcome_banner-upgrade-button">
 					<p class="upgrade-button-text"><?php echo esc_html__( 'Upgrade To Pro', 'responsive-addons' ); ?> </p>
 					<span class="dashicons dashicons-arrow-right-alt"></span>
 				</a>
+				<?php } ?>
+				
 			</div>
 			<div class="responsive-welcome_banner-images_collection">
 				<div class="rst_welcomeBanner_image1"></div>
