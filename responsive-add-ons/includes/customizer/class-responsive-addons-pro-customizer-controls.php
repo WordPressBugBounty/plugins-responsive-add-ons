@@ -73,7 +73,37 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 		if ( ! function_exists( 'rst_responsive_addons_customize_preview_js' ) ) {
 			function rst_responsive_addons_customize_preview_js() {
 				wp_enqueue_script( 'responsive-padding-control', RESPONSIVE_ADDONS_URI . 'includes/customizer/assets/js/customize-preview-padding-control.js', array( 'customize-preview' ), RESPONSIVE_ADDONS_VER, true );
+				wp_enqueue_script( 'responsive-plus-customize-preview', RESPONSIVE_ADDONS_URI . 'includes/customizer/assets/js/customize-preview.js', array( 'customize-preview' ), RESPONSIVE_ADDONS_VER, true );
 
+				$localize_array = array(
+					'isProGreater'   => rplus_fn_is_version_greater( 'responsive-pro' ),
+					'isThemeGreater' => rplus_fn_is_version_greater( 'responsive' ),
+				);
+				wp_localize_script( 'responsive-plus-customize-preview', 'responsive_pro', $localize_array );
+			}
+		}
+
+		if ( ! function_exists( 'rplus_fn_is_version_greater' ) ) {
+			function rplus_fn_is_version_greater( $product = 'responsive' ) {
+				if ( 'responsive' === $product ) {
+					$theme                    = wp_get_theme();
+					$is_theme_version_greater = false;
+					if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
+						if ( 'Responsive' === $theme->parent_theme ) {
+							$theme = wp_get_theme( 'responsive' );
+						}
+					}
+					if ( version_compare( $theme['Version'], '4.9.6', '>' ) ) {
+						$is_theme_version_greater = true;
+					}
+					return $is_theme_version_greater;
+				} else {
+					$is_pro_version_greater = false;
+					if ( version_compare( RESPONSIVE_THEME_VERSION, '2.6.3', '>' ) ) {
+						$is_pro_version_greater = true;
+					}
+					return $is_pro_version_greater;
+				}
 			}
 		}
 

@@ -2223,3 +2223,10 @@ input:checked + .ready-site-import-option-input-slider:before {
 	color: #787c82;
 	cursor: pointer;
   }
+
+.ready-sites-import-progress-img-wrapper 
+.ready-sites-import-progress-img
+.ready-sites-import-progress-image {
+	width: 350px;
+	height: 350px;
+}

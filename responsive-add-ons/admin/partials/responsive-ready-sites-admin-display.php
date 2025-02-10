@@ -800,15 +800,15 @@ $plan_status = $status->get_plan();
 				<div class="responsive-ready-sites-import-progress-container">
 					<div class="site-import-options">
 						<div class="responsive-ready-sites-advanced-options">
-							<h2 class="ready-sites-import-progress-title">We are Building your Website</h2>
+						<h2 class="ready-sites-import-progress-title"><?php esc_html_e( 'We are Building your Website', 'responsive-addons' ); ?></h2>
 							<div class="sites-import-process-errors" style="display: none">
 								<div class="import-process-error">
 									<div class="current-importing-status-error-title"></div>
 								</div>
 							</div>
 							<div class="ready-sites-import-progress-info">
-								<div class="ready-sites-import-progress-info-text"></div>
-								<div class="ready-sites-import-progress-info-percent"></div>
+							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e('Pre-Checking and Starting Up Import Process', 'responsive-addons'); ?></div>
+							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e('0%', 'responsive-addons'); ?></div>
 							</div>
 							<div class="ready-sites-import-progress-bar-wrap">
 								<div class="ready-sites-import-progress-bar-bg">
@@ -819,7 +819,7 @@ $plan_status = $status->get_plan();
 						</div>
 						<div class="ready-sites-import-progress-img-wrapper">
 							<div class="ready-sites-import-progress-img">
-								<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/import-progress.gif' ); ?>">
+								<img class="ready-sites-import-progress-image" src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/import-progress.gif' ); ?>">
 							</div>
 						</div>
 					</div>
@@ -1266,8 +1266,8 @@ $plan_status = $status->get_plan();
 							</div>
 						</div>
 							<div class="ready-sites-import-progress-info">
-								<div class="ready-sites-import-progress-info-text"></div>
-								<div class="ready-sites-import-progress-info-percent"></div>
+							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e('Pre-Checking and Starting Up Import Process', 'responsive-addons'); ?></div>
+							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e('0%', 'responsive-addons'); ?></div>
 							</div>
 							<div class="ready-sites-import-progress-bar-wrap">
 								<div class="ready-sites-import-progress-bar-bg">
@@ -1278,7 +1278,7 @@ $plan_status = $status->get_plan();
 						</div>
 						<div class="ready-sites-import-progress-img-wrapper">
 							<div class="ready-sites-import-progress-img">
-								<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/import-progress.gif' ); ?>">
+								<img class="ready-sites-import-progress-image" src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/import-progress.gif' ); ?>">
 							</div>
 						</div>
 					</div>

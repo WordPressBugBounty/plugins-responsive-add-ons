@@ -441,8 +441,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 		 */
 		_allProcessRun: function() {
 			ResponsiveSitesAdmin.import_start_time = performance.now();
-			ResponsiveSitesAdmin.import_progress_status_text = "Pre-Checking and Starting Up Import Process";
-			ResponsiveSitesAdmin._updateImportProcessStatusText(ResponsiveSitesAdmin.import_progress_status_text);
 			ResponsiveSitesAdmin.import_progress_percent += 2;
 			if(responsiveSitesAdmin.isResponsiveProActive) {
 				ResponsiveSitesAdmin._process_import();

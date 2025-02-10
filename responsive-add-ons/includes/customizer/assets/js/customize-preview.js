@@ -6,6 +6,34 @@
 
 ( function( $ ) {
 
+	function responsive_dynamic_radius(control, selector) {
+        var mobile_menu_breakpoint = api('responsive_mobile_menu_breakpoint').get();
+        if (0 == api('responsive_disable_mobile_menu').get()) {
+            mobile_menu_breakpoint = 0;
+        }
+
+        jQuery('style#responsive-' + control + '-radius').remove();
+        var desktopRadius = 'border-top-left-radius:' + api('responsive_' + control + '_radius_top_left_radius').get() + 'px; ' +
+                            'border-top-right-radius:' + api('responsive_' + control + '_radius_top_right_radius').get() + 'px; ' +
+                            'border-bottom-left-radius:' + api('responsive_' + control + '_radius_bottom_left_radius').get() + 'px; ' +
+                            'border-bottom-right-radius:' + api('responsive_' + control + '_radius_bottom_right_radius').get() + 'px;';
+        var tabletRadius  = 'border-top-left-radius:' + api('responsive_' + control + '_radius_tablet_top_left_radius').get() + 'px; ' +
+                            'border-top-right-radius:' + api('responsive_' + control + '_radius_tablet_top_right_radius').get() + 'px; ' +
+                            'border-bottom-left-radius:' + api('responsive_' + control + '_radius_tablet_bottom_left_radius').get() + 'px; ' +
+                            'border-bottom-right-radius:' + api('responsive_' + control + '_radius_tablet_bottom_right_radius').get() + 'px;';
+        var mobileRadius  = 'border-top-left-radius:' + api('responsive_' + control + '_radius_mobile_top_left_radius').get() + 'px; ' +
+                            'border-top-right-radius:' + api('responsive_' + control + '_radius_mobile_top_right_radius').get() + 'px; ' +
+                            'border-bottom-left-radius:' + api('responsive_' + control + '_radius_mobile_bottom_left_radius').get() + 'px; ' +
+                            'border-bottom-right-radius:' + api('responsive_' + control + '_radius_mobile_bottom_right_radius').get() + 'px;';
+
+        jQuery('head').append(
+            '<style id="responsive-' + control + '-radius">' +
+            selector + ' { ' + desktopRadius + ' }' +
+            '@media (max-width: ' + mobile_menu_breakpoint + 'px) {' + selector + ' { ' + tabletRadius + ' } }' +
+            '@media (max-width: 544px) {' + selector + ' { ' + mobileRadius + ' } }' +
+            '</style>'
+        );
+    }
 	// Declare vars.
 	var api = wp.customize;
 	api(
@@ -777,7 +805,85 @@
 	        }
 		});
     });
+	api( 'responsive_cart_icon_size', function( value ) {
+		value.bind( function( newval ) {
+            if ( newval ) {
+                $( '.responsive-shopping-cart-svg svg' ).css( 'height', newval + 'px' );
+                $( '.responsive-shopping-cart-svg svg' ).css( 'width', newval + 'px' );
+                $( '.responsive-shopping-cart-svg' ).css( 'height', newval + 'px' );
+                $( '.responsive-shopping-cart-svg' ).css( 'width', newval + 'px' );
+            }
+        });
+	});
+	api( 'responsive_cart_color', function (setting) {
+        setting.bind(function (color) {
+			var cartIconStyle = api('responsive_cart_style').get();
+            if (cartIconStyle === 'outline') {
+                $('.res-addon-cart-wrap').css( 'border', api('responsive_cart_border_width').get() + 'px solid ' + color);
+                $('.res-addon-cart-wrap').css( 'color', color);
+                $('.res-addon-cart-wrap svg path').css( 'fill', color);
+            } else if (cartIconStyle === 'fill') {
+                $('.res-addon-cart-wrap').css( 'background-color', color );
+            }
+        });
+    });
+    api( 'responsive_cart_hover_color', function(setting){
+        setting.bind(function(color){
+            jQuery('style#responsive-cart-hover-color').remove();
+			var cartIconStyle = api('responsive_cart_style').get();
+			if (cartIconStyle === 'outline') {
+				jQuery('head').append(
+					'<style id="responsive-cart-hover-color">'
+					+ '.res-addon-cart-wrap:hover { border: '+ api('responsive_cart_border_width').get() +'px solid ' + color + '!important; }'
+					+ '.res-addon-cart-wrap:hover { color: ' + color + '!important; }'
+					+ '.res-addon-cart-wrap:hover svg path { fill: ' + color + '!important; }'
+					+ '</style>'
+				);
+			} else if (cartIconStyle === 'fill') {
+				jQuery('head').append(
+					'<style id="responsive-cart-hover-color">'
+					+ '.res-addon-cart-wrap:hover { background-color: ' + color + '!important; }'
+					+ '</style>'
+				);
+            }
+        });
+    });
+	api( 'responsive_cart_border_width', function(setting){
+		setting.bind(function(width){
+			jQuery('style#responsive-cart-border-width').remove();
+			jQuery('head').append(
+				'<style id="responsive-cart-border-width">'
+				+ '.res-addon-cart-wrap, .res-addon-cart-wrap:hover { border-width: ' + width + 'px !important; }'
+				+ '</style>'
+			);
+		});
+	} );
 
+	// header woo cart border radius.
+	function applyCartRadius(controlName) {
+        api(controlName, function(value) {
+            value.bind( function( newval ) {
+                var selector = '.res-addon-cart-wrap';
+                responsive_dynamic_radius('cart', selector);
+            } );
+        });
+    }
+
+    // Call the function for each cart border radius
+    applyCartRadius('responsive_cart_radius_top_left_radius');
+    applyCartRadius('responsive_cart_radius_top_right_radius');
+    applyCartRadius('responsive_cart_radius_bottom_left_radius');
+    applyCartRadius('responsive_cart_radius_bottom_right_radius');
+
+    applyCartRadius('responsive_cart_radius_tablet_top_left_radius');
+    applyCartRadius('responsive_cart_radius_tablet_top_right_radius');
+    applyCartRadius('responsive_cart_radius_tablet_bottom_left_radius');
+    applyCartRadius('responsive_cart_radius_tablet_bottom_right_radius');
+
+    applyCartRadius('responsive_cart_radius_mobile_top_left_radius');
+    applyCartRadius('responsive_cart_radius_mobile_top_right_radius');
+    applyCartRadius('responsive_cart_radius_mobile_bottom_left_radius');
+    applyCartRadius('responsive_cart_radius_mobile_bottom_right_radius');
 	
 
 } )( jQuery );

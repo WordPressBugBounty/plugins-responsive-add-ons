@@ -1655,7 +1655,7 @@ class Responsive_Add_Ons {
 			<div class="nav-tab-wrapper">
 				<div class="logo">
 					<div class="responsive-sites-logo-wrap">
-							<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/responsive-plus-logo.png' ); ?>">
+							<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/responsive-plus-logo.svg' ); ?>">
 							<div class="responsive-sites-version"><?php esc_html_e( RESPONSIVE_ADDONS_VER, 'responsive-add-ons' ); ?></div>
 					</div>
 				</div>
@@ -2286,7 +2286,7 @@ class Responsive_Add_Ons {
 					<div class="responsive-sites-help-center">
 						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Help Center', 'responsive-addons' ); ?></h3>
 						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Read the documentation to find answers to your questions.', 'responsive-addons' ); ?></p>
-						<a href="https://cyberchimps.com/docs-category/responsive-starter-templates-plugin/" target="_blank" class="responsive-sites-help-center-btn"><?php esc_html_e( 'Docs', 'responsive-addons' ); ?></a>
+						<a href="https://cyberchimps.com/docs/responsive-plus/responsive-starter-templates-plugin/" target="_blank" class="responsive-sites-help-center-btn"><?php esc_html_e( 'Docs', 'responsive-addons' ); ?></a>
 						<?php esc_html_e( 'or', 'responsive-addons' ); ?>
 						<a href="https://www.facebook.com/groups/responsive.theme/" target="_blank" class="responsive-sites-community-support-btn"><?php esc_html_e( 'Visit Facebook Group', 'responsive-addons' ); ?></a>
 					</div>
