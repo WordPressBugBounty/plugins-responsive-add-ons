@@ -312,7 +312,7 @@ class Responsive_Add_Ons_App_Auth {
 			'body'    => $data,
 		);
 
-		$response = wp_remote_post( $url, $args );
+		$response = wp_safe_remote_post( $url, $args );
 
 		return $response;
 	}
@@ -368,7 +368,7 @@ class Responsive_Add_Ons_App_Auth {
 		require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
 		$settings = new Responsive_Add_Ons_Settings();
 		
-		$response = wp_remote_post(
+		$response = wp_safe_remote_post(
 			self::API_BASE_PATH. 'plugin/getuserplan',
 			array(
 				'method'    => 'POST',

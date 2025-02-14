@@ -311,7 +311,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 
 			$api_url = self::$api_url . 'get-ready-sites-requests-count/?per_page=15';
 
-			$response = wp_remote_get( $api_url, $api_args );
+			$response = wp_safe_remote_get( $api_url, $api_args );
 
 			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
 
@@ -342,7 +342,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 
 			$api_url = self::$api_url . 'get-rst-blocks-requests-count2/?per_page=15';
 
-			$response = wp_remote_get( $api_url, $api_args );
+			$response = wp_safe_remote_get( $api_url, $api_args );
 
 			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
 
@@ -460,7 +460,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 				'timeout' => 60,
 			);
 
-			$response = wp_remote_get( self::$api_url . 'get-last-xml-export-checksum2', $api_args );
+			$response = wp_safe_remote_get( self::$api_url . 'get-last-xml-export-checksum2', $api_args );
 
 			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
 				$result = json_decode( wp_remote_retrieve_body( $response ), true );

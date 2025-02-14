@@ -729,7 +729,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			$demo_api_uri = add_query_arg( $request_params, $demo_api_uri );
 
 			// API Call.
-			$response = wp_remote_get( $demo_api_uri, $api_args );
+			$response = wp_safe_remote_get( $demo_api_uri, $api_args );
 
 			if ( is_wp_error( $response ) || ( isset( $response->status ) && 0 === $response->status ) ) {
 				if ( isset( $response->status ) ) {

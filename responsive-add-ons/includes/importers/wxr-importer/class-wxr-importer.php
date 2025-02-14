@@ -1816,7 +1816,7 @@ if( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			}
 
 			// fetch the remote url and write it to the placeholder file
-			$response = wp_remote_get( $url, array(
+			$response = wp_safe_remote_get( $url, array(
 				'stream' => true,
 				'filename' => $upload['file'],
 			) );

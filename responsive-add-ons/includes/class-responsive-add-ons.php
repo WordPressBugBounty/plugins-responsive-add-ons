@@ -1132,7 +1132,7 @@ class Responsive_Add_Ons {
 
 		$api_url = add_query_arg( $this->responsive_sites_get_api_params(), $api_url );
 
-		$response = wp_remote_get( $api_url );
+		$response = wp_safe_remote_get( $api_url );
 
 		if ( is_wp_error( $response ) ) {
 			wp_send_json_error( wp_remote_retrieve_body( $response ) );
@@ -1160,7 +1160,7 @@ class Responsive_Add_Ons {
 
 		$api_url = isset( $_POST['url'] ) ? sanitize_text_field( wp_unslash( $_POST['url'] ) ) : '';
 
-		$response = wp_remote_get( $api_url );
+		$response = wp_safe_remote_get( $api_url );
 
 		if ( is_wp_error( $response ) ) {
 			wp_send_json_error( wp_remote_retrieve_body( $response ) );
@@ -1915,7 +1915,7 @@ class Responsive_Add_Ons {
 			$url
 		);
 
-		$response = wp_remote_get( $api_url );
+		$response = wp_safe_remote_get( $api_url );
 
 		if ( is_wp_error( $response ) || 200 !== $response['response']['code'] ) {
 			wp_send_json_error( wp_remote_retrieve_body( $response ) );
@@ -2217,7 +2217,7 @@ class Responsive_Add_Ons {
 
 		$api_url = self::$api_url . 'get-ready-sites-requests-count/?per_page=15';
 
-		$response = wp_remote_get( $api_url, $api_args );
+		$response = wp_safe_remote_get( $api_url, $api_args );
 
 		if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
 
@@ -2371,22 +2371,17 @@ class Responsive_Add_Ons {
 			$request_uri         = 'https://api.moosend.com/v3/subscribers/0aef6ee1-1d89-4fec-9b5d-55bdcb97b136/subscribe.json?apikey=baa844a9-093b-4281-ba03-958661505919';
 			$wp_args['Email']    = $user_email;
 			$wp_args['Template'] = $template_name;
-			$request          = wp_remote_post( $request_uri, array( 'body' => $wp_args ) );
-			if ( is_wp_error( $request ) || '200' != wp_remote_retrieve_response_code( $request ) ) {
-				// error.
-			}
-			$events = json_decode( wp_remote_retrieve_body( $request ) );
 		} else {
 			$request_uri         = 'https://api.moosend.com/v3/subscribers/dfe4c71f-7721-487c-b8c5-8cb1433b2cda/subscribe.json?apikey=baa844a9-093b-4281-ba03-958661505919';
 			$user_emailid        = ( filter_var( $user_email, FILTER_VALIDATE_EMAIL ) );
 			$wp_args['Email']    = $user_emailid ? $user_emailid : 'no.email.submitted.' . time() . '@ymail.com';
 			$wp_args['Template'] = $template_name;
-			$request             = wp_remote_post( $request_uri, array( 'body' => $wp_args ) );
-			if ( is_wp_error( $request ) || '200' != wp_remote_retrieve_response_code( $request ) ) {
-				// error.
-			}
-			$events = json_decode( wp_remote_retrieve_body( $request ) );
 		}
+		$request = wp_safe_remote_post( $request_uri, array( 'body' => $wp_args ) );
+		if ( is_wp_error( $request ) || '200' != wp_remote_retrieve_response_code( $request ) ) {
+			// error.
+		}
+		$events = json_decode( wp_remote_retrieve_body( $request ) );
 	}
 
 	/**

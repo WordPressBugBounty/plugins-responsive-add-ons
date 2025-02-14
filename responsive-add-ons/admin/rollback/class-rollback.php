@@ -116,7 +116,7 @@ class Rollback extends Abstract_Module {
 		if ( empty( $url ) ) {
 			return array();
 		}
-		$response = wp_remote_get( $url );
+		$response = wp_safe_remote_get( $url );
 		if ( is_wp_error( $response ) ) {
 			return array();
 		}

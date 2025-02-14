@@ -80,7 +80,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 
 			$api_url = add_query_arg( $query_args, self::$api_url . 'cyberchimps-sites' );
 
-			$response = wp_remote_get( $api_url, $api_args );
+			$response = wp_safe_remote_get( $api_url, $api_args );
 
 			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
 				$sites_and_pages = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -128,7 +128,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 
 			$api_url = add_query_arg( $query_args, self::$api_url . 'cyberchimps-blocks' );
 
-			$response = wp_remote_get( $api_url, $api_args );
+			$response = wp_safe_remote_get( $api_url, $api_args );
 
 			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
 				$blocks = json_decode( wp_remote_retrieve_body( $response ), true );
