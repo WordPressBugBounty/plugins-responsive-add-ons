@@ -294,13 +294,10 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 				// Styling - Colors.
 				$native_cart_popup_styling_color_separator = esc_html__( 'Native Cart Popup', 'responsive-addons-pro' );
 				responsive_addons_separator_control( $wp_customize, 'native_cart_popup_styling_color_separator', $native_cart_popup_styling_color_separator, 'responsive_woocommerce_shop', 165 );
-				
+
 				// Popup Background.
 				$popup_bg = __( 'Popup Background', 'responsive-addons-pro' );
 				responsive_color_control( $wp_customize, 'popup_bg', $popup_bg, 'responsive_woocommerce_shop', 165, '#ffffff' );
-
-
-
 
 				// Popup overlay color.
 				$popup_overlay = __( 'Popup Overlay color', 'responsive-addons-pro' );

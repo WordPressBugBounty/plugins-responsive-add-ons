@@ -61,9 +61,7 @@ if ( class_exists( 'WP_Background_Process' ) ) :
 			parent::complete();
 
 			do_action( 'responsive_ready_sites_image_import_complete' );
-
 		}
-
 	}
 
 endif;

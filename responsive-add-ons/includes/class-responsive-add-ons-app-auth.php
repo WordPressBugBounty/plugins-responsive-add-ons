@@ -137,7 +137,14 @@ class Responsive_Add_Ons_App_Auth {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( esc_html__( 'You do not have permissions to connect Responsive Addons to Cyberchimps.', 'responsive-addons' ) );
 		}
-		$data   = $_POST['response'];
+		$data = array();
+		if ( isset( $_POST['response'] ) && is_array( $_POST['response'] ) ) {
+			// Pre-sanitizing the response using a custom function to ensure all values are cleaned.
+			// PHPCS incorrectly flags this as unsanitized, so the warning is suppressed.
+			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$data = $this->recursive_sanitize_text_field( wp_unslash( $_POST['response'] ) );
+			// phpcs:enable
+		}
 		$origin = ! empty( $_POST['origin'] ) ? esc_url_raw( wp_unslash( $_POST['origin'] ) ) : false;
 
 		if ( empty( $data ) || CC_APP_URL !== $origin ) {
@@ -152,6 +159,23 @@ class Responsive_Add_Ons_App_Auth {
 				'text'  => __( 'Reloading page, please wait.', 'responsive-addons' ),
 			)
 		);
+	}
+
+	/**
+	 * Recursively sanitize the response fields from $_POST.
+	 *
+	 * @return mixed
+	 */
+	public function recursive_sanitize_text_field( $array ) {
+		foreach ( $array as $key => &$value ) {
+			if ( is_array( $value ) ) {
+				$value = $this->recursive_sanitize_text_field( $value );
+			} else {
+				$value = sanitize_text_field( wp_unslash( $value ) );
+			}
+		}
+
+		return $array;
 	}
 
 	/**
@@ -367,15 +391,15 @@ class Responsive_Add_Ons_App_Auth {
 
 		require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
 		$settings = new Responsive_Add_Ons_Settings();
-		
-		$response = wp_safe_remote_post(
-			self::API_BASE_PATH. 'plugin/getuserplan',
+
+		$response      = wp_safe_remote_post(
+			self::API_BASE_PATH . 'plugin/getuserplan',
 			array(
-				'method'    => 'POST',
-				'headers'   => array(
+				'method'  => 'POST',
+				'headers' => array(
 					'Content-Type' => 'application/json',
 				),
-				'body'      => wp_json_encode(
+				'body'    => wp_json_encode(
 					array(
 						'user_id' => $settings->get_user_id(),
 					)
@@ -406,13 +430,13 @@ class Responsive_Add_Ons_App_Auth {
 		if ( ( $settings['account']['plan'] !== $response_body->user_plan->plan ) && ( $settings['account']['product_id'] !== $response_body->user_plan->product_id ) ) {
 			$settings['account']['plan']       = $response_body->user_plan->plan;
 			$settings['account']['product_id'] = $response_body->user_plan->product_id;
-			$message = array(
+			$message                           = array(
 				'message' => 'Plan Updated',
 				'status'  => 200,
 			);
 			update_option( 'reads_app_settings', $settings );
 			update_option( 'resp_plan_updated', 'Your plan details are updated.' );
-			set_transient( 'resp_app_last_sync', 'yes', DAY_IN_SECONDS  );
+			set_transient( 'resp_app_last_sync', 'yes', DAY_IN_SECONDS );
 			wp_send_json_success( $message );
 		}
 		$message = array(
@@ -420,7 +444,7 @@ class Responsive_Add_Ons_App_Auth {
 			'status'  => 400,
 		);
 		update_option( 'resp_plan_updated', 'Your plan details are updated.' );
-		set_transient( 'resp_app_last_sync', 'yes', DAY_IN_SECONDS  );
+		set_transient( 'resp_app_last_sync', 'yes', DAY_IN_SECONDS );
 		wp_send_json_error( $message );
 	}
 }

@@ -30,7 +30,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 			add_action( 'customize_preview_init', array( $this, 'customize_preview_init' ) );
 			add_action( 'wp_head', array( $this, 'live_preview_styles' ), 9 );
 			add_filter( 'responsive_head_css', array( $this, 'head_css' ), 99 );
-
 		}
 
 		/**
@@ -167,11 +166,11 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 				if ( empty( $elements ) ) {
 					return;
 				}
-		
+
 				// Lopp through elements.
 				$count = '1';
 				foreach ( $elements as $element => $array ) {
-					$count++;
+					++$count;
 
 					// Get label.
 					$label              = ! empty( $array['label'] ) ? $array['label'] : null;
@@ -212,16 +211,15 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 						 * Seperators
 						 */
 						$seperator_priority = $priority - 1;
-						$control_priority = $seperator_priority;
-						$seperator_count = 1;
-						if($element === 'shop_page_title' || $element === 'single_product_title')
-						{
+						$control_priority   = $seperator_priority;
+						$seperator_count    = 1;
+						if ( 'shop_page_title' === $element || 'single_product_title' === $element ) {
 							$seperator_count = 2;
 						}
-						responsive_horizontal_separator_control($wp_customize, $element . '_shop_typography_group_seperator', $seperator_count, $section, $seperator_priority , 1, );
+						responsive_horizontal_separator_control( $wp_customize, $element . '_shop_typography_group_seperator', $seperator_count, $section, $seperator_priority, 1, );
 
-						responsive_typography_group_control( $wp_customize, $element . '_shop_typography_group',  $label . ' Font', $section, $control_priority, $element . '_shop_typography' );
-						
+						responsive_typography_group_control( $wp_customize, $element . '_shop_typography_group', $label . ' Font', $section, $control_priority, $element . '_shop_typography' );
+
 						/**
 						 * Font Family
 						 */
@@ -336,7 +334,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 							);
 						}
 
-
 						/**
 						 * Text Transform
 						 */
@@ -371,7 +368,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 								)
 							);
 						}
-						
+
 						/**
 						 * Font Size
 						 */
@@ -387,7 +384,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									'default'           => $default,
 								)
 							);
-	
+
 							$wp_customize->add_setting(
 								$element . '_tablet_typography[font-size]',
 								array(
@@ -396,7 +393,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									'default'           => $default,
 								)
 							);
-	
+
 							$wp_customize->add_setting(
 								$element . '_mobile_typography[font-size]',
 								array(
@@ -455,7 +452,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									'default'           => 'px',
 								)
 							);
-	
+
 							$wp_customize->add_control(
 								new Responsive_Customizer_Text_Control(
 									$wp_customize,
@@ -465,22 +462,22 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 										'description'     => esc_html__( 'You can add: px-em-%', 'responsive' ),
 										'section'         => $section,
 										'settings'        => array(
-											'desktop'           => $element . '_shop_typography[font-size]',
-											'tablet'            => $element . '_tablet_typography[font-size]',
-											'mobile'            => $element . '_mobile_typography[font-size]',
-											'desktop_value'     => $element . '_shop_typography_font_size_value',
-											'tablet_value'      => $element . '_tablet_typography_font_size_value',
-											'mobile_value'      => $element . '_mobile_typography_font_size_value',
+											'desktop'      => $element . '_shop_typography[font-size]',
+											'tablet'       => $element . '_tablet_typography[font-size]',
+											'mobile'       => $element . '_mobile_typography[font-size]',
+											'desktop_value' => $element . '_shop_typography_font_size_value',
+											'tablet_value' => $element . '_tablet_typography_font_size_value',
+											'mobile_value' => $element . '_mobile_typography_font_size_value',
 											'desktop_font_unit' => $element . '_shop_typography_font_size_unit',
-											'tablet_font_unit'  => $element . '_tablet_typography_font_size_unit',
-											'mobile_font_unit'  => $element . '_mobile_typography_font_size_unit',
+											'tablet_font_unit' => $element . '_tablet_typography_font_size_unit',
+											'mobile_font_unit' => $element . '_mobile_typography_font_size_unit',
 										),
 										'priority'        => $priority,
 										'active_callback' => $active_callback,
 									)
 								)
 							);
-	
+
 						}
 
 						/**
@@ -573,8 +570,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 
 						}
 
-
-						 /**
+						/**
 						 * Font Color
 						 */
 						if ( in_array( 'font-color', $attributes, true ) ) {
@@ -596,12 +592,12 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$wp_customize,
 									$element . '_shop_typography[color]',
 									array(
-										'label'            => esc_html__( 'Font Color', 'responsive' ),
-										'section'          => $section,
-										'is_hover_required'=> false,
-										'settings'         => $element . '_shop_typography[color]',
-										'priority'         => $priority,
-										'active_callback'  => $active_callback,
+										'label'           => esc_html__( 'Font Color', 'responsive' ),
+										'section'         => $section,
+										'is_hover_required' => false,
+										'settings'        => $element . '_shop_typography[color]',
+										'priority'        => $priority,
+										'active_callback' => $active_callback,
 									)
 								)
 							);
@@ -795,7 +791,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 			if ( 'fonts' === $return && ! empty( $fonts ) ) {
 				return array_unique( $fonts );
 			}
-
 		}
 
 		/**
@@ -814,7 +809,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 			}
 			// Return output css.
 			return $output;
-
 		}
 
 		/**
@@ -828,11 +822,10 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 			if ( $live_preview_styles ) {
 				foreach ( $live_preview_styles as $key => $val ) {
 					if ( ! empty( $val ) ) {
-						echo '<style class="' . esc_html( $key ) . '"> ' . esc_html( $val ) . '</style>'; 
+						echo '<style class="' . esc_html( $key ) . '"> ' . esc_html( $val ) . '</style>';
 					}
 				}
 			}
-
 		}
 
 		/**
@@ -851,7 +844,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 					responsive_enqueue_google_font( $font );
 				}
 			}
-
 		}
 	}
 

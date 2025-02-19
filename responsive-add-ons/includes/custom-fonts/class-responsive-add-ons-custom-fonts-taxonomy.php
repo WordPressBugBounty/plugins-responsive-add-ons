@@ -180,7 +180,6 @@ if ( ! class_exists( 'Responsive_Add_Ons_Custom_Fonts_Taxonomy' ) ) :
 			}
 
 			return $font_links;
-
 		}
 
 		/**
@@ -214,7 +213,6 @@ if ( ! class_exists( 'Responsive_Add_Ons_Custom_Fonts_Taxonomy' ) ) :
 			}
 			update_option( 'taxonomy_' . self::$register_taxonomy_slug . "_{$term_id}", $links );
 		}
-
 	}
 
 

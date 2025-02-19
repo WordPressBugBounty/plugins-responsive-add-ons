@@ -172,6 +172,5 @@ if ( ! function_exists( 'responsive_enqueue_google_font' ) ) {
 
 		// Enqueue style.
         wp_enqueue_style('responsive-google-font-' . $handle, $url, false, false, 'all');//phpcs:ignore
-
 	}
 }

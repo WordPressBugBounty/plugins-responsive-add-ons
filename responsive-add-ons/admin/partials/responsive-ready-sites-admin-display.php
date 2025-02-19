@@ -1,22 +1,19 @@
 <?php
-
 /**
  * Provide a admin area view for the plugin
- *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
  * @link       https://cyberchimps.com/
  * @since      1.0.0
- *
  * @package    Responsive Ready Sites
  */
 
 require_once RESPONSIVE_ADDONS_DIR . 'includes/class-responsive-add-ons-app-auth.php';
 require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
-$cc_app_auth = new Responsive_Add_Ons_App_Auth();
-$settings    = get_option( 'reads_app_settings' );
-$status      = new Responsive_Add_Ons_Settings();
-$plan_status = $status->get_plan();
+$cc_app_auth                = new Responsive_Add_Ons_App_Auth();
+$settings                   = get_option( 'reads_app_settings' );
+$responsive_addons_settings = new Responsive_Add_Ons_Settings();
+$plan_status                = $responsive_addons_settings->get_plan();
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
@@ -366,23 +363,23 @@ $plan_status = $status->get_plan();
 						</svg>';
 
 	$svg_args = array(
-					    'svg'   => array(
-					        'class'           => true,
-					        'aria-hidden'     => true,
-					        'aria-labelledby' => true,
-					        'role'            => true,
-					        'xmlns'           => true,
-					        'width'           => true,
-					        'height'          => true,
-					        'viewbox'         => true // <= Must be lower case!
-					    ),
-					    'g'     => array( 'fill' => true ),
-					    'title' => array( 'title' => true ),
-					    'path'  => array(
-					        'd'               => true,
-					        'fill'            => true
-					    )
-					);
+		'svg'   => array(
+			'class'           => true,
+			'aria-hidden'     => true,
+			'aria-labelledby' => true,
+			'role'            => true,
+			'xmlns'           => true,
+			'width'           => true,
+			'height'          => true,
+			'viewbox'         => true, // <= Must be lower case!
+		),
+		'g'     => array( 'fill' => true ),
+		'title' => array( 'title' => true ),
+		'path'  => array(
+			'd'    => true,
+			'fill' => true,
+		),
+	);
 	?>
 	<div id="responsive-sites__category-filter" class="dropdown-check-list" tabindex="100">
 		<span class="responsive-sites__category-filter-anchor" data-slug="" style="display: none;"><?php esc_html_e( 'All', 'responsive-addons' ); ?></span>
@@ -673,8 +670,8 @@ $plan_status = $status->get_plan();
 
 						<# } #>
 					<# } else if ( data.has_app_auth ) {
-						<?php if ( $plan_status === 'free' ) : ?>
-							if( data.demo_type === 'free'){
+						<?php if ( 'free' === $plan_status ) : ?>
+							if( 'free' === data.demo_type ){
 							#>
 
 							<button class="button button-primary responsive-addons responsive-addons-demo-import-options"><?php esc_html_e( 'Import Site', 'responsive-addons' ); ?></button>
@@ -689,13 +686,13 @@ $plan_status = $status->get_plan();
 									<button class="button button-primary responsive-addons  responsive-page-import-unlock-preminum-templates raddons-upgrade-the-plan"><?php esc_html_e( 'Import Template', 'responsive-addons' ); ?></button>
 								<#
 							}}
-						 #>
+						#>
 
 					<#
 							<?php
 						else :
 							?>
-						 #>
+						#>
 						<button class="button button-primary responsive-addons responsive-addons-demo-import-options"><?php esc_html_e( 'Import Site', 'responsive-addons' ); ?></button>
 
 								<# if ( data.allow_pages ) { #>
@@ -706,7 +703,7 @@ $plan_status = $status->get_plan();
 					<# <?php endif; ?>
 				}
 
-					 else {
+					else {
 						if( data.demo_type === 'free'){
 						#>
 
@@ -727,7 +724,7 @@ $plan_status = $status->get_plan();
 
 							<#
 						}}
-						 #>
+						#>
 
 					<# }
 
@@ -792,7 +789,7 @@ $plan_status = $status->get_plan();
 							</div>
 					</div>
 					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
 					</div>
 				</div>
 			</div>
@@ -807,8 +804,8 @@ $plan_status = $status->get_plan();
 								</div>
 							</div>
 							<div class="ready-sites-import-progress-info">
-							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e('Pre-Checking and Starting Up Import Process', 'responsive-addons'); ?></div>
-							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e('0%', 'responsive-addons'); ?></div>
+							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e( 'Pre-Checking and Starting Up Import Process', 'responsive-addons' ); ?></div>
+							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e( '0%', 'responsive-addons' ); ?></div>
 							</div>
 							<div class="ready-sites-import-progress-bar-wrap">
 								<div class="ready-sites-import-progress-bar-bg">
@@ -854,7 +851,7 @@ $plan_status = $status->get_plan();
 							</div>
 					</div>
 					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
 					</div>
 				</div>
 			</div>
@@ -872,7 +869,7 @@ $plan_status = $status->get_plan();
 						<?php
 						$elementor_option_value = get_option( 'elementor_experiment-container' );
 
-						if ( $elementor_option_value == 'inactive' ) {
+						if ( 'inactive' === $elementor_option_value ) {
 							?>
 						<div class="elementor-sites-error-msg-container">
 							<div class="elementor-sites-error-msg">
@@ -1128,7 +1125,7 @@ $plan_status = $status->get_plan();
 							</div>
 					</div>
 					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
 					</div>
 				</div>
 		</div>
@@ -1150,7 +1147,7 @@ $plan_status = $status->get_plan();
 					<?php
 					$elementor_option_value = get_option( 'elementor_experiment-container' );
 
-					if ( $elementor_option_value == 'inactive' ) {
+					if ( 'inactive' === $elementor_option_value ) {
 						?>
 					<div class="elementor-sites-error-msg-container">
 						<div class="elementor-sites-error-msg">
@@ -1251,7 +1248,7 @@ $plan_status = $status->get_plan();
 							</div>
 					</div>
 					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
 					</div>
 				</div>
 		</div>
@@ -1266,8 +1263,8 @@ $plan_status = $status->get_plan();
 							</div>
 						</div>
 							<div class="ready-sites-import-progress-info">
-							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e('Pre-Checking and Starting Up Import Process', 'responsive-addons'); ?></div>
-							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e('0%', 'responsive-addons'); ?></div>
+							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e( 'Pre-Checking and Starting Up Import Process', 'responsive-addons' ); ?></div>
+							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e( '0%', 'responsive-addons' ); ?></div>
 							</div>
 							<div class="ready-sites-import-progress-bar-wrap">
 								<div class="ready-sites-import-progress-bar-bg">
@@ -1302,7 +1299,7 @@ $plan_status = $status->get_plan();
 							</div>
 					</div>
 					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
 					</div>
 				</div>
 		</div>

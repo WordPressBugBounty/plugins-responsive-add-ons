@@ -6,7 +6,7 @@
  * This file includes several helper functions and the core control JS.
  */
 
-( function($) {
+( function ($) {
 
 	$( document ).ready(
 		function () {

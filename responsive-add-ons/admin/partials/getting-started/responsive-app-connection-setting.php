@@ -40,9 +40,9 @@ $cc_app_auth = new Responsive_Add_Ons_App_Auth();
 					</div>
 					<?php
 						$disabled = false;
-						if ( 'yes' === get_transient( 'resp_app_last_sync' ) ) {
-							$disabled = true;
-						}
+					if ( 'yes' === get_transient( 'resp_app_last_sync' ) ) {
+						$disabled = true;
+					}
 					?>
 					<div class="rst_app-after-connect-action-btns">
 							<a href="<?php echo esc_url( admin_url( 'admin.php?page=responsive_add_ons' ) ); ?>">
@@ -53,8 +53,8 @@ $cc_app_auth = new Responsive_Add_Ons_App_Auth();
 					</div>
 					<?php
 						$notice_message = get_option( 'resp_plan_updated' );
-						if ( $notice_message ) {
-							?>
+					if ( $notice_message ) {
+						?>
 							<div class="rst_app-sync-notice">
 								<div class="notice notice-success is-dismissible">
 									<p><?php echo esc_html( $notice_message ); ?></p>
@@ -62,7 +62,7 @@ $cc_app_auth = new Responsive_Add_Ons_App_Auth();
 							</div>
 							<?php
 							delete_option( 'resp_plan_updated' );
-						}
+					}
 					?>
 				</div>
 			<?php else : ?>

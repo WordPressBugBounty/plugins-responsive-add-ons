@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 5.6
-Stable tag: 3.1.5
+Stable tag: 3.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -235,6 +235,9 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 8. Responsive Plus advanced features.
 
 == Changelog ==
+
+= 3.1.6 - 19th February 2025 = 
+* Fix - Improved code as per WordPress and PHPCS standards.
 
 = 3.1.5 - 14th February 2025 =
 * Improvement: Performance improvements.

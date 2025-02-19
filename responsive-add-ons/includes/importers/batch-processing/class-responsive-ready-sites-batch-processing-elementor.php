@@ -143,11 +143,9 @@ class Responsive_Ready_Sites_Batch_Processing_Elementor extends Source_Local {
 		// This condition is specifically for Product categories related widget.
 		if ( 'rea_query_include_categories' !== $key && 'rea_query_exclude_categories' !== $key && 'rea-posts_include_term_ids' !== $key && 'category_ids' !== $key && is_array( $value ) ) {
 			array_walk( $value, array( $this, 'traverse_array_recursive' ), $term_ids_mapping );
-		} else {
-			if ( is_array( $value ) ) {
-				foreach ( $value as $index => $term_id ) {
-					$value[ $index ] = $term_ids_mapping[ $term_id ];
-				}
+		} elseif ( is_array( $value ) ) {
+			foreach ( $value as $index => $term_id ) {
+				$value[ $index ] = $term_ids_mapping[ $term_id ];
 			}
 		}
 	}
@@ -194,8 +192,8 @@ class Responsive_Ready_Sites_Batch_Processing_Elementor extends Source_Local {
 				} else {
 					$data = wp_json_encode( $data, true );
 					if ( ! empty( $data ) ) {
-						$data          = str_replace( $demo_site_url, $site_url, $data );
-						$data          = json_decode( $data, true );
+						$data = str_replace( $demo_site_url, $site_url, $data );
+						$data = json_decode( $data, true );
 					}
 				}
 			}
@@ -211,5 +209,4 @@ class Responsive_Ready_Sites_Batch_Processing_Elementor extends Source_Local {
 
 		return array();
 	}
-
 }

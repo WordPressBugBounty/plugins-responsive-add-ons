@@ -119,7 +119,6 @@ class Product {
 			update_option( $this->get_key() . '_install', time() );
 		}
 		$this->install = $install;
-
 	}
 
 	/**
@@ -180,7 +179,6 @@ class Product {
 
 		$this->wordpress_available = ( 'yes' === $file_headers['WordPress Available'] ) ? true : false;
 		$this->version             = $file_headers['Version'];
-
 	}
 
 	/**
@@ -236,7 +234,6 @@ class Product {
 			'store_url'           => $this->store_url,
 			'wordpress_available' => $this->wordpress_available,
 		);
-
 	}
 
 	/**
@@ -316,5 +313,4 @@ class Product {
 			return plugins_url( $path, $this->basefile );
 		}
 	}
-
 }

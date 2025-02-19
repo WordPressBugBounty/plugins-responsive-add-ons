@@ -12,10 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 if ( ! class_exists( 'Responsive_Plugin_Install_Helper' ) ) {
-	require_once dirname( __FILE__ ) . '/class-responsive-plugin-install-helper.php';
+	require_once __DIR__ . '/class-responsive-plugin-install-helper.php';
 }
 $products      = apply_filters( 'responsive_sdk_products', array() );
-$diretory_path = dirname( __FILE__ );
+$diretory_path = __DIR__;
 $files_to_load = array(
 	$diretory_path . '/class-loader.php',
 	$diretory_path . '/class-product.php',

@@ -51,5 +51,4 @@ class Responsive_Addons_Walker_Nav_Menu_Edit_Custom extends Walker_Nav_Menu_Edit
 
 		return ob_get_clean();
 	}
-
 } // Responsive_Addons_Walker_Nav_Menu_Edit_Custom

@@ -64,11 +64,11 @@ class Responsive_Add_Ons_Settings {
 				'token' => '',
 			),
 			'account' => array(
-				'email'     => '',
-				'id'        => '',
-				'connected' => false,
-				'plan'      => 'free',
-				'site_key'  => '',
+				'email'      => '',
+				'id'         => '',
+				'connected'  => false,
+				'plan'       => 'free',
+				'site_key'   => '',
 				'product_id' => '',
 			),
 		);

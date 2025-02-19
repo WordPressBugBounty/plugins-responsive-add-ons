@@ -119,4 +119,3 @@ $wl_settings = get_option( 'rpro_elementor_settings' );
 		<?php
 	}
 	?>
-

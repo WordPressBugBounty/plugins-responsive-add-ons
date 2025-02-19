@@ -95,7 +95,7 @@ class Responsive_Add_Ons {
 		}
 		$this->load_responsive_customizer_settings();
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/custom-fonts/class-responsive-add-ons-custom-fonts-taxonomy.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/custom-fonts/class-responsive-add-ons-custom-fonts-taxonomy.php';
 
 		// Responsive Ready Site Importer Menu.
 		add_action( 'admin_enqueue_scripts', array( $this, 'responsive_ready_sites_admin_enqueue_scripts' ) );
@@ -236,18 +236,17 @@ class Responsive_Add_Ons {
 			add_action( 'after_setup_theme', array( $this, 'load_woocommerce' ) );
 		}
 
-		//Ask for review notice
+		// Ask for review notice
 		add_action( 'admin_notices', array( $this, 'responsive_addons_ask_for_review_notice' ) );
 		add_action( 'admin_init', array( $this, 'responsive_addons_notice_dismissed' ) );
 		add_action( 'admin_init', array( $this, 'responsive_addons_notice_change_timeout' ) );
-
 
 		self::set_api_url();
 		self::set_rst_blocks_api_url();
 	}
 
 
-	 /**
+	/**
 	 * Ask for Review.
 	 */
 	public function responsive_addons_ask_for_review_notice() {
@@ -256,12 +255,12 @@ class Responsive_Add_Ons {
 		}
 
 		if ( false === get_option( 'responsive_addons_review_notice' ) ) {
-			set_transient( 'responsive_addons_ask_review_flag', true, DAY_IN_SECONDS * 7);
+			set_transient( 'responsive_addons_ask_review_flag', true, DAY_IN_SECONDS * 7 );
 			update_option( 'responsive_addons_review_notice', true );
 		} elseif ( false === (bool) get_transient( 'responsive_addons_ask_review_flag' ) && false === get_option( 'responsive_addons_review_notice_dismissed' ) ) {
 
 			$image_path = RESPONSIVE_ADDONS_DIR_URL . 'admin/images/svgs/responsive-starter-templates-thumbnail.svg';
-			echo sprintf(
+			printf(
 				'<div class="notice notice-warning rst-ask-for-review-notice">
 					<div class="rst-ask-for-review-notice-container">
 						<div class="rst-notice-image">
@@ -301,7 +300,6 @@ class Responsive_Add_Ons {
 			);
 			do_action( 'tag_review' );
 		}
-
 	}
 
 	/**
@@ -336,8 +334,8 @@ class Responsive_Add_Ons {
 	 */
 	public function load_responsive_addons_nav_walkers() {
 		if ( ! class_exists( 'Responsive_Addons_Custom_Nav_Walker' ) ) {
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . '/includes/megamenu/class-responsive-addons-nav-walker.php';
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . '/includes/megamenu/class-responsive-addons-custom-nav-walker.php';
+			require_once plugin_dir_path( __DIR__ ) . '/includes/megamenu/class-responsive-addons-nav-walker.php';
+			require_once plugin_dir_path( __DIR__ ) . '/includes/megamenu/class-responsive-addons-custom-nav-walker.php';
 		}
 	}
 
@@ -358,52 +356,52 @@ class Responsive_Add_Ons {
 			 * The class responsible for loading the Woocommerce Typography options
 			 */
 			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) {
-				require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-typography.php';
+				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-typography.php';
 			}
 
 			/**
 			 * The class responsible for loading the Shop Pagination options
 			 */
 			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) {
-				require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-shop-pagination.php';
+				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-shop-pagination.php';
 			}
 
 			/**
 			 * The class responsible for loading the Breadcrumb and Toolbar disable options
 			 */
 			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) {
-				require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-product-catalog.php';
+				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-product-catalog.php';
 			}
 
 			/**
 			 * The class responsible for loading the Header Cart Icon options
 			 */
 			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Cart' ) ) {
-				require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-cart.php';
+				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-cart.php';
 			}
 
 			/**
 			 * The class responsible for loading the Woocommerce Typography options
 			 */
 			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Single_Product' ) ) {
-				require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-single-product.php';
+				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-single-product.php';
 			}
 		}
 
 		/**
 		 * The class responsible for loading the Custom Styles
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/customizer/custom-styles.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/customizer/custom-styles.php';
 
 		/**
 		 * The class responsible for loading the footer customizer options
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/compatibility/woocommerce/customizer/customizer.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/customizer.php';
 
 		/**
 		 * The class responsible for loading the helper functions for Customizer
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/customizer/helper.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/customizer/helper.php';
 	}
 
 	/**
@@ -502,8 +500,9 @@ class Responsive_Add_Ons {
 				</div>
 				
 				<?php
-				$user_details = get_option('reads_app_settings');
-				if(empty($user_details) || (!empty($user_details) && $user_details['account']['plan'] === 'free')) { ?>
+				$user_details = get_option( 'reads_app_settings' );
+				if ( empty( $user_details ) || ( ! empty( $user_details ) && 'free' === $user_details['account']['plan'] ) ) {
+					?>
 					<a href="<?php echo esc_url( 'https://cyberchimps.com/pricing/?utm_source=wpdash&utm_medium=RST_plugin&utm_campaign=intro_banner&utm_content=upgrade-to-pro' ); ?>" target="_blank" class="responsive-welcome_banner-upgrade-button">
 					<p class="upgrade-button-text"><?php echo esc_html__( 'Upgrade To Pro', 'responsive-addons' ); ?> </p>
 					<span class="dashicons dashicons-arrow-right-alt"></span>
@@ -674,7 +673,7 @@ class Responsive_Add_Ons {
 	 */
 	public function responsive_addons_translations() {
 		// Load the text domain for translations.
-		load_plugin_textdomain( 'responsive-addons', false, basename( dirname( __FILE__ ) ) . '/languages' );
+		load_plugin_textdomain( 'responsive-addons', false, basename( __DIR__ ) . '/languages' );
 	}
 
 	/**
@@ -686,7 +685,6 @@ class Responsive_Add_Ons {
 			'responsive_addons_options',
 			array( $this, 'responsive_addons_sanitize' )
 		);
-
 	}
 
 	/**
@@ -1019,7 +1017,6 @@ class Responsive_Add_Ons {
 		);
 
 		wp_localize_script( 'responsive-add-ons-getting-started-jsfile', 'responsiveAddonsGettingStarted', $data );
-
 	}
 
 	/**
@@ -1217,15 +1214,13 @@ class Responsive_Add_Ons {
 					} else {
 						$raw_data = wp_slash( $raw_data );
 					}
-				} else {
+				} elseif ( is_serialized( $meta_value, true ) ) {
 
-					if ( is_serialized( $meta_value, true ) ) {
 						$raw_data = maybe_unserialize( stripslashes( $meta_value ) );
-					} elseif ( is_array( $meta_value ) ) {
-						$raw_data = json_decode( stripslashes( $meta_value ), true );
-					} else {
-						$raw_data = $meta_value;
-					}
+				} elseif ( is_array( $meta_value ) ) {
+					$raw_data = json_decode( stripslashes( $meta_value ), true );
+				} else {
+					$raw_data = $meta_value;
 				}
 
 				update_post_meta( $post_id, $meta_key, $raw_data );
@@ -1323,7 +1318,11 @@ class Responsive_Add_Ons {
 		}
 
 		$required_plugins_count = ( isset( $_POST['required_plugins'] ) ) ? count( $_POST['required_plugins'] ) : array();
-		$required_pro_plugins   = ( isset( $_POST['required_pro_plugins'] ) ) ? $_POST['required_pro_plugins'] : array();
+		$required_pro_plugins   = array();
+		if ( isset( $_POST['required_pro_plugins'] ) && is_array( $_POST['required_pro_plugins'] ) ) {
+			// Recursively sanitize all values in the array
+			$required_pro_plugins = map_deep( $required_pro_plugins, 'sanitize_text_field' );
+		}
 
 		if ( $required_plugins_count > 0 ) {
 
@@ -1382,8 +1381,11 @@ class Responsive_Add_Ons {
 				)
 			);
 		}
-
-		$pro_plugins = ( isset( $_POST['pro_plugin'] ) ) ? wp_unslash( $_POST['pro_plugin'] ) : array();
+		$pro_plugins = array();
+		if ( isset( $_POST['pro_plugin'] ) && is_array( $_POST['pro_plugin'] ) ) {
+			// Recursively sanitize all values in the array
+			$pro_plugins = map_deep( $pro_plugins, 'sanitize_text_field' );
+		}
 
 		foreach ( $pro_plugins as $plugin ) {
 			$plugin_slug = $plugin['slug'];
@@ -1396,16 +1398,14 @@ class Responsive_Add_Ons {
 						$activate = activate_plugin( $plugin_init, '', false, true );
 					}
 				}
-			} else {
-				if ( 'responsive-elementor-addons' === $plugin_slug ) {
+			} elseif ( 'responsive-elementor-addons' === $plugin_slug ) {
 					$plugin_zip = 'https://cyberchimps.com/wp-content/downloads_cc/' . $plugin_slug . '.zip';
 					$installed  = self::install_plugin( $plugin_zip );
-					if ( $installed ) {
-						if ( ! function_exists( 'activate_plugin' ) ) {
-							require_once ABSPATH . 'wp-admin/includes/plugin.php';
-						}
-						$activate = activate_plugin( $plugin_init, '', false, false );
+				if ( $installed ) {
+					if ( ! function_exists( 'activate_plugin' ) ) {
+						require_once ABSPATH . 'wp-admin/includes/plugin.php';
 					}
+					$activate = activate_plugin( $plugin_init, '', false, false );
 				}
 			}
 		}
@@ -1502,7 +1502,6 @@ class Responsive_Add_Ons {
 				'message' => __( 'Plugin Activated', 'responsive-addons' ),
 			)
 		);
-
 	}
 
 	/**
@@ -1587,7 +1586,7 @@ class Responsive_Add_Ons {
 		add_theme_page(
 			'Responsive Website Templates',
 			$menu_title,
-			'administrator',
+			'manage_options',
 			'responsive-add-ons',
 			array( $this, 'responsive_add_ons' )
 		);
@@ -2332,16 +2331,13 @@ class Responsive_Add_Ons {
 				$key = array_search( $site_id, self::$new_favorites, true );
 				unset( self::$new_favorites[ $key ] );
 			}
-		} else {
-			if ( ! in_array( $site_id, self::$new_favorites, true ) ) {
+		} elseif ( ! in_array( $site_id, self::$new_favorites, true ) ) {
 				array_push( self::$new_favorites, $site_id );
-			}
 		}
 
 		update_option( 'responsive-sites-favorites', self::$new_favorites, 'no' );
 
 		wp_send_json_success( self::$new_favorites );
-
 	}
 
 	public function update_all_sites_fav_status() {
@@ -2363,9 +2359,9 @@ class Responsive_Add_Ons {
 
 		// Verify Nonce.
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
-		$ready_site_subscribe_checkbox = sanitize_key( $_POST['ready_sites_subscripiton_checkbox'] );
-		$user_email                    = $_POST['user_email'];
-		$template_name                 = $_POST['template_name'];
+		$ready_site_subscribe_checkbox = isset( $_POST['ready_sites_subscripiton_checkbox'] ) ? sanitize_key( wp_unslash( $_POST['ready_sites_subscripiton_checkbox'] ) ) : '';
+		$user_email                    = isset( $_POST['user_email'] ) ? sanitize_text_field( wp_unslash( $_POST['user_email'] ) ) : '';
+		$template_name                 = isset( $_POST['template_name'] ) ? sanitize_text_field( wp_unslash( $_POST['template_name'] ) ) : '';
 
 		if ( ! empty( $ready_site_subscribe_checkbox ) && 'false' !== $ready_site_subscribe_checkbox && filter_var( $user_email, FILTER_VALIDATE_EMAIL ) ) { // Add Email in moosend.
 			$request_uri         = 'https://api.moosend.com/v3/subscribers/0aef6ee1-1d89-4fec-9b5d-55bdcb97b136/subscribe.json?apikey=baa844a9-093b-4281-ba03-958661505919';
@@ -2423,7 +2419,7 @@ class Responsive_Add_Ons {
 	 */
 	public function load_woocommerce() {
 		if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/compatibility/woocommerce/customizer/class-responsive-addons-woocommerce-ext.php';
+			require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/class-responsive-addons-woocommerce-ext.php';
 		}
 	}
 
@@ -2747,7 +2743,6 @@ class Responsive_Add_Ons {
 			Responsive_Add_Ons_Custom_Fonts_Taxonomy::$capability,
 			'edit-tags.php?taxonomy=' . Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug
 		);
-
 	}
 
 	/**
@@ -2858,7 +2853,7 @@ class Responsive_Add_Ons {
 		}
 
 		if ( isset( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) ) {// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$value = array_map( 'esc_attr', $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$value = array_map( 'esc_attr', sanitize_text_field( wp_unslash( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			Responsive_Add_Ons_Custom_Fonts_Taxonomy::update_font_links( $value, $term_id );
 		}
 	}
@@ -3159,7 +3154,7 @@ class Responsive_Add_Ons {
 				array(
 					'id'                  => $settings->get_user_id(),
 					'platform'            => 'wordpress',
-					'demo_type'           => $_POST['demo_type'],
+					'demo_type'           => isset( $_POST['demo_type'] ) ? sanitize_text_field( wp_unslash( $_POST['demo_type'] ) ) : '',
 					'status_args'         => $status_args,
 					'activate_args'       => $activate_args,
 					'wc_am_activated_key' => $wcam_lib_responsive_addons->data,

@@ -4,7 +4,7 @@
  * @package RESPONSIVE ADDONS
  */
 
-(function($){
+(function ($) {
 
 	ResponsiveSitesRender = {
 
@@ -23,8 +23,7 @@
 
 		active_site_data: {},
 
-		init: function()
-		{
+		init: function () {
 			this._bind();
 			this._setActiveSite();
 		},
@@ -36,8 +35,7 @@
 		 * @access private
 		 * @method _bind
 		 */
-		_bind: function()
-		{
+		_bind: function () {
 			$( document ).on( 'cyberchimps-sites-api-request-error'   , ResponsiveSitesRender._addReadySiteSuggestionBlock );
 			$( document ).on( 'responsive-api-post-loaded'           , ResponsiveSitesRender._reinitGrid );
 			$( document ).on( 'responsive-api-post-loaded-on-scroll' , ResponsiveSitesRender._reinitGridScrolled );
@@ -45,7 +43,7 @@
 			$( document ).on( 'scroll'                          , ResponsiveSitesRender._scroll );
 		},
 
-		_apiAddParam_site_url: function() {
+		_apiAddParam_site_url: function () {
 			if ( responsiveSitesRender.sites && responsiveSitesRender.sites.site_url ) {
 				ResponsiveSitesRender._api_params['site_url'] = responsiveSitesRender.sites.site_url;
 			}
@@ -57,7 +55,7 @@
 		 * @param  {Boolean} resetPagedCount Reset Paged Count.
 		 * @param  {String}  trigger         Filtered Trigger.
 		 */
-		_showSites: function( resetPagedCount, trigger ) {
+		_showSites: function ( resetPagedCount, trigger ) {
 
 			if ( undefined === resetPagedCount ) {
 				resetPagedCount = true
@@ -92,7 +90,7 @@
 		 *
 		 * @param  {object} event Event Object.
 		 */
-		_loadFirstGrid: function() {
+		_loadFirstGrid: function () {
 
 			ResponsiveSitesRender._showSites();
 
@@ -104,7 +102,7 @@
 		 * @param  {object} event Object.
 		 * @param  {object} data  API response data.
 		 */
-		_reinitGrid: function( event, data ) {
+		_reinitGrid: function ( event, data ) {
 
 			var template = wp.template( 'responsive-sites-list' );
 
@@ -138,12 +136,12 @@
 		},
 
 		// Returns if a value is an array.
-		_isArray: function(value) {
+		_isArray: function (value) {
 			return value && typeof value === 'object' && value.constructor === Array;
 		},
 
 		// Set active site.
-		_setActiveSite: function() {
+		_setActiveSite: function () {
 			var active                        = responsiveSitesRender.active_site_data;
 			ResponsiveSitesRender.active_site = responsiveSitesRender.active_site_data.slug;
 		},
@@ -151,7 +149,7 @@
 		/**
 		 * On Scroll
 		 */
-		_scroll: function(event) {
+		_scroll: function (event) {
 
 			if ( ! $( 'body' ).hasClass( 'listed-all-sites' ) ) {
 
@@ -181,7 +179,7 @@
 		 * @param  {object} event Object.
 		 * @param  {object} data  API response data.
 		 */
-		_reinitGridScrolled: function( event, data ) {
+		_reinitGridScrolled: function ( event, data ) {
 
 			var template          = wp.template( 'responsive-sites-list' );
 			data.active_site      = jQuery( 'body' ).attr( 'data-responsive-active-site' );
@@ -192,7 +190,7 @@
 				$( 'body' ).removeClass( 'loading-content' );
 
 				setTimeout(
-					function() {
+					function () {
 						jQuery( '#responsive-sites' ).append( template( data ) );
 
 					},
@@ -207,7 +205,7 @@
 		/**
 		 * Reset Page Count.
 		 */
-		_resetPagedCount: function() {
+		_resetPagedCount: function () {
 
 			jQuery( 'body' ).attr( 'data-responsive-demo-last-request', '1' );
 			jQuery( 'body' ).attr( 'data-responsive-demo-paged', '1' );
@@ -222,7 +220,7 @@
 		 *
 		 * @private
 		 */
-		_apiAddParam_page: function() {
+		_apiAddParam_page: function () {
 			var page_val                              = parseInt( jQuery( 'body' ).attr( 'data-responsive-demo-paged' ) ) || 1;
 			ResponsiveSitesRender._api_params['page'] = page_val;
 		},
@@ -230,7 +228,7 @@
 		/**
 		 * Update Page Count.
 		 */
-		_updatedPagedCount: function() {
+		_updatedPagedCount: function () {
 			paged = parseInt( jQuery( 'body' ).attr( 'data-responsive-demo-paged' ) );
 			jQuery( 'body' ).attr( 'data-responsive-demo-paged', paged + 1 );
 			window.setTimeout(
@@ -243,7 +241,7 @@
 		/**
 		 * Add per page Parameter.
 		 */
-		_apiAddParam_per_page: function() {
+		_apiAddParam_per_page: function () {
 			var per_page_val = 15;
 			if ( responsiveSitesRender.sites && responsiveSitesRender.sites["per_page"] ) {
 				per_page_val = parseInt( responsiveSitesRender.sites["per_page"] );
@@ -254,7 +252,7 @@
 		/**
 		 * Add ready site suggestion Block
 		 */
-		_addReadySiteSuggestionBlock: function() {
+		_addReadySiteSuggestionBlock: function () {
 			$( '#responsive-ready-sites-admin-page' ).find( '.spinner' ).removeClass( 'is-active' ).addClass( 'hide-me' );
 
 			$( 'body' ).addClass( 'listed-all-sites' );
@@ -269,7 +267,7 @@
 	 * Initialize ResponsiveSitesRender
 	 */
 	$(
-		function(){
+		function () {
 			ResponsiveSitesRender.init();
 		}
 	);

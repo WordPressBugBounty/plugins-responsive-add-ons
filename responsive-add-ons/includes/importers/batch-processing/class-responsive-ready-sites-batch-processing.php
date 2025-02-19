@@ -140,7 +140,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 
 			// Add "misc" in import [queue].
 			self::$process_all->push_to_queue( Responsive_Ready_Sites_Batch_Processing_Menu::get_instance() );
-			
+
 			// Add "gutenberg" in import queue.
 			self::$process_all->push_to_queue( Responsive_Ready_Sites_Batch_Processing_Gutenberg::get_instance() );
 

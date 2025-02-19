@@ -95,7 +95,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 			// action to force delete elementor kit.
 			add_action( 'rst_before_delete_imported_posts', array( $this, 'force_delete_kit' ), 10, 2 );
-
 		}
 
 		/**
@@ -224,7 +223,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			} else {
 				wp_send_json_error( __( 'Request site API URL is empty. Try again!', 'responsive-addons' ) );
 			}
-
 		}
 
 
@@ -270,8 +268,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 							$give_formmeta_template_settings = addslashes( 'a:6:{s:17:"visual_appearance";a:10:{s:13:"primary_color";s:7:"#f57b7a";s:15:"container_style";s:5:"boxed";s:12:"primary_font";s:9:"Noto Sans";s:14:"display_header";s:8:"disabled";s:12:"main_heading";s:17:"Support Our Cause";s:11:"description";s:104:"Help our organization by donating today! All donations go directly to making a difference for our cause.";s:23:"header_background_image";s:0:"";s:23:"header_background_color";s:7:"#1E8CBE";s:12:"secure_badge";s:7:"enabled";s:17:"secure_badge_text";s:20:"100% Secure Donation";}s:15:"donation_amount";a:2:{s:8:"headline";s:40:"How much would you like to donate today?";s:11:"description";s:79:"All donations directly impact our organization and help us further our mission.";}s:17:"donor_information";a:2:{s:8:"headline";s:19:"Who\'s giving today?";s:11:"description";s:49:"We’ll never share this information with anyone.";}s:19:"payment_information";a:5:{s:8:"headline";s:32:"How would you like to pay today?";s:11:"description";s:48:"This donation is a secure and encrypted payment.";s:24:"donation_summary_enabled";s:7:"enabled";s:24:"donation_summary_heading";s:35:"Here\'s what you\'re about to donate:";s:25:"donation_summary_location";s:32:"give_donation_form_before_submit";}s:16:"donation_receipt";a:5:{s:8:"headline";s:37:"Hey {name}, thanks for your donation!";s:11:"description";s:142:"{name}, your contribution means a lot and will be put to good use in making a difference. We’ve sent your donation receipt to {donor_email}.";s:14:"social_sharing";s:7:"enabled";s:20:"sharing_instructions";s:77:"Help spread the word by sharing your support with your friends and followers!";s:15:"twitter_message";s:77:"Help spread the word by sharing your support with your friends and followers!";}s:12:"introduction";a:1:{s:13:"primary_color";s:7:"#f57b7a";}}' );
 							$give_donation_levels            = addslashes( 'a:5:{i:0;a:3:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"0";}s:12:"_give_amount";s:9:"10.000000";s:10:"_give_text";s:0:"";}i:1;a:3:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"1";}s:12:"_give_amount";s:9:"25.000000";s:10:"_give_text";s:0:"";}i:2;a:3:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"2";}s:12:"_give_amount";s:9:"50.000000";s:10:"_give_text";s:0:"";}i:3;a:4:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"3";}s:12:"_give_amount";s:10:"100.000000";s:10:"_give_text";s:0:"";s:13:"_give_default";s:7:"default";}i:4;a:3:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"5";}s:12:"_give_amount";s:10:"250.000000";s:10:"_give_text";s:0:"";}}' );
 
-							$giveformmeta_table_name = $wpdb->prefix . 'give_formmeta';
-							$formresults             = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $giveformmeta_table_name WHERE form_id=450" ), ARRAY_A );
+							$giveformmeta_table_name = esc_sql( $wpdb->prefix . 'give_formmeta' );
+							$formresults             = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %s WHERE form_id = %d', $giveformmeta_table_name, 450 ), ARRAY_A );
 							if ( ! empty( $formresults ) ) {
 								$assoc_formresults = array_values( wp_json_encode( wp_json_encode( $formresults ), true ) );
 
@@ -280,86 +278,43 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 								}
 
 								if ( strpos( $form_metakey, '_give_form_template' ) !== false ) {
-									$query1 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_form_template','classic')" );
-
-									$query2 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_classic_form_template_settings','" . $give_formmeta_template_settings . "')" );
-
-									$query3 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_price_option','multi')" );
-									$query4 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_custom_amount','enabled')" );
-									$query5 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_display_style','buttons')" );
-									$query6 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_payment_display','button')" );
-									$query7 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_custom_amount_text','Custom Amount')" );
-									$query8 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_levels_minimum_amount','10.000000')" );
-									$query9 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_levels_maximum_amount','250.000000')" );
-
-									$query10 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_donation_levels','" . $give_donation_levels . "')" );
-									$query11 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_show_register_form','none')" );
-
-									$wpdb->query( $query1 );
-									$wpdb->query( $query2 );
-									$wpdb->query( $query3 );
-									$wpdb->query( $query4 );
-									$wpdb->query( $query5 );
-									$wpdb->query( $query6 );
-									$wpdb->query( $query7 );
-									$wpdb->query( $query8 );
-									$wpdb->query( $query9 );
-									$wpdb->query( $query10 );
-									$wpdb->query( $query11 );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_form_template', 'classic' ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_classic_form_template_settings', $give_formmeta_template_settings ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_price_option', 'multi' ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_custom_amount', 'enabled' ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_display_style', 'buttons' ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_payment_display', 'button' ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_custom_amount_text', 'Custom Amount' ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_levels_minimum_amount', '10.000000' ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_levels_maximum_amount', '250.000000' ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_donation_levels', $give_donation_levels ) );
+									$wpdb->query( $wpdb->prepare( 'INSERT INTO  %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_show_register_form', 'none' ) );
 								} else {
-									$query1 = $wpdb->prepare( "UPDATE $giveformmeta_table_name SET meta_value='classic' WHERE form_id=450 AND meta_key='_give_form_template'" );
-									$query2 = $wpdb->prepare( "UPDATE $giveformmeta_table_name SET meta_value='" . $give_formmeta_template_settings . "' WHERE form_id=450 AND meta_key='_give_classic_form_template_settings'" );
-
-									$wpdb->query( $query1 );
-									$wpdb->query( $query2 );
+									$wpdb->query( $wpdb->prepare( "UPDATE %s SET meta_value='classic' WHERE form_id=%d AND meta_key='_give_form_template'", $giveformmeta_table_name, 450 ) );
+									$wpdb->query( $wpdb->prepare( "UPDATE %s SET meta_value=%s WHERE form_id=%d AND meta_key='_give_classic_form_template_settings'", $giveformmeta_table_name, $give_formmeta_template_settings, 450 ) );
 								}
 							} else {
-								$query1 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_form_template','classic')" );
-
-								$query2 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_classic_form_template_settings','" . $give_formmeta_template_settings . "')" );
-
-								$query3 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_price_option','multi')" );
-								$query4 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_custom_amount','enabled')" );
-								$query5 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_display_style','buttons')" );
-								$query6 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_payment_display','button')" );
-								$query7 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_custom_amount_text','Custom Amount')" );
-								$query8 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_levels_minimum_amount','10.000000')" );
-								$query9 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_levels_maximum_amount','250.000000')" );
-
-								$query10 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_donation_levels','" . $give_donation_levels . "')" );
-								$query11 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (450,'_give_show_register_form','none')" );
-
-								$wpdb->query( $query1 );
-								$wpdb->query( $query2 );
-								$wpdb->query( $query3 );
-								$wpdb->query( $query4 );
-								$wpdb->query( $query5 );
-								$wpdb->query( $query6 );
-								$wpdb->query( $query7 );
-								$wpdb->query( $query8 );
-								$wpdb->query( $query9 );
-								$wpdb->query( $query10 );
-								$wpdb->query( $query11 );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_form_template', 'classic' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_classic_form_template_settings', $give_formmeta_template_settings ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_price_option', 'multi' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_custom_amount', 'enabled' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_display_style', 'buttons' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_payment_display', 'button' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_custom_amount_text', 'Custom Amount' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_levels_minimum_amount', '10.000000' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_levels_maximum_amount', '250.000000' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_donation_levels', $give_donation_levels ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 450, '_give_show_register_form', 'none' ) );
 							}
 							$give_donation_levels_pro = addslashes( 'a:1:{i:0;a:4:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"0";}s:12:"_give_amount";s:8:"1.000000";s:10:"_give_text";s:0:"";s:13:"_give_default";s:7:"default";}}' );
-							$formresultspro           = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $giveformmeta_table_name WHERE form_id=291" ), ARRAY_A );
-
-								$query1 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (291,'_give_price_option','multi')" );
-								$query2 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (291,'_give_custom_amount','enabled')" );
-								$query3 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (291,'_give_display_style','buttons')" );
-								$query4 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (291,'_give_payment_display','onpage')" );
-								$query5 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (291,'_give_custom_amount_text','Custom Amount')" );
-								$query6 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (291,'_give_show_register_form','none')" );
-								$query7 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES (291,'_give_donation_levels','" . $give_donation_levels_pro . "')" );
-
-								$wpdb->query( $query1 );
-								$wpdb->query( $query2 );
-								$wpdb->query( $query3 );
-								$wpdb->query( $query4 );
-								$wpdb->query( $query5 );
-								$wpdb->query( $query6 );
-								$wpdb->query( $query7 );
-
+							$formresultspro           = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %s WHERE form_id=%d', $giveformmeta_table_name, 291 ), ARRAY_A );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_price_option', 'multi' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_custom_amount', 'enabled' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_display_style', 'buttons' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_payment_display', 'onpage' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_custom_amount_text', 'Custom Amount' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_show_register_form', 'none' ) );
+								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_donation_levels', $give_donation_levels_pro ) );
 						}
 
 						$data = Responsive_Ready_Sites_WXR_Importer::instance()->get_xml_data( $xml_path['data']['file'] );
@@ -376,7 +331,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			} else {
 				wp_send_json_error( __( 'Invalid site XML file!', 'responsive-addons' ) );
 			}
-
 		}
 
 
@@ -546,7 +500,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			} else {
 				wp_send_json_error( __( 'Widget data is empty!', 'responsive-addons' ) );
 			}
-
 		}
 
 		/**
@@ -580,7 +533,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			} else {
 				wp_send_json_error( __( 'Site options are empty!', 'responsive-addons' ) );
 			}
-
 		}
 
 		/**
@@ -670,7 +622,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 			$current_active_site_slug               = isset( $_REQUEST['slug'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['slug'] ) ) : '';
 			$current_active_site_title              = isset( $_REQUEST['title'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['title'] ) ) : '';
-			$current_active_site_featured_image_url = isset( $_REQUEST['featured_image_url'] ) ? sanitize_url( $_REQUEST['featured_image_url'] ) : '';
+			$current_active_site_featured_image_url = isset( $_REQUEST['featured_image_url'] ) ? sanitize_url( wp_unslash( $_REQUEST['featured_image_url'] ) ) : '';
 
 			$current_active_site_data = array(
 				'slug'               => $current_active_site_slug,
@@ -883,7 +835,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			// Verify Nonce.
 			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
-			$posts = $_REQUEST['ids'];
+			// $posts = $_REQUEST['ids'];
+			$posts = isset( $_REQUEST['ids'] ) ? array_map( 'absint', wp_unslash( $_REQUEST['ids'] ) ) : array();
 			$count = 0;
 
 			if ( ! empty( $posts ) ) {
@@ -911,7 +864,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 						wp_delete_post( $post_id, true );
 
 					}
-					$count++;
+					++$count;
 				}
 			}
 
@@ -919,7 +872,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			if ( count( $posts ) == $count ) {
 				wp_send_json_success();
 			}
-
 		}
 
 		/**
@@ -1066,8 +1018,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 				}
 				if ( $new_giveid ) {
-					$giveformmeta_table_name = $wpdb->prefix . 'give_formmeta';
-					$formresults             = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $giveformmeta_table_name WHERE form_id=$new_giveid" ), ARRAY_A );
+					$giveformmeta_table_name = esc_sql( $wpdb->prefix . 'give_formmeta' );
+					$formresults             = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %s WHERE form_id= %d ', $giveformmeta_table_name, $new_giveid ), ARRAY_A );
 					if ( ! empty( $formresults ) ) {
 
 						foreach ( $formresults as $formresult ) {
@@ -1075,65 +1027,33 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 						}
 
 						if ( strpos( $form_metakey, '_give_form_template' ) === false ) {
-							$query1 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_form_template','classic')" );
-
-							$query2 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_classic_form_template_settings','" . $give_formmeta_template_settings . "')" );
-							$query3 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_price_option','multi')" );
-							$query4 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_custom_amount','enabled')" );
-							$query5 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_display_style','buttons')" );
-							$query6 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_payment_display','button')" );
-							$query7 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_custom_amount_text','Custom Amount')" );
-							$query8 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_levels_minimum_amount','10.000000')" );
-							$query9 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_levels_maximum_amount','250.000000')" );
-
-							$query10 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_donation_levels','" . $give_donation_levels . "')" );
-							$query11 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_show_register_form','none')" );
-
-							$wpdb->query( $query1 );
-							$wpdb->query( $query2 );
-							$wpdb->query( $query3 );
-							$wpdb->query( $query4 );
-							$wpdb->query( $query5 );
-							$wpdb->query( $query6 );
-							$wpdb->query( $query7 );
-							$wpdb->query( $query8 );
-							$wpdb->query( $query9 );
-							$wpdb->query( $query10 );
-							$wpdb->query( $query11 );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_form_template', 'classic' ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_classic_form_template_settings', $give_formmeta_template_settings ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_price_option', 'multi' ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_custom_amount', 'enabled' ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_display_style', 'buttons' ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_payment_display', 'button' ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_custom_amount_text', 'Custom Amount' ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_levels_minimum_amount', '10.000000' ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_levels_maximum_amount', '250.000000' ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_donation_levels', $give_donation_levels ) );
+							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_show_register_form', 'none' ) );
 						} else {
-							$query1 = $wpdb->prepare( "UPDATE $giveformmeta_table_name SET meta_value='classic' WHERE form_id=$new_giveid AND meta_key='_give_form_template'" );
-							$query2 = $wpdb->prepare( "UPDATE $giveformmeta_table_name SET meta_value='" . $give_formmeta_template_settings . "' WHERE form_id=$new_giveid AND meta_key='_give_classic_form_template_settings'" );
-
-							$wpdb->query( $query1 );
-							$wpdb->query( $query2 );
+							$wpdb->query( $wpdb->prepare( "UPDATE %s SET meta_value='classic' WHERE form_id=%d AND meta_key='_give_form_template'", $giveformmeta_table_name, $new_giveid ) );
+							$wpdb->query( $wpdb->prepare( "UPDATE %s SET meta_value=%s WHERE form_id=%d AND meta_key='_give_classic_form_template_settings'", $giveformmeta_table_name, $give_formmeta_template_settings, $new_giveid ) );
 						}
 					} else {
-
-						$query1 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_form_template','classic')" );
-
-						$query2 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_classic_form_template_settings','" . $give_formmeta_template_settings . "')" );
-						$query3 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_price_option','multi')" );
-						$query4 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_custom_amount','enabled')" );
-						$query5 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_display_style','buttons')" );
-						$query6 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_payment_display','button')" );
-						$query7 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_custom_amount_text','Custom Amount')" );
-						$query8 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_levels_minimum_amount','10.000000')" );
-						$query9 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_levels_maximum_amount','250.000000')" );
-
-						$query10 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_donation_levels','" . $give_donation_levels . "')" );
-						$query11 = $wpdb->prepare( "INSERT INTO $giveformmeta_table_name (form_id, meta_key, meta_value) VALUES ($new_giveid,'_give_show_register_form','none')" );
-
-						$wpdb->query( $query1 );
-						$wpdb->query( $query2 );
-						$wpdb->query( $query3 );
-						$wpdb->query( $query4 );
-						$wpdb->query( $query5 );
-						$wpdb->query( $query6 );
-						$wpdb->query( $query7 );
-						$wpdb->query( $query8 );
-						$wpdb->query( $query9 );
-						$wpdb->query( $query10 );
-						$wpdb->query( $query11 );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_form_template', 'classic' ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_classic_form_template_settings', $give_formmeta_template_settings ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_price_option', 'multi' ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_custom_amount', 'enabled' ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_display_style', 'buttons' ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_payment_display', 'button' ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_custom_amount_text', 'Custom Amount' ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_levels_minimum_amount', '10.000000' ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_levels_maximum_amount', '250.000000' ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_donation_levels', $give_donation_levels ) );
+						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_show_register_form', 'none' ) );
 					}
 
 					$datagivewp = get_post_meta( $new_page_id, '_elementor_data', true );
@@ -1153,7 +1073,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 					'link'           => get_permalink( $new_page_id ),
 				)
 			);
-
 		}
 
 		/**
@@ -1182,15 +1101,13 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 						} else {
 							$raw_data = wp_slash( $raw_data );
 						}
-					} else {
+					} elseif ( is_serialized( $meta_value, true ) ) {
 
-						if ( is_serialized( $meta_value, true ) ) {
 							$raw_data = maybe_unserialize( stripslashes( $meta_value ) );
-						} elseif ( is_array( $meta_value ) ) {
-							$raw_data = json_decode( stripslashes( $meta_value ), true );
-						} else {
-							$raw_data = $meta_value;
-						}
+					} elseif ( is_array( $meta_value ) ) {
+						$raw_data = json_decode( stripslashes( $meta_value ), true );
+					} else {
+						$raw_data = $meta_value;
 					}
 
 					update_post_meta( $post_id, $meta_key, $raw_data );

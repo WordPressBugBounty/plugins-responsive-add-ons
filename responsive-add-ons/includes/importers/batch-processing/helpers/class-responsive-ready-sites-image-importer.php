@@ -241,7 +241,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Image_Importer' ) ) :
 
 			return false;
 		}
-
 	}
 
 	/**

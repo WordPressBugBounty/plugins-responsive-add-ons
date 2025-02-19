@@ -54,7 +54,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer_Log' ) ) :
 
 			// Check file read/write permissions.
 			add_action( 'admin_init', array( $this, 'has_file_read_write' ) );
-
 		}
 
 		/**
@@ -407,7 +406,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer_Log' ) ) :
 
 			return __( 'No', 'responsive-addons' );
 		}
-
 	}
 
 	/**

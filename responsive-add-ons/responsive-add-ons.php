@@ -3,7 +3,7 @@
  * Plugin Name: Responsive Plus - Starter Templates
  * Plugin URI: http://wordpress.org/plugins/responsive-add-ons/
  * Description: Responsive Plus - Starter Templates offers you a library of premium Elementor and block templates so you can launch your website quickly. It also offers advanced features for the Responsive theme like mega menu, white label, WooCommerce features and custom fonts.
- * Version: 3.1.5
+ * Version: 3.1.6
  * Author: Cyberchimps
  * Author URI: https://cyberchimps.com/responsive-plus/
  * License: GPL2
@@ -46,7 +46,7 @@ if ( ! defined( 'RESPONSIVE_ADDONS_URI' ) ) {
 }
 
 if ( ! defined( 'RESPONSIVE_ADDONS_VER' ) ) {
-	define( 'RESPONSIVE_ADDONS_VER', '3.1.5' );
+	define( 'RESPONSIVE_ADDONS_VER', '3.1.6' );
 }
 
 if ( ! defined( 'CC_APP_URL' ) ) {
@@ -57,7 +57,7 @@ if ( ! defined( 'CC_APP_URL' ) ) {
  * Load WC_AM_Client class if it exists.
  */
 if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
-	require_once plugin_dir_path( __FILE__ ) . 'wc-am-client-addons.php';
+	require_once plugin_dir_path( __FILE__ ) . 'class-wc-am-client-addons.php';
 }
 
 /*
@@ -122,7 +122,7 @@ if ( ! function_exists( 'responsive_sdk_load_latest' ) ) :
 		if ( version_compare( PHP_VERSION, '5.4.32', '<' ) ) {
 			return;
 		}
-		require_once dirname( __FILE__ ) . '/admin/rollback/start.php';
+		require_once __DIR__ . '/admin/rollback/start.php';
 	}
 endif;
 add_action( 'init', 'responsive_sdk_load_latest' );

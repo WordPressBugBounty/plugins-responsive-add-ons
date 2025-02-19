@@ -42,5 +42,4 @@ abstract class Abstract_Module {
 	 * @param Product $product Product object.
 	 */
 	abstract public function load( $product );
-
 }

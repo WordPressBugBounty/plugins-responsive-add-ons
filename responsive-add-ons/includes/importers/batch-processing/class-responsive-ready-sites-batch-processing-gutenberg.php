@@ -123,13 +123,13 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Gutenberg' ) ) :
 				}
 			}
 
-			//Replace ID's for post and grid block
+			// Replace ID's for post and grid block
 			$term_ids_mapping = get_option( 'responsive_sites_term_ids_mapping', array() );
 			$term_ids_mapping = maybe_unserialize( $term_ids_mapping );
 			if ( ! empty( $term_ids_mapping ) ) {
 				// Replace ID's.
 				foreach ( $term_ids_mapping as $old_id => $new_id ) {
-					$content = str_replace( '{"categories":"'.$old_id, '{"categories":"'.$new_id, $content );
+					$content = str_replace( '{"categories":"' . $old_id, '{"categories":"' . $new_id, $content );
 				}
 			}
 			$content = $this->get_content( $content );
@@ -220,7 +220,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Gutenberg' ) ) :
 
 			return $content;
 		}
-
 	}
 
 	/**

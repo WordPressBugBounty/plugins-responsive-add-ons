@@ -63,7 +63,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_WXR_Importer' ) ) :
 			} else {
 				add_filter( 'wp_check_filetype_and_ext', array( $this, 'real_mime_types' ), 10, 4 );
 			}
-
 		}
 
 		/**
@@ -408,7 +407,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_WXR_Importer' ) ) :
 			}
 			update_term_meta( $term_id, '_responsive_ready_sites_imported_term', true );
 		}
-
 	}
 
 	/**

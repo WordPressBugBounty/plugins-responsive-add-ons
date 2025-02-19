@@ -31,7 +31,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 		public function customizer_options( $wp_customize ) {
 			require_once RESPONSIVE_ADDONS_DIR . 'includes/compatibility/woocommerce/customizer/class-responsive-addons-woocommerce-ext.php';
 
-			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'partials/class-responsive-addons-customizer-ext-woocommerce-partials.php';
+			require_once plugin_dir_path( __DIR__ ) . 'partials/class-responsive-addons-customizer-ext-woocommerce-partials.php';
 			$theme = wp_get_theme();
 			if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 

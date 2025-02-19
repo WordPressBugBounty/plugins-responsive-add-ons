@@ -105,5 +105,4 @@ final class Loader {
 	public static function get_version() {
 		return self::$version;
 	}
-
 }

@@ -82,7 +82,7 @@ class Responsive_Add_Ons_Api extends WP_REST_Controller {
 		$token            = $request->get_param( 'token' );
 		$request_platform = $request->get_param( 'platform' );
 
-		if ( CC_APP_URL === $request_origin && isset( $token ) && $request_platform === 'wordpress' ) {
+		if ( CC_APP_URL === $request_origin && isset( $token ) && 'WordPress' === $request_platform ) {
 			return true;
 		} else {
 			return new WP_Error( 'rest_forbidden', esc_html__( 'Invalid Authorization.', 'responsive-addons' ), array( 'status' => rest_authorization_required_code() ) );

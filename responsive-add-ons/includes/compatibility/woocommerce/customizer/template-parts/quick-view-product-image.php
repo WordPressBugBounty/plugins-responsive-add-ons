@@ -26,10 +26,10 @@ global $post, $product, $woocommerce;
 				'alt'   => $props['alt'],
 			)
 		);
-		echo sprintf(
+		printf(
 			'<li class="woocommerce-product-gallery__image">%s</li>',
 			$image // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		); 
+		);
 
 		if ( $attachment_ids ) {
 			$loop = 0;
@@ -42,16 +42,16 @@ global $post, $product, $woocommerce;
 					continue;
 				}
 
-				echo sprintf(
+				printf(
 					'<li>%s</li>',
 					wp_get_attachment_image( $attachment_id, 'shop_single', 0, $props )
 				);
 
-				$loop++;
+				++$loop;
 			}
 		}
 	} else {
-		echo sprintf( '<li><img src="%s" alt="%s" /></li>', wc_placeholder_img_src(), __( 'Placeholder', 'responsive-addons-pro' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		printf( '<li><img src="%s" alt="%s" /></li>', wc_placeholder_img_src(), __( 'Placeholder', 'responsive-addons-pro' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 	?>
 	</div>

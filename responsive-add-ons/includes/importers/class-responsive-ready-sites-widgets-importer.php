@@ -278,7 +278,5 @@ class Responsive_Ready_Sites_Widgets_Importer {
 
 		// Return results.
 		return apply_filters( 'wie_import_results', $results );
-
 	}
-
 }

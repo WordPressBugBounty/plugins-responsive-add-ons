@@ -14,9 +14,9 @@
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 <!-- require white label here -->
 <div class="col-md-10 responsive-theme-setting-border-left responsive-settings-tab-right-container">
-<?php 
-    require_once RESPONSIVE_ADDONS_DIR . '/admin/partials/getting-started/responsive-app-connection-setting.php';
-    require_once RESPONSIVE_ADDONS_DIR . '/admin/partials/getting-started/responsive-white-label.php';
- ?>
+<?php
+	require_once RESPONSIVE_ADDONS_DIR . '/admin/partials/getting-started/responsive-app-connection-setting.php';
+	require_once RESPONSIVE_ADDONS_DIR . '/admin/partials/getting-started/responsive-white-label.php';
+?>
 </div>
 <?php

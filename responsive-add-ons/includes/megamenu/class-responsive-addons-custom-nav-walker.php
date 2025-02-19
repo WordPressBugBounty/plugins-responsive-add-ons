@@ -619,7 +619,6 @@ if ( ! class_exists( 'Responsive_Addons_Custom_Nav_Walker' ) ) {
 			 *
 			 */
 			$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
-
 		}
 
 		/**
@@ -644,6 +643,5 @@ if ( ! class_exists( 'Responsive_Addons_Custom_Nav_Walker' ) ) {
 			$indent  = str_repeat( "\t", $depth );
 			$output .= "$indent</ul>\n";
 		}
-
 	}
 }

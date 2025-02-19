@@ -13,7 +13,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
-				self::$instance = new self;
+				self::$instance = new self();
 			}
 			return self::$instance;
 		}
@@ -41,11 +41,10 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 				// Woo Native Cart Popup.
 				add_action( 'wp_footer', array( $this, 'popup_template' ) );
 				// Ensure cart contents update when products are added to the cart via AJAX.
-				add_filter( 'woocommerce_add_to_cart_fragments', array( $this,'woocommerce_header_add_to_cart_fragment' ) );
+				add_filter( 'woocommerce_add_to_cart_fragments', array( $this, 'woocommerce_header_add_to_cart_fragment' ) );
 				// Custom Template Quick View.
 				$this->quick_view_content_actions();
 			}
-
 		}
 
 		/**
@@ -57,7 +56,18 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 
 			do_action( 'responsive_shop_pagination_infinite' );
 
-			$query_vars                = json_decode( stripslashes( $_POST['query_vars'] ), true );
+			$query_vars = array(); // Default value
+			if ( isset( $_POST['query_vars'] ) ) {
+				// Pre-sanitizing the response using a custom function to ensure all values are cleaned.
+				// PHPCS incorrectly flags this as unsanitized, so the warning is suppressed.
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$query_vars = json_decode( wp_unslash( $_POST['query_vars'] ), true );
+				if ( is_array( $query_vars ) ) {
+					$query_vars = map_deep( $query_vars, 'sanitize_text_field' );
+				} else {
+					$query_vars = array(); // Reset to an empty array if decoding fails
+				}
+			}
 			$query_vars['paged']       = isset( $_POST['page_no'] ) ? absint( $_POST['page_no'] ) : 1;
 			$query_vars['post_status'] = 'publish';
 			$query_vars                = array_merge( $query_vars, wc()->query->get_catalog_ordering_args() );
@@ -175,7 +185,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			ob_start();
 
 			// load content template.
-			load_template( dirname( __FILE__ ) . '/template-parts/quick-view-product.php' );
+			load_template( __DIR__ . '/template-parts/quick-view-product.php' );
 			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 			die();
@@ -252,7 +262,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		 * Footer markup.
 		 */
 		function qv_product_images_markup() {
-			load_template( dirname( __FILE__ ) . '/template-parts/quick-view-product-image.php' );
+			load_template( __DIR__ . '/template-parts/quick-view-product-image.php' );
 		}
 
 		/**
@@ -272,8 +282,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$button  = apply_filters( 'responsive_woo_add_quick_view_button_html', $button, $label, $product );
 
 			echo wp_kses_post( $button, $allowed_html );
-			//echo  $button;
-
+			// echo  $button;
 		}
 
 		/**
@@ -293,7 +302,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$button = apply_filters( 'responsive_woo_add_quick_view_text_html', $button, $label, $product );
 
 			echo wp_kses_post( $button, $allowed_html );
-			//echo $button;
+			// echo $button;
 		}
 
 		/**
@@ -310,7 +319,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$button = apply_filters( 'responsive_woo_add_quick_view_data_html', $button, $product );
 
 			echo wp_kses_post( $button, $allowed_html );
-			//echo $button;
+			// echo $button;
 		}
 
 		/**
@@ -318,7 +327,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		 */
 		function quick_view_html() {
 			$this->quick_view_dependent_data();
-			load_template( dirname( __FILE__ ) . '/template-parts/quick-view-modal.php' );
+			load_template( __DIR__ . '/template-parts/quick-view-modal.php' );
 		}
 
 		/**
@@ -360,7 +369,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 					wp_enqueue_script( 'responsive-woo-popup', $js_gen_path . 'woo-popup.js', array( 'jquery' ), null, true );
 				}
 			}
-
 		}
 
 		/**
@@ -479,7 +487,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 				|| is_checkout() ) {
 				return;
 			}
-			load_template( dirname( __FILE__ ) . '/template-parts/woo-popup.php' );
+			load_template( __DIR__ . '/template-parts/woo-popup.php' );
 		}
 
 		/**
@@ -488,6 +496,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		 * @return void
 		 */
 		public function add_to_cart_quick_view_button() {
+			check_ajax_referer( 'responsive-addons' );
 			$enable_popup = get_theme_mod( 'responsive_enable_native_cart_popup', 0 );
 			if ( 1 === $enable_popup ) {
 				$product = wc_get_product( get_the_ID() );
@@ -498,7 +507,10 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 						array(
 							'min_value'   => apply_filters( 'woocommerce_quantity_input_min', $product->get_min_purchase_quantity(), $product ),
 							'max_value'   => apply_filters( 'woocommerce_quantity_input_max', $product->get_max_purchase_quantity(), $product ),
+							// WooCommerce does not provide nonce for the for hence the error is being suppressed.
+							// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 							'input_value' => isset( $_POST['quantity'] ) ? wc_stock_amount( wp_unslash( $_POST['quantity'] ) ) : $product->get_min_purchase_quantity(),
+							// phpcs:enable
 						),
 						$product,
 						false
@@ -560,8 +572,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			}
 			return $html;
 		}
-
-
 	}
 }
 Responsive_Addons_Woocommerce_Ext::get_instance();

@@ -60,7 +60,6 @@ class Rollback extends Abstract_Module {
 
 		</script>
 		<?php
-
 	}
 
 	/**
@@ -250,9 +249,9 @@ class Rollback extends Abstract_Module {
 	 *
 	 * @return int Which version is greater?
 	 */
-	public function sort_rollback_array($a, $b) {
+	public function sort_rollback_array( $a, $b ) {
 		return version_compare( $b['version'], $a['version'] );
-	}	
+	}
 
 	/**
 	 * Load module logic.

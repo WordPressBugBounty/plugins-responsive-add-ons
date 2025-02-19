@@ -74,7 +74,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Menu' ) ) :
 				set_theme_mod( 'nav_menu_locations', $theme_nav_menu_locations );
 			}
 		}
-
 	}
 
 	Responsive_Ready_Sites_Batch_Processing_Menu::get_instance();

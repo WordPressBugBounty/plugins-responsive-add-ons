@@ -29,7 +29,6 @@ if ( ! function_exists( 'responsive_footer_elements_positioning' ) ) {
 
 		// Return sections.
 		return $sections;
-
 	}
 }
 if ( ! function_exists( 'responsive_blog_pagination' ) ) {
@@ -43,7 +42,6 @@ if ( ! function_exists( 'responsive_blog_pagination' ) ) {
 		$blog_pagination = get_theme_mod( 'blog_pagination' );
 
 		return $blog_pagination;
-
 	}
 }
 
@@ -64,15 +62,15 @@ if ( ! function_exists( 'required_font_color_value' ) ) {
 	 * @param [type] $color [description] Needed font color value of the date box.
 	 */
 	function required_font_color_value( $color ) {
-		list($r, $g, $b) = sscanf( $color, "#%02x%02x%02x" );
+		list($r, $g, $b) = sscanf( $color, '#%02x%02x%02x' );
 		$red             = $r * 299;
 		$green           = $g * 587;
 		$blue            = $b * 114;
 		$sum             = round( ( $red + $green + $blue ) / 1000 );
 		if ( $sum > 125 ) {
-			$font_color_needed = "black";
+			$font_color_needed = 'black';
 		} else {
-			$font_color_needed = "white";
+			$font_color_needed = 'white';
 		}
 		return $font_color_needed;
 	}
@@ -480,7 +478,6 @@ if ( ! function_exists( 'responsive_popup_elements_positioning' ) ) {
 
 		// Return sections.
 		return $sections;
-
 	}
 }
 // Add shortcode at initialisation.
@@ -547,7 +544,6 @@ if ( ! function_exists( 'responsive_addons_woo_cart_total_function' ) ) {
 
 /**
  * Free shipping left
- *
  */
 if ( ! function_exists( 'woo_free_shipping_left' ) ) {
 	/**
@@ -613,7 +609,6 @@ if ( ! function_exists( 'woo_free_shipping_left' ) ) {
 				}
 			}
 		}
-
 	}
 }
 
@@ -645,19 +640,22 @@ if ( ! function_exists( 'woo_free_shipping_shortcode' ) ) {
 
 		$x = str_replace( '%', '+', $content_data );
 
-		extract(
-			shortcode_atts(
-				array(
-					'content'         => esc_html__( 'Buy for %left_to_free% more and get free shipping', 'responsive_addons_pro' ),
-					'content_reached' => esc_html__( 'You have Free delivery!', 'responsive_addons_pro' ),
-					'multiply_by'     => 1,
-				),
-				$atts
-			)
+		// Set default values for attributes.
+		$atts = shortcode_atts(
+			array(
+				'content'         => esc_html__( 'Buy for %left_to_free% more and get free shipping', 'responsive_addons_pro' ),
+				'content_reached' => esc_html__( 'You have Free delivery!', 'responsive_addons_pro' ),
+				'multiply_by'     => 1,
+			),
+			$atts
 		);
 
-		return woo_free_shipping_left( "<span class='responsive-woo-free-shipping' data-content='$x' data-reach='$content_reached'>" . $content . '</span>', '<span class="responsive-woo-free-shipping">' . $content_reached . '</span>', $multiply_by );
+		// Assign variables explicitly.
+		$content         = $atts['content'];
+		$content_reached = $atts['content_reached'];
+		$multiply_by     = $atts['multiply_by'];
 
+		return woo_free_shipping_left( "<span class='responsive-woo-free-shipping' data-content='$x' data-reach='$content_reached'>" . $content . '</span>', '<span class="responsive-woo-free-shipping">' . $content_reached . '</span>', $multiply_by );
 	}
 }
 
@@ -670,18 +668,19 @@ if ( ! function_exists( 'update_responsive_woo_free_shipping_left_shortcode' ) )
 	 */
 	function update_responsive_woo_free_shipping_left_shortcode() {
 		$atts = array();
-
+		// The nonce is not provided by the WooCommerce for this context, hence suppressing the warning
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		if ( ( isset( $_POST['content'] )
-			&& ( '' !== $_POST['content'] ) )
+			&& ( '' !== sanitize_text_field( wp_unslash( $_POST['content'] ) ) ) )
 				|| ( isset( $_POST['content_rech_data'] )
-					&& ( '' !== $_POST['content_rech_data'] ) ) ) {
+					&& ( '' !== sanitize_text_field( wp_unslash( $_POST['content_rech_data'] ) ) ) ) ) {
 
-			$atts['content_reached'] = $_POST['content_rech_data'];
-			$content                 = str_replace( '+', '%', $_POST['content'] );
+			$atts['content_reached'] = sanitize_text_field( wp_unslash( $_POST['content_rech_data'] ) );
+			$content                 = str_replace( '+', '%', sanitize_text_field( wp_unslash( $_POST['content_rech_data'] ) ) );
 			$atts['content']         = $content;
 			$return_shortcode_value  = woo_free_shipping_shortcode( $atts, '' );
 			wp_send_json( $return_shortcode_value );
-
+		// phpcs:enable
 		} else {
 
 			$return_shortcode_value = woo_free_shipping_shortcode( $atts, '' );

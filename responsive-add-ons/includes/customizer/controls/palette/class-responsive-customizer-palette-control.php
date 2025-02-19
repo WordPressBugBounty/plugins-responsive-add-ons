@@ -55,7 +55,7 @@ if ( ! class_exists( 'Responsive_Customizer_Palette_Control' ) ) :
 		 * @return void
 		 */
 		public function enqueue() {
-			wp_enqueue_style( 'responsive-palette', RESPONSIVE_ADDONS_URI . 'includes/customizer/controls/palette/palette.css');
+			wp_enqueue_style( 'responsive-palette', RESPONSIVE_ADDONS_URI . 'includes/customizer/controls/palette/palette.css' );
 		}
 
 		/**

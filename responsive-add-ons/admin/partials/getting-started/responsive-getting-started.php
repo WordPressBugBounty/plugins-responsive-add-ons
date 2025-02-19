@@ -15,7 +15,7 @@
 <div class="container-fluid">
 	<div class="row">
 		<!-- require menu here -->
-        <?php require_once RESPONSIVE_ADDONS_DIR . '/admin/partials/getting-started/responsive-getting-started-menus.php'; ?>
+		<?php require_once RESPONSIVE_ADDONS_DIR . '/admin/partials/getting-started/responsive-getting-started-menus.php'; ?>
 		<!-- require feature here -->
 		<?php require_once RESPONSIVE_ADDONS_DIR . '/admin/partials/getting-started/responsive-getting-started-features.php'; ?>
 	</div>

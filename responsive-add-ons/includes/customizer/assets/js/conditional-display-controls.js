@@ -3,13 +3,13 @@
  * @package Responsive
  * */
 
-( function( $ ) {
+( function ( $ ) {
 	var api = wp.customize;
 	api(
 		'responsive_header_layout',
-		function( $swipe ) {
+		function ( $swipe ) {
 			$swipe.bind(
-				function( newval ) {
+				function ( newval ) {
 					switch (newval) {
 						case 'horizontal':
 							api.control( 'responsive_header_alignment' ).toggle( false );
@@ -34,9 +34,9 @@
 
 	api(
 		'responsive_width',
-		function( $swipe ) {
+		function ( $swipe ) {
 			$swipe.bind(
-				function( newval ) {
+				function ( newval ) {
 					switch (newval) {
 						case 'full-width':
 							api.control( 'responsive_container_width' ).toggle( false );
@@ -61,9 +61,9 @@
 
 	api(
 		'responsive_style',
-		function( $swipe ) {
+		function ( $swipe ) {
 			$swipe.bind(
-				function( newval ) {
+				function ( newval ) {
 					switch (newval) {
 						case 'flat':
 							api.control( 'responsive_box_padding' ).toggle( false );
@@ -89,9 +89,9 @@
 
 	api(
 		'responsive_enable_header_widget',
-		function( $swipe ) {
+		function ( $swipe ) {
 			$swipe.bind(
-				function( newval ) {
+				function ( newval ) {
 					switch (newval) {
 						case false:
 							api.control( 'responsive_header_widget_position' ).toggle( false );
@@ -126,9 +126,9 @@
 
 	api(
 		'responsive_disable_mobile_menu',
-		function( $swipe ) {
+		function ( $swipe ) {
 			$swipe.bind(
-				function( newval ) {
+				function ( newval ) {
 					switch (newval) {
 						case false:
 							api.control( 'responsive_mobile_menu_breakpoint' ).toggle( false );
@@ -151,9 +151,9 @@
 
 	api(
 		'responsive_mobile_menu_style',
-		function( $swipe ) {
+		function ( $swipe ) {
 			$swipe.bind(
-				function( newval ) {
+				function ( newval ) {
 					switch (newval) {
 						case 'dropdown':
 						case 'fullscreen':
@@ -173,9 +173,9 @@
 
 	api(
 		"responsive_theme_options['breadcrumb']",
-		function( $swipe ) {
+		function ( $swipe ) {
 			$swipe.bind(
-				function( newval ) {
+				function ( newval ) {
 					switch (newval) {
 						case true:
 							api.control( 'responsive_breadcrumb_position' ).toggle( false );
@@ -196,9 +196,9 @@
 
 	api(
 		"responsive_blog_entry_columns",
-		function( $swipe ) {
+		function ( $swipe ) {
 			$swipe.bind(
-				function( newval ) {
+				function ( newval ) {
 					if (newval < 1) {
 						api.control( 'responsive_blog_entry_display_masonry' ).toggle( false );
 					} else {
@@ -211,9 +211,9 @@
 
 	api(
 		"responsive_blog_entry_content_type",
-		function( $swipe ) {
+		function ( $swipe ) {
 			$swipe.bind(
-				function( newval ) {
+				function ( newval ) {
 					switch (newval) {
 						case 'content':
 							api.control( 'responsive_excerpt_length' ).toggle( false );

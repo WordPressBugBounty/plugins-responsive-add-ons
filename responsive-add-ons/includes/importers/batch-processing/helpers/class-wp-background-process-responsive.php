@@ -60,9 +60,7 @@ if ( class_exists( 'WP_Background_Process' ) ) :
 
 			// Delete Log file.
 			delete_option( 'responsive_ready_sites_recent_import_log_file' );
-
 		}
-
 	}
 
 endif;

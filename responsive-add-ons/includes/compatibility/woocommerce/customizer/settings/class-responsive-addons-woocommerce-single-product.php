@@ -85,7 +85,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Single_Product' ) ) :
 			// Disable header footer on product_tag page.
 			$disable_product_tag_header_footer = __( 'Disable Header & Footer on Product Tag Page?', 'responsive' );
 			responsive_toggle_control( $wp_customize, 'disable_product_tag_header_footer', $disable_product_tag_header_footer, 'responsive_woocommerce_distraction_free', 10, 0, 'responsive_addons_distraction_free_woocommerce' );
-
 		}
 	}
 

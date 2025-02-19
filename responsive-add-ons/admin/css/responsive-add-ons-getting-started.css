@@ -46,7 +46,7 @@
 .rst-start-auth.disable {
 	pointer-events: none;
 }
- .rst_app-connect-action-btns .rst-start-auth-new{
+.rst_app-connect-action-btns .rst-start-auth-new{
 	color: #FFF;
 	background: #0059B3;
 	border: 1px solid #FFF;
@@ -124,49 +124,49 @@
 }
 .rst_app-sync-notice .notice.notice-success button.notice-dismiss {
 	padding-top: 6px;
-    padding-right: 6px;
-    padding-left: 0px;
-    padding-bottom: 0px;
+	padding-right: 6px;
+	padding-left: 0px;
+	padding-bottom: 0px;
 }
 .rst_app-after-connect-action-btns .rst-sync-auth {
-    position: relative;
-    cursor: pointer;
+	position: relative;
+	cursor: pointer;
 }
 .rst_app-after-connect-action-btns .rst-sync-auth.sync-not-allowed {
-    color: #A8A8A8;
-    border-color: #A8A8A8;
-    cursor: not-allowed;
+	color: #A8A8A8;
+	border-color: #A8A8A8;
+	cursor: not-allowed;
 }
 .rst_app-after-connect-action-btns .rst-sync-auth::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 4px;
-    white-space: nowrap;
-    font-size: 12px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s;
-    margin-bottom: 5px;
+	content: attr(data-tooltip);
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #333;
+	color: #fff;
+	padding: 5px 10px;
+	border-radius: 4px;
+	white-space: nowrap;
+	font-size: 12px;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.2s;
+	margin-bottom: 5px;
 }
 .rst_app-after-connect-action-btns .rst-sync-auth:hover::after {
-    opacity: 1;
-    visibility: visible;
+	opacity: 1;
+	visibility: visible;
 }
 
 
 @keyframes rotate {
-    from {
-        transform: rotate(0deg);
-    }
-    to { 
-        transform: rotate(360deg);
-    }
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 #loader {
@@ -180,11 +180,11 @@
 	border-radius: 50%;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-    transition: all 0.5s ease-in;
-    animation-name: rotate; 
-    animation-duration: 1.0s; 
-    animation-iteration-count: infinite;
-    animation-timing-function: linear; 
+	transition: all 0.5s ease-in;
+	animation-name: rotate;
+	animation-duration: 1.0s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
 }
 #responsive_raddons-settings #responsive-theme-setting-app-connection-section {
 	display: block;
@@ -211,5 +211,3 @@
 .responsive-theme-setting-border-left .responsive-theme-single-setting-section{
 	margin-bottom: 0px;
 }
-
-

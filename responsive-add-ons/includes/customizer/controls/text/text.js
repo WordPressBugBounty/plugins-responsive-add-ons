@@ -10,7 +10,7 @@ wp.customize.controlConstructor['responsive-text'] = wp.customize.Control.extend
 	{
 
 		// When we're finished loading continue processing.
-		ready: function() {
+		ready: function () {
 
 			'use strict';
 
@@ -20,7 +20,7 @@ wp.customize.controlConstructor['responsive-text'] = wp.customize.Control.extend
 			control.container.on(
 				'change keyup paste',
 				'.desktop input',
-				function() {
+				function () {
 					control.settings['desktop'].set( jQuery( this ).val() );
 				}
 			);
@@ -28,7 +28,7 @@ wp.customize.controlConstructor['responsive-text'] = wp.customize.Control.extend
 			control.container.on(
 				'change keyup paste',
 				'.tablet input',
-				function() {
+				function () {
 					control.settings['tablet'].set( jQuery( this ).val() );
 				}
 			);
@@ -36,7 +36,7 @@ wp.customize.controlConstructor['responsive-text'] = wp.customize.Control.extend
 			control.container.on(
 				'change keyup paste',
 				'.mobile input',
-				function() {
+				function () {
 					control.settings['mobile'].set( jQuery( this ).val() );
 				}
 			);

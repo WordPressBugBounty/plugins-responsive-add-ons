@@ -70,7 +70,7 @@ class Responsive_Addons_Nav_Walker {
 	 * @return string Class name of new navwalker
 	 */
 	public function edit_walker() {
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . '/megamenu/class-responsive-addons-walker-nav-menu-edit-custom.php';
+		require_once plugin_dir_path( __DIR__ ) . '/megamenu/class-responsive-addons-walker-nav-menu-edit-custom.php';
 		return 'Responsive_Addons_Walker_Nav_Menu_Edit_Custom';
 	}
 
@@ -169,7 +169,6 @@ class Responsive_Addons_Nav_Walker {
 		}
 
 		wp_enqueue_style( 'responsive-pro-mega-menu-style', plugin_dir_url( __FILE__ ) . 'assets/menus.css', array( 'wp-components', 'dashicons' ), RESPONSIVE_ADDONS_VER );
-
 	}
 
 	/**
@@ -229,7 +228,6 @@ class Responsive_Addons_Nav_Walker {
 				'permission_callback' => array( $this, 'responsive_pro_set_mega_menu_option_permission' ),
 			)
 		);
-
 	}
 
 	/**
@@ -290,7 +288,6 @@ class Responsive_Addons_Nav_Walker {
 		);
 		$response->set_status( 200 );
 		return $response;
-
 	}
 
 	/**

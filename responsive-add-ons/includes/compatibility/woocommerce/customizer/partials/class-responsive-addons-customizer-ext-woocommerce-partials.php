@@ -30,7 +30,7 @@ if ( ! class_exists( 'Responsive_Customizer_Ext_WooCommerce_Partials' ) ) {
 		*/
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
-				self::$instance = new self;
+				self::$instance = new self();
 			}
 			return self::$instance;
 		}

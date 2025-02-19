@@ -29,5 +29,4 @@ class Responsive_Add_Ons_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {}
-
 }
