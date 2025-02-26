@@ -248,7 +248,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 				<div class="theme responsive-theme site-single publish page-builder-elementor {{type_class}}" data-actual-site-id="{{actual_site_id}}" data-required-plugins="{{required_plugins}}" data-required-pro-plugins="{{required_pro_plugins}}" data-wpforms-path="{{wpforms_path}}" data-site-url="{{site_url}}" data-site-id="{{key}}" data-template-id="">
 					<div class="inner">
 						<span class="site-preview" data-href="" data-title={{site_title}}>
-							<div class="theme-screenshot one loading" data-step="1" data-src={{data[ key ]['featured_image_url']}} data-featured-src={{data[ key ]['featured-image-url']}}>
+							<div class="theme-screenshot one loading" data-step="1" data-src={{data[ key ]['featured_image_thumbnail_url']}} data-featured-src={{data[ key ]['featured-image-url']}}>
 								<div class="elementor-template-library-template-preview">
 									<i class="eicon-zoom-in" aria-hidden="true"></i>
 								</div>
