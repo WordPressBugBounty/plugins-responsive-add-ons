@@ -200,9 +200,9 @@ class Responsive_Add_Ons_App_Auth {
 		$activation_status = get_option( $wcam_lib_responsive_addons->wc_am_activated_key );
 
 		$args = array(
-			'api_key' => $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ],
+			'api_key' => ( is_array( $wcam_lib_responsive_addons->data ) && isset( $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] ) ) ? $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] : '',
 		);
-
+		
 		if ( 'Activated' === $activation_status && '' !== $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] ) {
 			// deactivates API Key activation.
 			$deactivate_results = json_decode( $wcam_lib_responsive_addons->deactivate( $args ), true );

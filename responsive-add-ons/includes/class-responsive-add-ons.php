@@ -2017,12 +2017,12 @@ class Responsive_Add_Ons {
 	public function responsive_add_ons_admin_menu() {
 		$theme = wp_get_theme();
 
-		if ( ( ( 'Responsive' !== $theme->name && 'Responsive' !== $theme->parent_theme ) ) && is_plugin_inactive( 'responsive-block-editor-addons/responsive-block-editor-addons.php' ) && is_plugin_inactive( 'responsive-elementor-addons/responsive-elementor-addons.php' ) ) {
+		if ( ( ( 'Responsive' !== $theme->name && 'Responsive' !== $theme->parent_theme ) ) && is_plugin_inactive( 'responsive-block-editor-addons/responsive-block-editor-addons.php' ) && is_plugin_inactive( 'responsive-elementor-addons/responsive-elementor-addons.php' ) && is_plugin_inactive( 'responsive-addons-for-elementor/responsive-addons-for-elementor.php' ) ) {
 			add_menu_page( 'Responsive', 'Responsive', 'manage_options', 'responsive_add_ons', array( $this, 'responsive_add_ons_templates' ), esc_url( RESPONSIVE_ADDONS_DIR_URL ) . 'admin/images/responsive-add-ons-menu-icon.png', 59 );
 			add_submenu_page(
 				'responsive_add_ons',
-				__( 'Templates', 'responsive-elementor-addons' ),
-				__( 'Templates', 'responsive-elementor-addons' ),
+				__( 'Templates', 'responsive-addons' ),
+				__( 'Templates', 'responsive-addons' ),
 				'manage_options',
 				'responsive_add_ons',
 				array( $this, 'responsive_add_ons_templates' ),

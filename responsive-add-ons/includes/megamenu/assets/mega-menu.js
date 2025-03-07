@@ -41,7 +41,7 @@ function renderMegaMenuWidth() {
 					// Content Width.
 					if ( $( menuIDClass + '.responsive-megamenu-parent' ).hasClass( class_prefix + 'content' ) ) {
 
-						let $siteHeader   = $( '.site-header > .container > .row' ),
+						let $siteHeader   = $( '.responsive-site-header-wrap .container > .site-header-row' ),
 						$menuWidth        = $siteHeader.width(),
 						$menuPosition     = $siteHeader.offset(),
 						$menuItemPosition = $( this ).offset(),
@@ -60,7 +60,7 @@ function renderMegaMenuWidth() {
 					// Menu Container.
 					if ( $( menuIDClass + '.responsive-megamenu-parent' ).hasClass( class_prefix + 'menu-container' ) ) {
 
-						let $siteHeader   = $( '.site-header > .container #header-menu' ),
+						let $siteHeader   = $( '.responsive-site-header-wrap .container #header-menu' ),
 						$menuWidth        = $siteHeader.width(),
 						$menuPosition     = $siteHeader.offset(),
 						$menuItemPosition = $( this ).offset(),
@@ -74,7 +74,7 @@ function renderMegaMenuWidth() {
 					// Full Width.
 					if ( $( menuIDClass + '.responsive-megamenu-parent' ).hasClass( class_prefix + 'full' ) ) {
 
-						let $containerRow = $( '.site-header > .container > .row' )
+						let $containerRow = $( '.responsive-site-header-wrap .container > .site-header-row' )
 						let $siteHeader   = $( '#masthead.site-header' ),
 						$menuWidth        = $siteHeader.width(),
 						$menuPosition     = $siteHeader.offset(),
@@ -110,7 +110,7 @@ function renderMegaMenuWidth() {
 					// Custom Width.
 					if ( $( menuIDClass + '.responsive-megamenu-parent' ).hasClass( class_prefix + 'custom' ) ) {
 
-						let $siteHeader = $( '.site-header > .container #header-menu' ),
+						let $siteHeader = $( '.responsive-site-header-wrap .container #header-menu' ),
 						$menuWidth      = $siteHeader.width()
 
 						let customWidth = $( '#site-navigation ' + menuIDClass + '.responsive-megamenu-parent' ).data( 'custom-width' );

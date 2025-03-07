@@ -850,7 +850,7 @@ responsive-ready-site-import-free.button.installing:before {
 	right: 0;
 	left: 0;
 	margin-left: 160px;
-	z-index: 88;
+	z-index: 9999;
 }
 .page-builders {
 	margin: 35px 0;
@@ -1683,7 +1683,7 @@ responsive-ready-site-import-free.button.installing:before {
 .rst-menu-child-category-group{
 	position: absolute;
 	width: 207px;
-	z-index: 9999;
+	z-index: 999;
 	top: 100%;
 	left: 0;
 	background:#FFF;

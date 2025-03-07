@@ -228,7 +228,9 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 		 */
 		public function license_key_deactivation() {
 			$activation_status = get_option( $this->wc_am_activated_key );
-			$api_key           = $this->data[ $this->wc_am_api_key_key ];
+			$api_key           = ( is_array( $this->data ) && isset( $this->data[$this->wc_am_api_key_key] ) ) 
+								? $this->data[$this->wc_am_api_key_key] 
+								: '';
 
 			$args = array(
 				'api_key' => $api_key,
