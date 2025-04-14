@@ -212,6 +212,9 @@ class Responsive_Add_Ons {
 
 		add_action( 'responsive_addons_importer_page', array( $this, 'menu_callback' ) );
 
+		// Add rating links to plugin's description in plugins table
+		add_filter('plugin_row_meta', array($this, 'responsive_addons_rate_plugin_link'), 10, 2);
+
 		// Add rating links to the Responsive Addons Admin Page.
 		add_filter( 'admin_footer_text', array( $this, 'responsive_addons_admin_rate_us' ) );
 
@@ -867,7 +870,7 @@ class Responsive_Add_Ons {
 						'importSingleTemplate' => __( 'Import "%s" Template', 'responsive-addons' ),
 					),
 					'dismiss'                         => __( 'Dismiss this notice.', 'responsive-addons' ),
-					'syncTemplatesLibraryStart'       => '<span class="message">' . esc_html__( 'Syncing Responsive Starter Templates in the background. The process can take anywhere between 2 to 3 minutes. We will notify you once done.', 'responsive-addons' ) . '</span>',
+					'syncTemplatesLibraryStart'       => '<span class="message">' . esc_html__( 'Syncing Responsive Starter Templates in the background. The process will complete in just a few seconds. We will notify you once done.', 'responsive-addons' ) . '</span>',
 					'activated_first_time'            => get_option( 'ra_first_time_activation' ),
 					'hasAppAuth'                      => $this->cc_app_auth->has_auth(),
 					'isResponsiveProActive'           => $pro_plugin_active_status,
@@ -1660,20 +1663,30 @@ class Responsive_Add_Ons {
 				</div>
 				<div id="responsive-sites-filters" class="hide-on-mobile">
 					<?php $this->site_filters(); ?>
-				</div>
-				<div class="form">
 					<div class="rst-my-favourite">
-						<div id="rst-my-favorite-btn" class="rst-my-favourite-tooltip">
-							<svg xmlns="http://www.w3.org/2000/svg" width="25" height="26" viewBox="0 0 25 26" fill="none">
-							<path d="M12.5002 22.7396L10.9897 21.3646C5.62516 16.5 2.0835 13.2812 2.0835 9.35417C2.0835 6.13542 4.60433 3.625 7.81266 3.625C9.62516 3.625 11.3647 4.46875 12.5002 5.79167C13.6356 4.46875 15.3752 3.625 17.1877 3.625C20.396 3.625 22.9168 6.13542 22.9168 9.35417C22.9168 13.2812 19.3752 16.5 14.0106 21.3646L12.5002 22.7396Z" fill="#9CA3AF"/>
+						<div id="rst-my-favorite-btn" class="rst-my-favourite-tooltip rst-nav-tab-wrapper-icon">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  								<path d="M7.49395 3.006C5.96995 2.925 4.44145 3.435 3.31645 4.56C1.06495 6.816 1.30045 10.602 3.70945 13.014L4.47895 13.7835L11.4719 20.7825C11.6125 20.9226 11.8029 21.0013 12.0014 21.0013C12.2 21.0013 12.3904 20.9226 12.5309 20.7825L19.5209 13.7835L20.2904 13.014C22.6994 10.602 22.9334 6.816 20.6804 4.5615C18.4289 2.307 14.6504 2.547 12.2429 4.9575L11.9999 5.2005L11.7569 4.9575C10.5524 3.75 9.01945 3.087 7.49395 3.006Z" fill="#9CA3AF"/>
 							</svg>
 							<span class="tooltip-text"><?php esc_html_e( 'Favourites', 'responsive-add-ons' ); ?></span>
 						</div>
 					</div>
 					<div class="sync-ready-sites-templates-wrap header-actions">
 						<div class="filters-slug">
-							<a title="<?php esc_html_e( 'Sync Responsive Starter Templates', 'responsive-add-ons' ); ?>" href="#" class="responsive-ready-sites-sync-templates-button">
-								<span class="dashicons dashicons-update-alt"></span>
+							<a href="#" class="responsive-ready-sites-sync-templates-button">
+								<span class="dashicons">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+								  <g clip-path="url(#clip0_28_460)">
+								    <path d="M19 8L15 12H18C18 15.315 15.315 18 12 18C10.985 18 10.035 17.745 9.195 17.305L7.735 18.765C8.975 19.54 10.43 20 12 20C16.42 20 20 16.42 20 12H23L19 8ZM6 12C6 8.685 8.685 6 12 6C13.015 6 13.965 6.255 14.805 6.695L16.265 5.235C15.025 4.46 13.57 4 12 4C7.58 4 4 7.58 4 12H1L5 16L9 12H6Z" fill="#9CA3AF"/>
+								  </g>
+								  <defs>
+								    <clipPath id="clip0_28_460">
+								      <rect width="24" height="24" fill="white"/>
+								    </clipPath>
+								  </defs>
+								</svg>
+								</span>
+								<span class="tooltip-text"><?php esc_html_e( 'Sync Library', 'responsive-add-ons' ); ?></span>
 							</a>
 						</div>
 					</div>
@@ -1686,8 +1699,15 @@ class Responsive_Add_Ons {
 							);
 							if ( $page_builder ) {
 								?>
-								<span class="page-builder-title"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/' . esc_html( $page_builder['slug'] ) . '.svg' ); ?>"><span><?php echo esc_html( $page_builder['name'] ); ?></span></span>
-								<span class="dashicons dashicons-arrow-down"></span>
+								<div class="page-builder-title-icon-parent">
+								<span class="page-builder-title-icon"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/' . esc_html( $page_builder['slug'] ) . '.svg' ); ?>"></span>
+								<span class="page-builder-title"><?php echo esc_html( $page_builder['name'] ); ?></span>
+								</div>
+								<span class="dashicons">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="24" viewBox="0 0 16 24" fill="none">
+  										<path d="M14.59 8.59L10 13.17L5.41 8.59L4 10L10 16L16 10L14.59 8.59Z" fill="#4B5563"/>
+									</svg>
+								</span>
 							<?php } ?>
 						</div>
 						<ul class="page-builders">
@@ -1724,11 +1744,14 @@ class Responsive_Add_Ons {
 						</div>
 					</div>
 					<div class="rst-admin-overlay">
-						<img id="rst-admin-overlay" class="rst-admin-overlay-icon" src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/admin-overlay-help.svg' ); ?>">
+						<span id="rst-admin-overlay" class="rst-admin-overlay-icon rst-nav-tab-wrapper-icon rst-go-pro-icon" >
+							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M10 0C8.02219 0 6.08879 0.58649 4.4443 1.6853C2.79981 2.78412 1.51809 4.3459 0.761209 6.17317C0.00433284 8.00043 -0.193701 10.0111 0.192152 11.9509C0.578004 13.8907 1.53041 15.6725 2.92894 17.0711C4.32746 18.4696 6.10929 19.422 8.0491 19.8079C9.98891 20.1937 11.9996 19.9957 13.8268 19.2388C15.6541 18.4819 17.2159 17.2002 18.3147 15.5557C19.4135 13.9112 20 11.9778 20 10C20 8.68678 19.7413 7.38642 19.2388 6.17317C18.7363 4.95991 17.9997 3.85752 17.0711 2.92893C16.1425 2.00035 15.0401 1.26375 13.8268 0.761205C12.6136 0.258658 11.3132 0 10 0ZM10 16C9.80222 16 9.60888 15.9414 9.44443 15.8315C9.27999 15.7216 9.15181 15.5654 9.07613 15.3827C9.00044 15.2 8.98063 14.9989 9.01922 14.8049C9.05781 14.6109 9.15305 14.4327 9.2929 14.2929C9.43275 14.153 9.61093 14.0578 9.80491 14.0192C9.9989 13.9806 10.2 14.0004 10.3827 14.0761C10.5654 14.1518 10.7216 14.28 10.8315 14.4444C10.9414 14.6089 11 14.8022 11 15C11 15.2652 10.8946 15.5196 10.7071 15.7071C10.5196 15.8946 10.2652 16 10 16ZM11 10.84V12C11 12.2652 10.8946 12.5196 10.7071 12.7071C10.5196 12.8946 10.2652 13 10 13C9.73479 13 9.48043 12.8946 9.2929 12.7071C9.10536 12.5196 9 12.2652 9 12V10C9 9.73478 9.10536 9.48043 9.2929 9.29289C9.48043 9.10536 9.73479 9 10 9C10.2967 9 10.5867 8.91203 10.8334 8.7472C11.08 8.58238 11.2723 8.34811 11.3858 8.07403C11.4994 7.79994 11.5291 7.49834 11.4712 7.20736C11.4133 6.91639 11.2704 6.64912 11.0607 6.43934C10.8509 6.22956 10.5836 6.0867 10.2926 6.02882C10.0017 5.97094 9.70007 6.00065 9.42598 6.11418C9.15189 6.22771 8.91762 6.41997 8.7528 6.66665C8.58798 6.91332 8.5 7.20333 8.5 7.5C8.5 7.76522 8.39465 8.01957 8.20711 8.20711C8.01958 8.39464 7.76522 8.5 7.5 8.5C7.23479 8.5 6.98043 8.39464 6.7929 8.20711C6.60536 8.01957 6.5 7.76522 6.5 7.5C6.49739 6.8503 6.67566 6.2127 7.01487 5.65857C7.35408 5.10445 7.84083 4.65568 8.42062 4.3625C9.00042 4.06933 9.65037 3.94332 10.2977 3.99859C10.9451 4.05386 11.5643 4.28823 12.086 4.67545C12.6077 5.06267 13.0113 5.58746 13.2517 6.19107C13.492 6.79467 13.5596 7.45327 13.4469 8.09312C13.3342 8.73297 13.0456 9.32882 12.6134 9.81396C12.1813 10.2991 11.6226 10.6544 11 10.84Z" fill="#A6A6A7"/>
+							</svg>
+
+						</span>
 					</div>
-					<div>
-						<?php $this->responsive_sites_admin_overlay(); ?>
-					</div>
+					<?php $this->responsive_sites_admin_overlay(); ?>
 				</div>
 			</div><!-- .nav-tab-wrapper -->
 			<div id="responsive-sites-filters" class="hide-on-desktop">
@@ -1749,36 +1772,35 @@ class Responsive_Add_Ons {
 		<div class="wp-filter hide-if-no-js">
 			<div class="section-left">
 				<div class="search-form">
-						<div id="responsive-sites__type-filter" class="dropdown-check-list" tabindex="100">
-							<span class="responsive-sites__type-filter-anchor" data-slug=""><?php esc_html_e( 'All', 'responsive-addons' ); ?></span>
-							<ul class="responsive-sites__type-filter-items">
-								<li class="responsive-sites__filter-wrap-checkbox first-wrap" data-slug="all">
-									<label>
-										<input id="radio-all" type="radio" name="responsive-sites-radio" class="checkbox active" value="" checked /><?php esc_html_e( 'All', 'responsive-addons' ); ?>
-									</label>
-								</li>
-								<li class="responsive-sites__filter-wrap-checkbox" data-slug="free">
-									<label>
-										<input id="radio-free" type="radio" name="responsive-sites-radio" class="checkbox" value="free" /><?php esc_html_e( 'Free', 'responsive-addons' ); ?>
-									</label>
-								</li>
-								<li class="responsive-sites__filter-wrap-checkbox" data-slug="premium">
-									<label>
-										<input id="radio-premium" type="radio" name="responsive-sites-radio" class="checkbox" value="premium" /><?php esc_html_e( 'Premium', 'responsive-addons' ); ?>
-									</label>
-								</li>
-							</ul>
+					<div class="guided-overlay step-two" id="step-two">
+						<p class="guide-text">Choose the category and type of the template from the dropdown.</p>
+						<div class="guided-overlay-buttons">
+							<button class="skip-tour"id="skip-tour-two">Skip tour</button>
+							<button id="step-two-previous">Previous</button>
+							<button id="step-two-next">Next</button>
 						</div>
-						<div class="guided-overlay step-two" id="step-two">
-							<p class="guide-text">Choose the category and type of the template from the dropdown.</p>
-							<div class="guided-overlay-buttons">
-								<button class="skip-tour"id="skip-tour-two">Skip tour</button>
-								<button id="step-two-previous">Previous</button>
-								<button id="step-two-next">Next</button>
-							</div>
-						</div>
-					<input autocomplete="off" placeholder="<?php esc_html_e( 'Search...', 'responsive-addons' ); ?>" type="search" aria-describedby="live-search-desc" id="wp-filter-search-input" class="wp-filter-search">
-					<span class="responsive-icon-search search-icon"></span>
+					</div>
+					<div class="search-container">
+					    <!-- Search Icon -->
+					    <div class="search-icon">
+					        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+					            <path d="M2.41599 10C3.33915 10.9245 4.5685 11.4794 5.87246 11.5603C7.17641 11.6413 8.46495 11.2426 9.49532 10.4393L13.0407 13.9847C13.1664 14.1061 13.3348 14.1733 13.5096 14.1718C13.6844 14.1703 13.8516 14.1001 13.9752 13.9765C14.0988 13.8529 14.1689 13.6857 14.1704 13.5109C14.172 13.3361 14.1048 13.1677 13.9833 13.042L10.438 9.49666C11.2769 8.42011 11.6735 7.06409 11.5469 5.70518C11.4204 4.34626 10.7802 3.08679 9.75698 2.18364C8.73376 1.28048 7.40455 0.801672 6.04043 0.844849C4.67632 0.888026 3.38005 1.44994 2.41599 2.416C1.91785 2.91388 1.5227 3.50503 1.25309 4.15567C0.983492 4.80632 0.844727 5.50371 0.844727 6.208C0.844727 6.91229 0.983492 7.60968 1.25309 8.26032C1.5227 8.91096 1.91785 9.50212 2.41599 10ZM3.35866 3.36C4.01771 2.70096 4.88487 2.29082 5.81241 2.19946C6.73994 2.1081 7.67047 2.34116 8.44543 2.85895C9.2204 3.37673 9.79186 4.14719 10.0625 5.03907C10.3331 5.93095 10.286 6.88907 9.92943 7.75017C9.57282 8.61127 8.92868 9.32209 8.10674 9.76152C7.28481 10.2009 6.33594 10.3418 5.4218 10.1601C4.50767 9.97834 3.68482 9.48528 3.09345 8.76489C2.50209 8.0445 2.1788 7.14136 2.17866 6.20933C2.17683 5.67971 2.28019 5.155 2.48275 4.66565C2.68532 4.1763 2.98304 3.73204 3.35866 3.35866V3.36Z" fill="#9CA3AF"/>
+					        </svg>
+					    </div>
+
+					    <!-- Search Input -->
+					    <input autocomplete="off" placeholder="<?php esc_html_e( 'Search', 'responsive-addons' ); ?>" 
+					           type="textarea" aria-describedby="live-search-desc" 
+					           id="wp-filter-search-input" class="wp-filter-search">
+
+					    <!-- Clear Button -->
+					    <div class="clear-button" id="clear-search">
+					        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+					            <path d="M3.39752 2.11867L7.00018 5.72134L10.5842 2.13734C10.6634 2.05307 10.7587 1.98566 10.8646 1.93915C10.9704 1.89264 11.0846 1.86799 11.2002 1.86667C11.4477 1.86667 11.6851 1.965 11.8602 2.14004C12.0352 2.31507 12.1335 2.55247 12.1335 2.8C12.1357 2.91443 12.1145 3.0281 12.0711 3.13402C12.0278 3.23995 11.9633 3.33591 11.8815 3.416L8.25085 7L11.8815 10.6307C12.0353 10.7812 12.1255 10.985 12.1335 11.2C12.1335 11.4475 12.0352 11.6849 11.8602 11.86C11.6851 12.035 11.4477 12.1333 11.2002 12.1333C11.0812 12.1383 10.9626 12.1184 10.8517 12.075C10.7408 12.0317 10.6402 11.9657 10.5562 11.8813L7.00018 8.27867L3.40685 11.872C3.32799 11.9535 3.23378 12.0185 3.12965 12.0633C3.02553 12.1082 2.91355 12.132 2.80018 12.1333C2.55265 12.1333 2.31525 12.035 2.14022 11.86C1.96518 11.6849 1.86685 11.4475 1.86685 11.2C1.86468 11.0856 1.88591 10.9719 1.92924 10.866C1.97257 10.7601 2.0371 10.6641 2.11885 10.584L5.74952 7L2.11885 3.36934C1.96502 3.21884 1.87482 3.01505 1.86685 2.8C1.86685 2.55247 1.96518 2.31507 2.14022 2.14004C2.31525 1.965 2.55265 1.86667 2.80018 1.86667C3.02418 1.86947 3.23885 1.96 3.39752 2.11867Z" fill="#A6A6A7"/>
+					        </svg>
+					    </div>
+					</div>
+
 					<div class="responsive-sites-autocomplete-result"></div>
 				</div>
 			</div>
@@ -1808,7 +1830,7 @@ class Responsive_Add_Ons {
 			array(
 				'id'   => 3,
 				'slug' => 'gutenberg',
-				'name' => 'Gutenberg',
+				'name' => 'WP Editor',
 			),
 		);
 	}
@@ -1827,6 +1849,26 @@ class Responsive_Add_Ons {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+     * Add links to plugin's description in plugins table
+     *
+     * @param array  $links  Initial list of links.
+     * @param string $file   Basename of current plugin.
+     *
+     * @return array
+     */
+    function responsive_addons_rate_plugin_link( $links, $file ) {
+		if ( $file !== plugin_basename( RESPONSIVE_ADDONS_FILE ) ) {
+			return $links;
+		}
+		
+		$rate_url = 'https://wordpress.org/support/plugin/responsive-add-ons/reviews/#new-post';
+		$rate_link = '<a target="_blank" href="' . esc_url( $rate_url ) . '" title="' . esc_attr__( 'Rate the plugin', 'responsive-addons' ) . '">' . esc_html__( 'Rate the plugin ★★★★★', 'responsive-addons' ) . '</a>';
+		$links[] = $rate_link;
+
+		return $links;
 	}
 
 	/**

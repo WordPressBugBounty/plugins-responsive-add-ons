@@ -2,6 +2,7 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+ @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
 	font-family: 'Libre Franklin', sans-serif;
@@ -324,17 +325,92 @@ responsive-ready-site-import-free.button.installing:before {
 .current-importing-status-error-title p{
 	font-size: 13px;
 }
+
 #responsive-ready-sites-admin-page {
-	margin-top: 170px;
+	padding: 0 32px;
 }
 #responsive-ready-sites-admin-page .responsive-sites-header {
-	margin-bottom: 60px;
+	display: flex;
+	margin-bottom: 48px;
 	font-size: 26px;
-	margin-top: 40px;
+	margin-top: 58px;
 }
+#responsive-ready-sites-admin-page .responsive-sites-header-after-connection-success {
+	margin-top: 0px;
+}
+
 #responsive-ready-sites-admin-page .responsive-ready-sites-sync-templates-library-message {
-	margin-top: -28px;
+	position: relative;
+	margin: 10px 0px;
+	padding-right: 0px;
+	border-radius: 4px;
+	padding: 0px 12px;
 }
+
+#responsive-ready-sites-admin-page .responsive-ready-sites-sync-templates-library-message.notice-info {
+	border-left-color: #9747FF;
+}
+
+#responsive-ready-sites-admin-page .responsive-ready-sites-sync-templates-library-message.notice-success {
+	border-left-color: #2BAD47;
+}
+
+#responsive-ready-sites-admin-page .responsive-ready-sites-sync-templates-library-message p {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+#responsive-ready-sites-admin-page .responsive-ready-sites-sync-templates-library-message p .responsive-ready-sites-notice-icon-container {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	gap: 4px;
+}
+
+#responsive-ready-sites-admin-page .responsive-ready-sites-sync-templates-library-message p .responsive-ready-sites-notice-icon-container .responsive-ready-sites-notice-icon{
+	display: flex;
+	align-items: center;
+}
+
+#responsive-ready-sites-admin-page .responsive-ready-sites-sync-templates-library-message p .responsive-ready-sites-notice-icon-container .responsive-ready-sites-notice-message {
+	font-size: 12px;
+	font-weight: 400;
+}
+
+#responsive-ready-sites-admin-page .responsive-ready-sites-sync-templates-library-message p .notice-dismiss {
+	position: relative;
+}
+
+#responsive-ready-sites-admin-page .theme-browser #responsive-sites {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 27px;
+}
+
+@media (max-width: 1024px) {
+    #responsive-ready-sites-admin-page .theme-browser #responsive-sites {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    #responsive-ready-sites-admin-page .theme-browser #responsive-sites {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    #responsive-ready-sites-admin-page .theme-browser #responsive-sites {
+        grid-template-columns: repeat(1, 1fr);
+        gap: 15px; 
+    }
+}
+
 .theme-browser .theme.active {
 	cursor: default;
 }
@@ -350,6 +426,7 @@ responsive-ready-site-import-free.button.installing:before {
 .responsive-sites-suggestions {
 	min-height: 255px;
 	border: none !important;
+	grid-column: 2 / 4; /* spans columns 2 and 3 */
 }
 
 .responsive-sites-suggestions a {
@@ -358,12 +435,17 @@ responsive-ready-site-import-free.button.installing:before {
 }
 
 .responsive-sites-suggestions .inner {
-	padding: 10% 10% 10% 10%;
+	position: relative;
+	left: 50%;
+	top: 50%;
+	text-wrap: nowrap;
+	transform: translate(-50%, -50%);
 	text-align: center;
 	background: #f0f0f1;
 	bottom: 0;
 	color: #000000;
 	cursor: auto;
+	background-color: transparent;
 }
 
 .responsive-sites-suggestions .inner a {
@@ -617,11 +699,11 @@ responsive-ready-site-import-free.button.installing:before {
 	background-position: center top;
 	background-size: 100%;
 	background-repeat: no-repeat;
-	border-top-left-radius: 2px;
-	border-top-right-radius: 2px;
 	overflow: hidden;
 	background-color: #e5e5e5;
-	border: 1px solid #E5E7EB;
+	width: 100%;
+	height: 100%;
+	border-radius: 4px 4px 0 0;
 }
 #single-pages .theme {
 	margin: 0 3.4% 3.4% 0;
@@ -741,70 +823,82 @@ responsive-ready-site-import-free.button.installing:before {
 
 #responsive-sites__type-filter{
 	display: inline-block;
-	border: 1px solid #DDDDDD;
-	border-radius: 6px 0 0 6px;
-	height: 54px;
+	position: relative;
+}
+
+#responsive-sites__type-filter #responsive-sites__type-filter-selected{
+	display: flex;
+    gap: 2px;
+	box-sizing: border-box;
+    height: 28px;
+    width: 88px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 6px 4px 10px;
+	border: 1px solid rgb(0, 0, 0, 0.2);
+	border-radius: 4px;
+	background-color: white;
+	cursor: pointer;
 }
 #responsive-sites__type-filter .responsive-sites__type-filter-anchor{
-	height: 54px;
-	position: relative;
+	font-size: 12px;
 	cursor: pointer;
-	display: flex;
-	padding-left: 16px;
-	padding-right: 16px;
-	border: 0;
-	width: 90px;
 	justify-content: space-between;
 	align-items: center;
-	font-weight: 500;
+	font-weight: 400;
+	border: 0;
 	border-radius: 6px;
 	background-color: #ffffff;
 }
-#responsive-sites__type-filter .responsive-sites__type-filter-anchor:after{
-	position: absolute;
-	content: "";
-	border-left: 2px solid #555;
-	border-top: 2px solid #555;
-	padding: 3px;
-	right: 16px;
-	top: 38%;
-	-moz-transform: rotate(-135deg);
-	-ms-transform: rotate(-135deg);
-	-o-transform: rotate(-135deg);
-	-webkit-transform: rotate(-135deg);
-	transform: rotate(-135deg);
-}
+
 #responsive-sites__type-filter ul.responsive-sites__type-filter-items{
 	display: none;
 	margin: 0;
+	width: 100%;
 	position: absolute;
-	width: 90px;
-	top: 55px;
 	box-sizing: content-box;
-	border: 1px solid #e4e4e4;
-	min-width: 70px;
 	background-color: #fff;
-	border-radius: 6px;
-	box-shadow: 0 3px 6px rgba(0,0,0,.1);
-	padding: 15px;
-	-webkit-transform-origin: 50% 0;
+	border-radius: 0 0 4px 4px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 	transform-origin: 50% 0;
+	-webkit-transform-origin: 50% 0;
 	-webkit-transition: all .2s ease;
 	transition: all .2s ease;
+	border: 1px solid rgb(0, 0, 0, 0.2);
+    border-top: 0px;
+    box-sizing: border-box;
 }
 .responsive-sites__type-filter-items label  {
+	display: inline-block;
 	vertical-align: top;
+	width: 100%;	
+	padding: 5px 10px;
+	cursor: pointer;
+	box-sizing: border-box;
+	font-weight: 400;
+}
+#responsive-sites__type-filter #responsive-sites__type-filter-selected.filter-hide-bottom-radius {
+	border-radius: 4px 4px 0 0;
 }
 #responsive-sites__type-filter ul.responsive-sites__type-filter-items li {
 	list-style: none;
-	margin-bottom: 8px;
-	margin-left: 14px;
 	cursor: pointer;
 	position: relative;
 	font-weight: 500;
+	box-sizing: border-box;
+}
+#responsive-sites__type-filter ul.responsive-sites__type-filter-items li input {
+	display: none;
+
 }
 #responsive-sites__type-filter ul.responsive-sites__type-filter-items li.responsive-sites__filter-wrap-checkbox {
-	margin-left: 0;
+	margin: 0;
+}
+#responsive-sites__type-filter ul.responsive-sites__type-filter-items li.responsive-sites__filter-wrap-checkbox:hover {
+	background-color: #F0F4F7;
+}
+#responsive-sites__type-filter ul.responsive-sites__type-filter-items :last-child {
+	border-radius: 0 0 4px 4px;
 }
 #responsive-sites-filters .wp-filter {
 	display: flex;
@@ -819,12 +913,59 @@ responsive-ready-site-import-free.button.installing:before {
 	margin: 0;
 	border-radius: 6px;
 	display: flex;
+	flex-direction: row;
 	align-items: center;
-	height: 46px;
+	height: 34px;
 	float: none;
 }
 #responsive-sites-filters {
-	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	padding: 0;
+}
+
+#responsive-sites-filters .search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 22vw;
+	height: 36px;
+    background: #fff;
+	padding: 0 8px;
+	transition: all 0.4s;
+	box-sizing: border-box;
+}
+
+#responsive-sites-filters .search-icon {
+	width: 16px;
+	height: 16px;
+}
+
+#responsive-sites-filters .clear-button {
+	display: none;
+	width: 16px;
+	height: 16px;
+}
+
+#responsive-sites-filters .search-icon svg,
+#responsive-sites-filters .clear-button svg {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+.wp-filter-search {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+#responsive-sites-filters .search-container.hide-border-radius {
+	border-radius: 4px 4px 0 0;
 }
 
 #responsive-sites-filters .wp-filter {
@@ -836,22 +977,24 @@ responsive-ready-site-import-free.button.installing:before {
 	background: transparent;
 	padding: 0;
 }
+#responsive-sites-menu-page {
+	position: relative;
+}
 #responsive-sites-menu-page .nav-tab-wrapper {
 	display: flex;
 	justify-content: space-between;
 	border: none;
 	background: #fff;
-	padding: 0;
+	padding: 16px 32px;
 	align-items: center;
 	box-shadow: 25px 0 30px rgba(28, 39, 60, 0.09);
 	border-bottom: 1px solid #dddddd;
-	position: fixed;
-	top: 32px;
-	right: 0;
-	left: 0;
-	margin-left: 160px;
-	z-index: 9999;
 }
+
+#responsive-sites-menu-page .nav-tab-wrapper:not(.wp-clearfix):after {
+	display: none;
+}
+
 .page-builders {
 	margin: 35px 0;
 }
@@ -898,27 +1041,48 @@ responsive-ready-site-import-free.button.installing:before {
 	border-bottom-right-radius: 3px;
 	left: -1px;
 	right: 0px;
+	font-size: 12px;
+	text-wrap: nowrap;
 }
 .page-builder-icon.active .page-builders {
+	max-width: 130px;
+	width: 100vw;
 	opacity: 1;
 	visibility: visible;
+	position: absolute;
+	left: -5%;
+	margin-top: 8%;
+	border-radius: 4px;
 }
+.page-builder-icon .page-builders li:first-child {
+    border-radius: 4px 4px 0 0;
+}
+
+.page-builder-icon .page-builders li:last-child {
+    border-radius: 0 0 4px 4px;
+}
+
 .page-builder-icon .page-builders img {
-	height: 17px;
-	width: 17px;
-	margin-right: 10px;
+	height: 16px;
+	width: 16px;
+	margin-right: 12px;
 }
 
 .page-builder-icon .page-builders li {
 	display: flex;
-	padding: 10px 15px;
+	padding: 10px 10px 10px 9px;
 	margin: 0;
+	font-family: Libre Franklin;
+	font-weight: 400;
+	line-height: 16px;
+	font-size: 12px;
 }
 
 .page-builder-icon {
+	max-width: 130px;
 	display: inline-block;
 	font-size: 12px;
-	width: auto;
+	width: 100%;
 	position: relative;
 	cursor: pointer;
 	color: #6B7280;
@@ -928,22 +1092,33 @@ responsive-ready-site-import-free.button.installing:before {
 	font-weight: 400;
 	line-height: 20px;
 }
-
-.page-builder-icon img {
+.page-builder-title-icon {
+	height: 24px;
+}
+.page-builder-title-icon img {
 	height: 24px;
 	width: 24px;
-	margin-right: 10px;
 }
 
 .selected-page-builder {
 	display: flex;
-	justify-content: center;
 	align-items: center;
+	justify-content: space-between;
+	min-width: 115px; /* Adjust according to your requirement */
+    max-width: 100%;
+}
+
+.page-builder-title-icon-parent{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
 }
 
 .selected-page-builder .dashicons {
-	margin-left: 2px;
-	margin-bottom: 3px;
+	width: 16px;
+	height: 24px;
+	aspect-ratio: 2/3;
 }
 
 .page-builder-icon .page-builders .active,
@@ -973,10 +1148,6 @@ responsive-ready-site-import-free.button.installing:before {
 #responsive-sites-filters .ui-autocomplete li:hover {
 	outline: none;
 }
-#responsive-sites-filters .ui-autocomplete li {
-	padding: 3px 20px;
-	text-transform: capitalize;
-}
 #responsive-sites-filters .ui-autocomplete li:hover {
 	background-color: #eeeeee;
 }
@@ -991,8 +1162,6 @@ responsive-ready-site-import-free.button.installing:before {
 	overflow: hidden;
 	box-shadow: 0 3px 4px 0 rgba(32,33,36,0.18);
 	background: transparent;
-	padding-top: 10px;
-	padding-bottom: 10px;
 	background: #fff;
 }
 
@@ -1002,15 +1171,16 @@ responsive-ready-site-import-free.button.installing:before {
 	outline: none;
 }
 #responsive-sites-filters .ui-autocomplete li {
-	padding: 3px 20px;
+	padding: 10px 30px;
 	text-transform: capitalize;
+	font-size: 12px;
 }
 #responsive-sites-filters .ui-autocomplete li:hover {
 	background-color: #eeeeee;
 }
 .responsive-sites-autocomplete-result {
 	position: absolute;
-	top: 56px !important;
+	top: 36px !important;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -1038,27 +1208,22 @@ responsive-ready-site-import-free.button.installing:before {
 	border: none;
 }
 #wp-filter-search-input {
+	padding: 0;
+	margin: 0;
 	font-weight: 400;
-	width: 100%;
-	opacity: 1;
-	height: 56px;
+	font-family: Libre Franklin;
 	background: #fff;
 	line-height: 32px;
-	border-radius: 0 6px 6px 0;
-	font-size: 15px;
-	padding: 17px 21px;
-	border: 1px solid #DDDDDD;
-	border-left: 1px solid #DDDDDD;
+	font-size: 12px;
 	box-shadow: none;
-	font-family: Segoe UI;
+	font-family: Libre Franklin;
 	font-style: normal;
-}
-@media only screen and (min-width: 1200px) {
-	#responsive-sites-filters .search-form {
-		width: 600px;
-		margin: 0 auto;
-		height: 54px;
-	}
+	background-image: url('../images/svgs/search-icon.svg');
+	background-position-y: center;
+  	background-repeat: no-repeat;
+	outline: none;
+	line-height: 100%;
+	color: #4B5563;
 }
 
 .responsive-sites-logo-wrap {
@@ -1095,10 +1260,9 @@ responsive-ready-site-import-free.button.installing:before {
 	display: flex;
 	align-items: center;
 }
+
 #responsive-sites-menu-page .nav-tab-wrapper .logo {
-	padding: 14px 76px;
-	margin-left: 20px;
-	padding-left: 1%;
+	height: 34px;
 }
 
 #responsive-sites-menu-page .form {
@@ -1106,32 +1270,17 @@ responsive-ready-site-import-free.button.installing:before {
 }
 
 #responsive-sites-menu-page .page-builder-icon .selected-page-builder {
-	height: 52px;
+	max-width: 130px;
+	width: 100%;
 	position: relative;
 	cursor: pointer;
 	display: flex;
-	padding-left: 24px;
-	padding-right: 24px;
-	width: auto;
 	align-items: center;
 	font-weight: 500;
 	background-color: #ffffff;
-	gap: 10px;
-}
-.page-builder-icon {
-	display: inline-block;
-	border-right: 0;
-	border-left: 1px solid #E5E7EB;
+	box-sizing: border-box;
 }
 
-@media only screen and (min-width: 768px) {
-	.theme-browser .theme {
-		width: 33%;
-		padding: 1%;
-		margin: 0 0 1em 0em;
-		box-shadow: none;
-	}
-}
 
 @media only screen and (min-width: 1640px) {
 	.theme-browser .theme:nth-child(3n) {
@@ -1160,7 +1309,7 @@ responsive-ready-site-import-free.button.installing:before {
 	}
 }
 @media screen and (min-width: 481px) {
-	.hide-on-desktop {
+	#responsive-sites-filters.hide-on-desktop {
 		display: none;
 	}
 	.responsive-sites__type-filter-items {
@@ -1175,16 +1324,29 @@ responsive-ready-site-import-free.button.installing:before {
 		padding: 10px;
 	}
 }
-#responsive-sites-filters .section-left {
-	flex: 1;
+
+.theme-browser .theme {
+	width: 100%;
+	margin: 0;
+	padding: 0;
 }
+
 #responsive-sites .ra-site-single .inner {
 	position: relative;
-	border-radius: 2px;
+	border-radius: 4px;
 	overflow: initial;
 	border: 1px solid #ddd;
 	transition: all 0.4s;
 }
+#responsive-sites .ra-site-single .inner:hover {
+	box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.35);
+}
+
+#responsive-sites .ra-site-single .inner .site-preview {
+	display: block;
+	height: 390px;
+}
+
 .responsive-sites-autocomplete-result .ui-autocomplete {
 	text-align: left;
 	left: 0 !important;
@@ -1195,19 +1357,15 @@ responsive-ready-site-import-free.button.installing:before {
 }
 .sync-ready-sites-templates-wrap a {
 	display: inline-block;
-	padding: 15px 14px;
-	border-bottom: 4px solid #fff;
 	color: #646970;
 	cursor: pointer;
 	box-shadow: none;
 }
 .sync-ready-sites-templates-wrap .dashicons {
-	text-decoration: none;
-	font-size: 25px;
-	width: 40px;
-	height: 20px;
+	width: 24px;
+	height: 24px;
 }
-.responsive-ready-sites-sync-templates-button.updating-message {
+.responsive-ready-sites-sync-templates-button .dashicons.updating-message {
 	animation: rotation 2s infinite linear;
 }
 .responsive_page_responsive-add-ons .responsive-ready-sites-notice{
@@ -1299,67 +1457,55 @@ responsive-ready-site-import-free.button.installing:before {
 
 /* Oct-Nov'23 New Screens CSS starts here */
 
-.rst-my-favourite{
-	padding-right: 24px;
-	border-right: 1px solid #E5E7EB;
-	padding-top: 11px;
-	padding-bottom: 11px;
+.rst-my-favourite {
+	width: 24px;
+	height: 24px;
 }
+
 .rst-my-favourite-tooltip {
 	position: relative;
 	display: inline-block;
 	cursor: pointer;
-	top: 3px;
 }
-.rst-my-favourite-tooltip .tooltip-text {
-	opacity: 0;
+.rst-my-favourite-tooltip .tooltip-text,
+.responsive-ready-sites-sync-templates-button .tooltip-text {
 	position: absolute;
 	top: 100%;
-	left: -50%;
-	transform: translateX(-50%);
-	background-color: #2271B1;
-	padding: 8px 10px;
-	border-radius: 5px;
+	transform: translateX(-30%);
+	background-color: #1D2327;
+	padding: 8px 8px;
 	transition: opacity 0.3s ease;
 	color: #FFF;
 	text-align: center;
-	font-family: Segoe UI;
-	font-size: 14px;
+	font-family: Libre Franklin;
+	font-size: 12px;
 	font-style: normal;
-	font-weight: 600;
+	font-weight: 500;
+	line-height: 14px;
+	letter-spacing: 0;
+	opacity: 0;
 }
-.rst-my-favourite-tooltip:hover .tooltip-text {
+
+.responsive-ready-sites-sync-templates-button .tooltip-text {
+	top: 70%;
+}
+
+.rst-my-favourite-tooltip:hover .tooltip-text,
+.responsive-ready-sites-sync-templates-button:hover .tooltip-text {
 	opacity: 1;
 }
-.rst-my-favourite-tooltip:hover svg path {
-	fill: #e91e63;
-}
-.rst-my-favourite-tooltip .tooltip-text::after{
-	transform: translateX(-50%);
-	height: 0;
-	width: 0;
-	border-bottom: 4px solid #2271B1;
-	border-left: 4px solid transparent;
-	border-right: 4px solid transparent;
-	margin: 6px 0 0;
-	content: "";
-	top: -10px;
-	left: 79%;
-	position: absolute;
-}
+
 .selected-page-builder .page-builder-title{
-	display: flex;
-	align-items: center;
-}
-.selected-page-builder .page-builder-title span{
 	position: relative;
-	top: 2px;
-	color: #6B7280;
+	color: #4B5563;
 	font-family: Libre Franklin;
-	font-size: 14px;
+	font-size: 12px;
 	font-style: normal;
-	font-weight: 400;
+	font-weight: 500;
 	line-height: 20px;
+	text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .dashicons-arrow-down:before{
 	content: "\f347";
@@ -1369,7 +1515,9 @@ responsive-ready-site-import-free.button.installing:before {
 	cursor: pointer;
 }
 .rst-admin-overlay-icon{
-	margin-bottom: -6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 #responsive-sites-filters .wp-filter{
 	color: #6B7280;
@@ -1598,59 +1746,104 @@ responsive-ready-site-import-free.button.installing:before {
 /* Admin Overlay CSS ends*/
 .theme-id-container{
 	display: flex;
+	gap: 0;
 	justify-content: space-between;
 	align-items: center;
-	border-right: 1px solid  #E5E7EB;
-	border-bottom: 1px solid  #E5E7EB;
-	border-left: 1px solid #E5E7EB;
 	background-color: #FFF;
-	padding: 12px 20px;;
+	padding: 16px 16px;
+	border-top: 1px solid #DDDDDD;
+	border-radius: 0 0 4px 4px;
+	flex-wrap: wrap; 
+    /* overflow: hidden;  */
 }
 .theme-browser .theme .theme-id-container .theme-name{
-	color: #374151;
-	font-size: 16px;
+	font-family: Libre Franklin;
+	color: #4B5563;
+	font-size: 14px;
 	font-style: normal;
 	font-weight: 600;
-	line-height: 22px;
+	line-height: 100%;
 	padding: 0;
 	box-shadow: none;
 	height: auto;
 }
+
+#rst-favorite-btn {
+	width: 20px;
+	height: 20px;
+}
+
+.rst-favorite-btn .tooltip-text {
+	position: absolute;
+	top: 70%;
+    transform: translateX(-20%);
+	background-color: #1D2327;
+	padding: 8px 8px;
+	transition: opacity 0.3s ease;
+	color: #FFF;
+	text-align: center;
+	font-family: Libre Franklin;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 14px;
+	letter-spacing: 0;
+	opacity: 0;
+	white-space: nowrap;
+	z-index: 999;
+	word-wrap: break-word;
+}
+
+.rst-favorite-btn:hover .tooltip-text {
+	opacity: 1;
+}
+
+#rst-favorite-btn:hover svg path{
+	fill: #B60808;
+}
+
+#responsive-sites > div:nth-child(4n) .rst-favorite-btn .tooltip-text {
+    left: auto;
+    right: 0;
+    transform: translateX(-10%);
+}
+
 #rst-favorite-btn svg{
 	position: relative;
 	top: 2px;
 }
 #rst-favorite-btn.active svg path{
-	fill: #EF4444;
+	fill: #B60808;
 }
 .rst-my-favourite-tooltip.active svg path{
-	fill: #EF4444;
+	fill: #B60808;
 }
 /* Categories Mega Menu CSS  */
+#rst-category-parent{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	flex-grow: 0.5;
+}
 #responsive-sites__category-filter{
 	display: flex;
-	gap: 20px;
+	justify-content: space-between;
 	align-items: center;
-	justify-content: center;
-	border-top: 1px solid #E5E7EB;
-	border-bottom: 1px solid #E5E7EB;
-	margin-bottom: 25px;
-	margin-left: 18px;
-	margin-right: 36px;
+	padding-left: 16px;
+	margin: 8px 0px;
 }
 .rst-menu-parent-category-group{
 	position: relative;
 	cursor: pointer;
 }
 .rst-menu-parent-category{
-	border-bottom: 1px solid transparent;
-	padding: 24px 10px;
 	position: relative;
-	color: #374151;
-	font-size: 15px;
-	font-style: normal;
-	font-weight: 600;
-	line-height: 20px;
+	color: #4B5563;
+	font-size: 14px;
+	font-family: Libre Franklin;
+	font-weight: 500;
+	line-height: 100%;
+	letter-spacing: 0%;
 }
 .rst-menu-parent-category-title{
 	display: flex;
@@ -1667,6 +1860,11 @@ responsive-ready-site-import-free.button.installing:before {
 .rst-menu-parent-category:hover .rst-menu-parent-category-title{
 	color: #6D28D9;
 }
+.rst-menu-parent-category:hover svg,
+.rst-menu-parent-category:active svg {
+    transform: rotate(180deg);
+    /* transition: transform 0.3s ease-in-out; */
+}
 .responsive-sites_category.category-active
 {
 	color: #6D28D9;
@@ -1682,31 +1880,39 @@ responsive-ready-site-import-free.button.installing:before {
 }
 .rst-menu-child-category-group{
 	position: absolute;
-	width: 207px;
 	z-index: 999;
 	top: 100%;
-	left: 0;
+	left: -16px;
 	background:#FFF;
 	box-shadow: 0px 24px 56px 0px rgba(167, 174, 186, 0.16);
-	padding: 18px;
 	display: flex;
+	border-radius: 4px;
 	flex-direction: column;
-	gap: 7px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+	text-wrap: nowrap;
 }
 .rst-menu-child-category{
-	color: #374151;
+	color: #4B5563;
 	font-size: 13px;
 	font-style: normal;
+	font-family: Libre Franklin;
 	font-weight: 400;
 	line-height: 20px;
+	padding: 8px 16px;
 }
 .rst-menu-child-category:hover{
-	color: #6D28D9;
+	background-color: #F0F4F7;
 }
 .rst-menu-child-category.child-category-active{
-	color: #6D28D9;
+	background-color: #F0F4F7;
 }
-
+.rst-menu-child-category:first-child {
+    padding-top: 12px;
+	border-radius: 4px 4px 0 0;
+}
+.rst-menu-child-category:last-child {
+    border-radius: 0 0 4px 4px;
+}
 input:focus + .ready-site-import-option-input-slider {
 	box-shadow: 0 0 1px #2271B1;
 }
@@ -2191,20 +2397,22 @@ input:checked + .ready-site-import-option-input-slider:before {
 .responsive-templates-app-auth-sucess-msg,
 .responsive-templates-app-plan-upgraded-msg
 {
-	padding-right: 38px;
 	padding: 1px 12px;
 	background: #fff;
 	border: 1px solid #c3c4c7;
 	border-left-width: 4px;
 	box-shadow: 0 1px 1px rgba(0,0,0,.04);
-	margin: 5px 0 30px;
-	padding: 1px 12px;
+	margin: 10px 0px;
+	padding: 0px 12px;
 	border-left-color: #00a32a;
+	border-radius: 4px;
 }
 .responsive-templates-app-auth-sucess-msg p,
 .responsive-templates-app-plan-upgraded-msg p {
+	display: flex;
+	justify-content: space-between;
 	margin: 0.5em 0;
-	padding: 2px;
+	padding: 0px;
 	font-size: 13px;
 }
 .auth-success-msg,
@@ -2213,20 +2421,59 @@ input:checked + .ready-site-import-option-input-slider:before {
 }
 .auth-success-msg .notice-dismiss,
 .plan-upgraded-success-msg .notice-dismiss {
-	position: absolute;
-	top: -6px;
-	right: 1px;
+	position: relative;
+	right: 0;
 	border: none;
 	margin: 0;
-	padding: 9px;
+	padding: 0px;
+	padding-right: 9px;
 	background: 0 0;
 	color: #787c82;
 	cursor: pointer;
-	}
+}
 
 .ready-sites-import-progress-img-wrapper
 .ready-sites-import-progress-img
 .ready-sites-import-progress-image {
 	width: 350px;
 	height: 350px;
+}
+
+.rst-nav-tab-wrapper-icon {
+	height: 24px;
+	width: 24px;
+	/* flex: 1 1 auto; */
+}
+
+.toplevel_page_responsive_add_ons #wpcontent,
+.responsive_page_responsive_add_ons #wpcontent{
+	padding: 0;
+	padding-left: 0px;
+	background-color: rgba(240, 244, 247, 0.8);
+}
+
+.toplevel_page_responsive_add_ons .wrap,
+.responsive_page_responsive_add_ons .wrap{
+	position: relative;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+}
+
+.responsive_page_responsive_add_ons #wpbody-content{
+	overflow: hidden;
+}
+
+.toplevel_page_responsive_add_ons .wrap .responsive-sites-menu-page-wrapper,
+.responsive_page_responsive_add_ons .wrap .responsive-sites-menu-page-wrapper{
+	position: relative;
+	width: 100%;
+}
+
+.responsive-sites-separator {
+	background-color: #DDDDDD;
+	height: 0.5px;
+	margin-bottom: 40px;
+	width: 100%;
 }

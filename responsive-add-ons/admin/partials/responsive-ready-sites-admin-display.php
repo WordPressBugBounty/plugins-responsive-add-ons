@@ -14,6 +14,7 @@ $cc_app_auth                = new Responsive_Add_Ons_App_Auth();
 $settings                   = get_option( 'reads_app_settings' );
 $responsive_addons_settings = new Responsive_Add_Ons_Settings();
 $plan_status                = $responsive_addons_settings->get_plan();
+$responsive_sites_header_after_connection_success = false;
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
@@ -24,17 +25,21 @@ $plan_status                = $responsive_addons_settings->get_plan();
 <div id="responsive-ready-sites-page-import-progress"></div>
 <div id="responsive-ready-sites-import-done-congrats"></div>
 <div id="responsive-ready-sites-admin-page">
-	<?php if ( get_transient( 'responsive_ready_sites_display_connect_success' ) ) : ?>
+	<?php if ( get_transient( 'responsive_ready_sites_display_connect_success' ) ) : 
+		$responsive_sites_header_after_connection_success = true ?>
 		<div class="responsive-templates-app-auth-sucess-msg">
-			<p class="auth-success-msg"><?php esc_html_e( 'Congratulations! Your website is now connected to Cyberchimps Responsive. You can start importing Templates.', 'responsive-addons' ); ?><button type="button" class="notice-dismiss"><span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'responsive-addons' ); ?></span></button></p>
+			<p class="auth-success-msg"><span class="auth-success-msg">
+			<?php esc_html_e( 'Congratulations! Your website is now connected to Cyberchimps Responsive. You can start importing Templates.', 'responsive-addons' ); ?>
+			</span><button type="button" class="notice-dismiss"><span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'responsive-addons' ); ?></span></button></p>
 		</div>
 		<?php delete_transient( 'responsive_ready_sites_display_connect_success' ); ?>
 	<?php endif; ?>
-	<div class="responsive-sites-header" id="responsive-sites-header">
+	<div class="<?php echo esc_attr( 'responsive-sites-header' . ( $responsive_sites_header_after_connection_success ? ' responsive-sites-header-after-connection-success' : '' ) ); ?>" id="responsive-sites-header">
 		<span class="ready-site-list-title"><?php esc_html_e( 'Responsive Starter Templates', 'responsive-addons' ); ?></span>
 	</div>
 	<?php
 
+	$responsive_sites_header_after_connection_success = false;
 	$business_subcategories   = array(
 		array(
 			'name' => 'Advertising & Marketing',
@@ -358,7 +363,7 @@ $plan_status                = $responsive_addons_settings->get_plan();
 							<rect width="20" height="20" fill="#D9D9D9"/>
 							</mask>
 							<g mask="url(#mask0_5372_12373)">
-							<path d="M10.0004 12.218C9.90534 12.218 9.81319 12.2019 9.72398 12.1699C9.63477 12.1378 9.55118 12.0828 9.47319 12.0048L5.71517 8.24682C5.59445 8.1261 5.53623 7.98187 5.5405 7.81413C5.54477 7.64639 5.60727 7.50217 5.728 7.38144C5.84872 7.26072 5.99509 7.20036 6.16709 7.20036C6.33909 7.20036 6.48545 7.26072 6.60617 7.38144L10.0004 10.7757L13.4075 7.36863C13.5282 7.24791 13.6724 7.18968 13.8402 7.19394C14.0079 7.19822 14.1521 7.26072 14.2728 7.38144C14.3936 7.50217 14.4539 7.64853 14.4539 7.82055C14.4539 7.99255 14.3936 8.13891 14.2728 8.25963L10.5276 12.0048C10.4497 12.0828 10.3674 12.1378 10.2809 12.1699C10.1943 12.2019 10.1008 12.218 10.0004 12.218Z" fill="#334155"/>
+								<path d="M13.825 7.15834L10 10.975L6.175 7.15834L5 8.33334L10 13.3333L15 8.33334L13.825 7.15834Z" fill="#4B5563"/>
 							</g>
 						</svg>';
 
@@ -383,167 +388,197 @@ $plan_status                = $responsive_addons_settings->get_plan();
 	?>
 	<div id="responsive-sites__category-filter" class="dropdown-check-list" tabindex="100">
 		<span class="responsive-sites__category-filter-anchor" data-slug="" style="display: none;"><?php esc_html_e( 'All', 'responsive-addons' ); ?></span>
-		<div class="rst-business-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="business">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Business', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
-				</span>
-			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $business_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+		<div id="rst-category-parent">
+			<div class="rst-business-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="business">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Business', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
 					<?php
-				}
-				?>
+					foreach ( $business_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+			<div class="rst-health-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="health-wellness">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Health', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
+					<?php
+					foreach ( $health_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+			<div class="rst-health-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="fashion-style">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Fashion', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
+					<?php
+					foreach ( $fashion_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+			<div class="rst-restaurant-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="restaurants-food">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Restaurants', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
+					<?php
+					foreach ( $restaurant_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+			<div class="rst-travel-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="travel-tourism">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Travel', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
+					<?php
+					foreach ( $travel_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+			<div class="rst-services-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="services">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Services', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
+					<?php
+					foreach ( $services_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+			<div class="rst-creative-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="creative">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Creative', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
+					<?php
+					foreach ( $creative_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+			<div class="rst-community-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="community">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Community', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
+					<?php
+					foreach ( $community_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+			<div class="rst-ecommerce-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="ecommerce">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Ecommerce', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
+					<?php
+					foreach ( $ecommerce_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
+			</div>
+			<div class="rst-blog-category-group rst-menu-parent-category-group">
+				<div class="rst-menu-parent-category responsive-sites_category" data-slug="blog">
+					<span class="rst-menu-parent-category-title">
+						<span><?php esc_html_e( 'Blog', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+					</span>
+				</div>
+				<div class="rst-menu-child-category-group">
+					<?php
+					foreach ( $blog_subcategories as $key => $value ) {
+						?>
+						<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
+						<?php
+					}
+					?>
+				</div>
 			</div>
 		</div>
-		<div class="rst-health-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="health-wellness">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Health', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+		<div id="responsive-sites__type-filter" class="dropdown-check-list" tabindex="100">
+			<div id="responsive-sites__type-filter-selected">
+				<span class="responsive-sites__type-filter-anchor" data-slug="">
+					<?php esc_html_e( 'All', 'responsive-addons' ); ?>
 				</span>
+				<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M11.06 5.72666L8 8.77999L4.94 5.72666L4 6.66666L8 10.6667L12 6.66666L11.06 5.72666Z" fill="#4B5563"/>
+				</svg>
 			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $health_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
-					<?php
-				}
-				?>
-			</div>
-		</div>
-		<div class="rst-health-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="fashion-style">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Fashion', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
-				</span>
-			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $fashion_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
-					<?php
-				}
-				?>
-			</div>
-		</div>
-		<div class="rst-restaurant-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="restaurants-food">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Restaurants', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
-				</span>
-			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $restaurant_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
-					<?php
-				}
-				?>
-			</div>
-		</div>
-		<div class="rst-travel-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="travel-tourism">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Travel', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
-				</span>
-			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $travel_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
-					<?php
-				}
-				?>
-			</div>
-		</div>
-		<div class="rst-services-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="services">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Services', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
-				</span>
-			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $services_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
-					<?php
-				}
-				?>
-			</div>
-		</div>
-		<div class="rst-creative-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="creative">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Creative', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
-				</span>
-			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $creative_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
-					<?php
-				}
-				?>
-			</div>
-		</div>
-		<div class="rst-community-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="community">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Community', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
-				</span>
-			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $community_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
-					<?php
-				}
-				?>
-			</div>
-		</div>
-		<div class="rst-ecommerce-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="ecommerce">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Ecommerce', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
-				</span>
-			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $ecommerce_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
-					<?php
-				}
-				?>
-			</div>
-		</div>
-		<div class="rst-blog-category-group rst-menu-parent-category-group">
-			<div class="rst-menu-parent-category responsive-sites_category" data-slug="blog">
-				<span class="rst-menu-parent-category-title">
-					<span><?php esc_html_e( 'Blog', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
-				</span>
-			</div>
-			<div class="rst-menu-child-category-group">
-				<?php
-				foreach ( $blog_subcategories as $key => $value ) {
-					?>
-					<div class="rst-menu-child-category responsive-sites_category" data-slug="<?php echo esc_attr( $value['slug'] ); ?>"><span><?php echo esc_html( $value['name'] ); ?></span></div>
-					<?php
-				}
-				?>
-			</div>
+			<ul class="responsive-sites__type-filter-items">
+				<li class="responsive-sites__filter-wrap-checkbox first-wrap" data-slug="all">
+					<label>
+						<input id="radio-all" type="radio" name="responsive-sites-radio" class="checkbox active" value="" checked /><?php esc_html_e( 'All', 'responsive-addons' ); ?>
+					</label>
+				</li>
+				<li class="responsive-sites__filter-wrap-checkbox" data-slug="free">
+					<label>
+						<input id="radio-free" type="radio" name="responsive-sites-radio" class="checkbox" value="free" /><?php esc_html_e( 'Free', 'responsive-addons' ); ?>
+					</label>
+				</li>
+				<li class="responsive-sites__filter-wrap-checkbox" data-slug="premium">
+					<label>
+						<input id="radio-premium" type="radio" name="responsive-sites-radio" class="checkbox" value="premium" /><?php esc_html_e( 'Premium', 'responsive-addons' ); ?>
+					</label>
+				</li>
+			</ul>
 		</div>
 	</div>
+	<div class="responsive-sites-separator"></div>
 	<div class="theme-browser rendered">
 		<div id="responsive-sites" class="themes wp-clearfix"></div>
 	</div>
@@ -586,9 +621,14 @@ $plan_status                = $responsive_addons_settings->get_plan();
 				<h3 class="theme-name" id="responsive-theme-name">{{{ data[ key ].title.rendered }}}</h3>
 					<div class="responsive-single-site-favorite-div">
 						<div id="rst-favorite-btn" class="rst-favorite-btn {{{ data[ key ].favorite_status }}}" data="false">
-							<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
-								<path d="M11.3263 20.4948L11.3256 20.4942C8.63349 18.053 6.43917 16.0597 4.91203 14.1914C3.39039 12.3298 2.5835 10.6533 2.5835 8.85417C2.5835 5.91215 4.87988 3.625 7.81266 3.625C9.47401 3.625 11.0768 4.40098 12.1207 5.61731L12.5002 6.05938L12.8796 5.61731C13.9235 4.40098 15.5263 3.625 17.1877 3.625C20.1205 3.625 22.4168 5.91215 22.4168 8.85417C22.4168 10.6533 21.6099 12.3298 20.0883 14.1914C18.5612 16.0597 16.3668 18.053 13.6747 20.4942L13.674 20.4948L12.5002 21.5634L11.3263 20.4948Z" fill="white" stroke="#EF4444"/>
-								</svg>
+							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M6.245 2.50498C4.975 2.43748 3.70125 2.86248 2.76375 3.79998C0.887495 5.67998 1.08375 8.83498 3.09125 10.845L3.7325 11.4862L9.56 17.3187C9.67715 17.4355 9.83582 17.5011 10.0012 17.5011C10.1667 17.5011 10.3253 17.4355 10.4425 17.3187L16.2675 11.4862L16.9087 10.845C18.9162 8.83498 19.1112 5.67998 17.2337 3.80123C15.3575 1.92248 12.2087 2.12248 10.2025 4.13123L10 4.33373L9.79749 4.13123C8.79375 3.12498 7.51625 2.57248 6.245 2.50498Z" fill="#9CA3AF"/>
+							</svg>
+							<# if ( data[ key ].favorite_status === 'active' ) { #>
+								<span id="rst-favorite-btn-tooltip-text" class="tooltip-text favourite"><?php esc_html_e( 'Remove from favourites', 'responsive-add-ons' );  ?> </span>
+							<# } else { #>
+								<span id="rst-favorite-btn-tooltip-text" class="tooltip-text"><?php esc_html_e( 'Add to favourites', 'responsive-add-ons' );  ?> </span>
+							<# } #>
 						</div>
 					</div>
 			</div>
@@ -614,11 +654,11 @@ $plan_status                = $responsive_addons_settings->get_plan();
 				<div class="description">
 					<p>
 						<?php
-						__( 'Can\'t find a Responsive Starter Template that suits your purpose ?' );
+						esc_html_e( 'Can\'t find a Responsive Starter Template that suits your purpose ?' );
 						?>
 						<br><a target="_blank" href="mailto:support@cyberchimps.com?Subject=New%20Site%20Suggestion">
 						<?php
-						__( 'Suggest A Site' )
+						esc_html_e( 'Suggest A Site' )
 						?>
 						</a>
 					</p>

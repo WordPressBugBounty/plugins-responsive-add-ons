@@ -575,7 +575,7 @@
 
 			button.addClass('updating-message');
 			$rst_elscope.find('#rst-sites-floating-notice-wrap-id').show().removeClass('error');
-			$rst_elscope.find('#rst-sites-floating-notice-wrap-id .rst-sites-floating-notice').html('<span class="message">Syncing template library in the background. The process can take anywhere between 2 to 3 minutes. We will notify you once done.<span><button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveElementorSites.dismiss_text + '</span></button>');
+			$rst_elscope.find('#rst-sites-floating-notice-wrap-id .rst-sites-floating-notice').html('<span class="message">Syncing template library in the background. The process will complete in just a few seconds. We will notify you once done.<span><button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveElementorSites.dismiss_text + '</span></button>');
 			$rst_elscope.find('#rst-sites-floating-notice-wrap-id').addClass('slide-in').removeClass('refreshed-notice');
 
 			// Update Blocks and Sites Library.
@@ -1069,6 +1069,8 @@
 		},
 
 		_insert: function (e) {
+			$(".rst-library-template-insert").addClass('installing');
+			$(".rst-library-template-insert").text('Importing... ');
 
 			if( ! responsiveElementorSites.proActivated ) {
 				let importPromise = new Promise((resolve, reject) => {
@@ -1094,9 +1096,6 @@
 			}
 
 			ResponsiveElementorSitesAdmin.canInsert = false;
-
-			$(this).addClass('installing');
-			$(this).text('Importing... ');
 
 			ResponsiveElementorSitesAdmin.action = 'insert';
 

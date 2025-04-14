@@ -282,7 +282,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 			if ( undefined == site_type ) {
 				continue;
 			}
-			if ( 'gutenberg' == data[ind]['site-pages-page-builder'] ) {
+			if ( 'wp-editor' == data[ind]['site-pages-page-builder'] ) {
 				continue;
 			}
 			var site_title = data[ ind ]['page_title'].slice( 0, 25 );

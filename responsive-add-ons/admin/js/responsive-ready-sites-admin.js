@@ -357,6 +357,10 @@ var ResponsiveSitesAjaxQueue = (function() {
 			});
 
 			$( "body" ).mouseup(function(){
+				if( ! ResponsiveSitesAdmin.mouseLocation_SiteType ) ResponsiveSitesAdmin._closeSearchFilter();
+			});
+
+			$( "body" ).mouseup(function(){
 				if( ! ResponsiveSitesAdmin.mouseLocation_PgBuilderIcon ) ResponsiveSitesAdmin._closeBuilderTypeFilter();
 			});
 
@@ -401,13 +405,13 @@ var ResponsiveSitesAjaxQueue = (function() {
 
 			//Improved layout
 			$( document ).on( 'click', '.responsive-sites__category-filter-anchor', ResponsiveSitesAdmin._toggleCategoryFilter );
-			$( document ).on( 'click', '.responsive-sites__type-filter-anchor', ResponsiveSitesAdmin._toggleSiteTypeFilter );
+			$( document ).on( 'click', '#responsive-sites__type-filter-selected , #responsive-sites__type-filter-selected  *', ResponsiveSitesAdmin._toggleSiteTypeFilter );
 			$( document ).on('click', '.page-builder-icon', ResponsiveSitesAdmin._toggle_page_builder_list );
 			$( document ).on( 'click', '.responsive-sites__filter-wrap-checkbox label, .rst-menu-parent-category, .rst-menu-child-category', ResponsiveSitesAdmin._filterClick );
 			$( document ).on('keyup input'                     , '#wp-filter-search-input', ResponsiveSitesAdmin._search );
 			$( document ).on( 'click'                    , '.nav-tab-wrapper .page-builders li', ResponsiveSitesAdmin._change_page_builder );
 			$( document ).on('click'                     , '.ui-autocomplete .ui-menu-item', ResponsiveSitesAdmin._show_search_term );
-			$( document ).on('click', '.responsive-ready-sites-sync-templates-button', ResponsiveSitesAdmin._sync_library);
+			$( document ).on('click', '.responsive-ready-sites-sync-templates-button .dashicons', ResponsiveSitesAdmin._sync_library);
 
 			$( document ).on('click', '#install_responsive_checkbox', ResponsiveSitesAdmin._displayNoticeBarUnchecked);
 			$( document ).on('click', '#rst-admin-overlay', ResponsiveSitesAdmin._displayAdminOverlayPopup);
@@ -420,6 +424,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 			$( document ).on('click', '#responsive-addons-app-modal-close', ResponsiveSitesAdmin._closeAppConnectModal);
 			$( document ).on('click', '#responsive-addons-app-unlock-template-modal-close', ResponsiveSitesAdmin._closeUnlockTemplatesModal);
 
+			$( document ).on('click', '#clear-search', ResponsiveSitesAdmin._clearInputValue);
+			$( document ).on('click', '.rst-favorite-btn', ResponsiveSitesAdmin._updateFavoriteTooltip);
 			// Add user subscription to Moosend
 			$( document ).on( 'click' , '.responsive-ready-site-import-with-sub' , ResponsiveSitesAdmin._addUserToSubscriptionList );
 				
@@ -430,6 +436,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 			});
 			$(document).on( 'click' , '.auth-success-msg .notice-dismiss', function() {
 				$( '.responsive-templates-app-auth-sucess-msg' ).remove();
+				$('#responsive-sites-header').css('margin-top', '58px');
 			});
 			$(document).on( 'click' , '.plan-upgraded-success-msg .notice-dismiss', function() {
 				$( '.responsive-templates-app-plan-upgraded-msg' ).remove();
@@ -2511,11 +2518,12 @@ var ResponsiveSitesAjaxQueue = (function() {
 									$('#wpbody-content').find('.responsive-sites-sync-templates-library-message').remove();
 									var noticeContent = wp.updates.adminNotice({
 										className: 'notice responsive-ready-sites-notice notice-success is-dismissible responsive-ready-sites-sync-templates-library-message',
-										message: responsiveSitesAdmin.strings.syncCompleteMessage + ' <button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
+										message: '<span>' + responsiveSitesAdmin.strings.syncCompleteMessage + '</span>' + ' <button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
 									});
+									$('#responsive-sites-header').css('margin-top', '0px');
 									$('#responsive-sites-header').before(noticeContent);
 
-									$('.responsive-ready-sites-sync-templates-button').removeClass('updating-message');
+									$('.responsive-ready-sites-sync-templates-button .dashicons').removeClass('updating-message');
 								}
 							}
 						});
@@ -2548,13 +2556,17 @@ var ResponsiveSitesAjaxQueue = (function() {
 
 			button.addClass('updating-message');
 
-			$('.responsive-ready-sites-sync-templates-library-message').remove();
+			const refreshNoticeIcon = `<svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M18 4L14 8H17C17 11.315 14.315 14 11 14C9.985 14 9.035 13.745 8.195 13.305L6.735 14.765C7.975 15.54 9.43 16 11 16C15.42 16 19 12.42 19 8H22L18 4ZM5 8C5 4.685 7.685 2 11 2C12.015 2 12.965 2.255 13.805 2.695L15.265 1.235C14.025 0.46 12.57 0 11 0C6.58 0 3 3.58 3 8H0L4 12L8 8H5Z" fill="#A6A6A7"/>
+								</svg>`;
 
+			$('.responsive-ready-sites-sync-templates-library-message').remove();
 			var noticeContent = wp.updates.adminNotice({
 				className: 'responsive-ready-sites-sync-templates-library-message responsive-ready-sites-notice notice notice-info',
-				message: responsiveSitesAdmin.syncTemplatesLibraryStart + '<button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
+				message: '<span class="responsive-ready-sites-notice-icon-container"><span class="responsive-ready-sites-notice-icon">' + refreshNoticeIcon + '</span>' + '<span class="responsive-ready-sites-notice-message>' + responsiveSitesAdmin.syncTemplatesLibraryStart + '</span></span>' + '<button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
 			});
 
+			$('#responsive-sites-header').css('margin-top', '0px');
 			$('#responsive-sites-header').before(noticeContent);
 
 			$(document).trigger('wp-updates-notice-added');
@@ -2571,10 +2583,22 @@ var ResponsiveSitesAjaxQueue = (function() {
 						if ('updated' === response.data) {
 
 							$('#wpbody-content').find('.responsive-ready-sites-sync-templates-library-message').remove();
+
+							const successNoticeIcon = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+														<mask id="mask0_802_1480" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20">
+														<path d="M10 19C11.1821 19.0015 12.3529 18.7693 13.445 18.3169C14.5371 17.8645 15.5291 17.2008 16.3639 16.3639C17.2008 15.5291 17.8645 14.5371 18.3169 13.445C18.7693 12.3529 19.0015 11.1821 19 10C19.0015 8.81789 18.7693 7.64714 18.3169 6.55502C17.8645 5.4629 17.2008 4.47093 16.3639 3.6361C15.5291 2.79918 14.5371 2.13545 13.445 1.68307C12.3529 1.23068 11.1821 0.998549 10 1.00001C8.81789 0.998549 7.64714 1.23068 6.55502 1.68307C5.4629 2.13545 4.47093 2.79918 3.6361 3.6361C2.79918 4.47093 2.13545 5.4629 1.68307 6.55502C1.23068 7.64714 0.998549 8.81789 1.00001 10C0.998549 11.1821 1.23068 12.3529 1.68307 13.445C2.13545 14.5371 2.79918 15.5291 3.6361 16.3639C4.47093 17.2008 5.4629 17.8645 6.55502 18.3169C7.64714 18.7693 8.81789 19.0015 10 19Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+														<path d="M6.40039 9.99999L9.10039 12.7L14.5004 7.29999" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+														</mask>
+														<g mask="url(#mask0_802_1480)">
+														<path d="M-2 -2H22V22H-2V-2Z" fill="#2BAD47"/>
+														</g>
+														</svg>`;
+
 							var noticeContent = wp.updates.adminNotice({
 								className: 'notice responsive-ready-sites-notice notice-success is-dismissible responsive-ready-sites-sync-templates-library-message',
-								message: responsiveSitesAdmin.strings.syncCompleteMessage + ' <button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
+								message:  '<span class="responsive-ready-sites-notice-icon-container"><span class="responsive-ready-sites-notice-icon">' + successNoticeIcon + '</span>' + '<span class="responsive-ready-sites-notice-message">' + responsiveSitesAdmin.strings.syncCompleteMessage + '</span></span>' + ' <button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
 							});
+							$('#responsive-sites-header').css('margin-top', '0px');
 							$('#responsive-sites-header').before(noticeContent);
 							button.removeClass('updating-message');
 						} else {
@@ -2584,8 +2608,9 @@ var ResponsiveSitesAjaxQueue = (function() {
 						$('#wpbody-content').find('.responsive-ready-sites-sync-templates-library-message').remove();
 						var noticeContent = wp.updates.adminNotice({
 							className: 'notice responsive-ready-sites-notice notice-error is-dismissible responsive-ready-sites-sync-templates-library-message',
-							message: response.data + ' <button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
+							message: '<span>' +  response.data + '</span>' + ' <button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
 						});
+						$('#responsive-sites-header').css('margin-top', '0px');
 						$('#responsive-sites-header').before(noticeContent);
 						button.removeClass('updating-message');
 					}
@@ -2593,15 +2618,19 @@ var ResponsiveSitesAjaxQueue = (function() {
 		},
 
 		_toggleSiteTypeFilter: function( e ) {
-
+			e.stopPropagation();
+			
 			var items = $( '.responsive-sites__type-filter-items' );
+			let selectedOption = $( '#responsive-sites__type-filter-selected' );
 
 			if ( items.hasClass( 'visible' ) ) {
 				items.removeClass( 'visible' );
 				items.hide();
+				selectedOption.removeClass( 'filter-hide-bottom-radius' );
 			} else {
 				items.addClass( 'visible' );
 				items.show();
+				selectedOption.addClass( 'filter-hide-bottom-radius' );
 			}
 		},
 
@@ -2635,8 +2664,14 @@ var ResponsiveSitesAjaxQueue = (function() {
 		_closeSiteTypeFilter: function( e ) {
 
 			var items = $( '.responsive-sites__type-filter-items' );
+			let selectedOption = $( '#responsive-sites__type-filter-selected' );
 			items.removeClass( 'visible' );
 			items.hide();
+			selectedOption.removeClass( 'filter-hide-bottom-radius' );
+		},
+
+		_closeSearchFilter: function( e ) {
+			$('.search-container').removeClass('hide-border-radius');
 		},
 
 		_closeBuilderTypeFilter: function( e ) {
@@ -2676,7 +2711,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 			}
 			$('input[name="responsive-sites-radio"]').change(function() {
 				// Get the value of the selected radio button
-				var selectedValue = $('input[name="responsive-sites-radio"]:checked').val();
+				var selectedValue = $('input[name="responsive-sites-radio"]:checked').val();	
 		
 				// Map the selected value to the corresponding text
 				var text = {
@@ -2867,10 +2902,13 @@ var ResponsiveSitesAjaxQueue = (function() {
 
 			if( search_term.length ) {
 				search_input.addClass('has-input');
+				$('#clear-search').css('display', 'block');
 				$('#responsive-sites-admin').addClass('searching');
 				searchTemplateFlag = true;
 			} else {
 				search_input.removeClass('has-input');
+				$('#clear-search').css('display', 'none');
+				$('.search-container').removeClass('hide-border-radius');
 				$('#responsive-sites-admin').removeClass('searching');
 				ResponsiveSitesAdmin._filterClick();
 				return;
@@ -2884,10 +2922,14 @@ var ResponsiveSitesAjaxQueue = (function() {
 					} else {
 						ResponsiveSitesAdmin.add_sites( items );
 					}
+					if ( search_input.hasClass('has-input') ) {
+						$('.search-container').addClass('hide-border-radius');
+					}
 				} else {
 					if( search_term.length ) {
 						$('body').addClass('responsive-sites-no-search-result');
 					}
+					$('.search-container').removeClass('hide-border-radius');
 					$('#responsive-sites').html( wp.template('responsive-sites-suggestions') );
 				}
 			})
@@ -3101,8 +3143,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 			var page_builder_icon = $(this).find('img').attr('src') || '';
 
 			if( page_builder_title ) {
-				$('.selected-page-builder').find('.page-builder-title span').text( page_builder_title );
-				$('.selected-page-builder').find('.page-builder-title img').attr('src', page_builder_icon);
+				$('.selected-page-builder').find('.page-builder-title').text( page_builder_title );
+				$('.selected-page-builder').find('.page-builder-title-icon img').attr('src', page_builder_icon);
 			}
 
 			if( $('.page-builders [data-page-builder="'+page_builder_slug+'"]').length ) {
@@ -3189,6 +3231,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 
 		_removeTemplateRefreshMessage: function() {
 			$(".responsive-ready-sites-sync-templates-library-message").remove();
+			$('#responsive-sites-header').css('margin-top', '58px');
 		},
 
 		_addremoveFavoriteTemplate: function() {
@@ -3257,7 +3300,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 					)
 					.done(
 						function ( favorite_sites ) {
-
 							const active_page_builder = $('.page-builders .active').attr('data-page-builder');
 							if(active_page_builder !== 'all'){
 								const filterData = ResponsiveSitesAdmin._filter_sites_by_page_builder(favorite_sites.data);
@@ -3436,6 +3478,27 @@ var ResponsiveSitesAjaxQueue = (function() {
 		_closeUnlockTemplatesModal: function () {
 			$('.responsive-addons-app-unlock-access-modal').css('display', 'none');
 		},
+
+		_clearInputValue: function () {
+			$('#wp-filter-search-input').val('');
+			$('#clear-search').css('display', 'none');
+			$('#responsive-sites-admin').removeClass('searching');
+			$('.search-container').removeClass('hide-border-radius');
+			ResponsiveSitesAdmin._filterClick();
+		},
+
+		_updateFavoriteTooltip: function () {
+			var $btn = $(this);
+			var $tooltipText = $btn.find('#rst-favorite-btn-tooltip-text'); 
+
+			if ($tooltipText.hasClass('favourite')) {
+				$tooltipText.removeClass('favourite');
+				$tooltipText.text('Add to favourites');
+			} else {
+				$tooltipText.addClass('favourite')
+				$tooltipText.text('Remove from favourites');
+			}
+		}
 
 	};
 
