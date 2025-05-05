@@ -144,9 +144,10 @@ if ( ! class_exists( 'Responsive_Add_Ons_Custom_Fonts_Taxonomy' ) ) :
 			if ( is_null( self::$fonts ) ) {
 				self::$fonts = array();
 
-				$terms = get_terms(
-					self::$register_taxonomy_slug,
-				);
+				$terms = get_terms( array(
+					'taxonomy'   => self::$register_taxonomy_slug,
+					'hide_empty' => false,
+				) );
 
 				if ( ! empty( $terms ) ) {
 					foreach ( $terms as $term ) {
@@ -166,9 +167,10 @@ if ( ! class_exists( 'Responsive_Add_Ons_Custom_Fonts_Taxonomy' ) ) :
 		 */
 		public static function get_links_by_name( $name ) {
 
-			$terms      = get_terms(
-				self::$register_taxonomy_slug,
-			);
+			$terms = get_terms( array(
+				'taxonomy'   => self::$register_taxonomy_slug,
+				'hide_empty' => false,
+			) );
 			$font_links = array();
 			if ( ! empty( $terms ) ) {
 

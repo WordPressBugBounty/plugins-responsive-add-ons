@@ -3220,6 +3220,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 		_displayAdminOverlayPopup: function() {
 			$(".page-builder-icon").removeClass( 'active' );
 			$(".responsive-sites-overlay-reveal").slideToggle();
+			$(".responsive-sites-overlay-reveal").css('z-index', '9999');
 			$(".responsive-sites-overlay-reveal").animate({ right: 0 }, 200);
 		
 			$("#close-admin-overlay").on('click', function() {

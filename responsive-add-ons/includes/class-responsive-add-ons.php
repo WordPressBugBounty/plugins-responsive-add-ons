@@ -71,6 +71,7 @@ class Responsive_Add_Ons {
 	 */
 	protected $font_css = '';
 
+	private $responsive_activated = false;
 	/**
 	 * Constructor.
 	 *
@@ -95,7 +96,13 @@ class Responsive_Add_Ons {
 		}
 		$this->load_responsive_customizer_settings();
 
-		require_once plugin_dir_path( __DIR__ ) . 'includes/custom-fonts/class-responsive-add-ons-custom-fonts-taxonomy.php';
+		if ( ! get_option( 'rplus_custom_fonts_enable' ) ) {
+			add_option( 'rplus_custom_fonts_enable', 'on' );
+		}
+
+		// Display Custom Fonts only when Responsive theme is active.
+		$theme = wp_get_theme();
+		$this->responsive_activated = 'Responsive' === $theme->get( 'Name' ) ? true : false;
 
 		// Responsive Ready Site Importer Menu.
 		add_action( 'admin_enqueue_scripts', array( $this, 'responsive_ready_sites_admin_enqueue_scripts' ) );
@@ -112,7 +119,10 @@ class Responsive_Add_Ons {
 
 		add_action( 'elementor/preview/enqueue_styles', array( $this, 'responsive_ready_sites_elementor_styles' ) );
 
-		if ( ! is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) ) {
+		if ( ! is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) && 'on' === get_option( 'rplus_custom_fonts_enable' ) && $this->responsive_activated ) {
+
+			require_once plugin_dir_path( __DIR__ ) . 'includes/custom-fonts/class-responsive-add-ons-custom-fonts-taxonomy.php';
+
 			add_action( 'admin_enqueue_scripts', array( $this, 'responsive_addons_enqueue_custom_fonts' ) );
 
 			add_action( 'admin_menu', array( $this, 'responsive_addons_register_custom_fonts_menu' ), 101 );
@@ -137,7 +147,7 @@ class Responsive_Add_Ons {
 		}
 
 		if ( is_admin() ) {
-			if ( ! is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) ) {
+			if ( ! is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) && 'on' === get_option( 'rplus_custom_fonts_enable' ) && $this->responsive_activated ) {
 				add_action( 'enqueue_block_assets', array( $this, 'responsive_addons_add_style' ) );
 			}
 			add_action( 'wp_ajax_responsive-ready-sites-activate-theme', array( $this, 'activate_theme' ) );
@@ -184,10 +194,10 @@ class Responsive_Add_Ons {
 			add_action( 'wp_ajax_responsive-pro-white-label-settings', array( $this, 'responsive_pro_white_label_settings' ) );
 			add_action( 'wp_ajax_responsive-pro-enable-megamenu', array( $this, 'responsive_pro_enable_megamenu' ) );
 			add_action( 'wp_ajax_responsive-pro-enable-woocommerce', array( $this, 'responsive_pro_enable_woocommerce' ) );
+			add_action( 'wp_ajax_responsive-plus-enable-custom-fonts', array( $this, 'responsive_plus_enable_custom_fonts' ) );
 
 			// Get current installation import permissions.
 			add_action( 'wp_ajax_responsive-ready-sites-get-import-capabilities', array( $this, 'responsive_addons_get_user_import_capabilities' ) );
-			add_action( 'updated_option', array( $this, 'responsive_addons_updated_option' ), 10, 3 );
 		}
 
 		if ( ! empty( $settings['theme_name'] ) ) {
@@ -891,6 +901,9 @@ class Responsive_Add_Ons {
 				'ajaxurl'     => admin_url( 'admin-ajax.php' ),
 				'ccAppURL'    => CC_APP_URL,
 				'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
+				'_nonce'      => wp_create_nonce( 'wp_rest' ),
+				'site_url '   => rawurlencode( get_site_url() ),
+				'cookies'     => $_COOKIE,
 			);
 
 			wp_localize_script( 'responsive-add-ons-getting-started-jsfile', 'responsiveAddonsGettingStarted', $data );
@@ -1017,6 +1030,9 @@ class Responsive_Add_Ons {
 			'ajaxurl'     => admin_url( 'admin-ajax.php' ),
 			'ccAppURL'    => CC_APP_URL,
 			'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
+			'_nonce'      => wp_create_nonce( 'wp_rest' ),
+			'site_url '   => rawurlencode( get_site_url() ),
+			'cookies'     => $_COOKIE,
 		);
 
 		wp_localize_script( 'responsive-add-ons-getting-started-jsfile', 'responsiveAddonsGettingStarted', $data );
@@ -2640,6 +2656,9 @@ class Responsive_Add_Ons {
 				'ajaxurl'     => admin_url( 'admin-ajax.php' ),
 				'ccAppURL'    => CC_APP_URL,
 				'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
+				'_nonce'      => wp_create_nonce( 'wp_rest' ),
+				'site_url '   => rawurlencode( get_site_url() ),
+				'cookies'     => $_COOKIE,
 			);
 
 			wp_localize_script( 'responsive-add-ons-getting-started-jsfile', 'responsiveAddonsGettingStarted', $data );
@@ -2755,6 +2774,23 @@ class Responsive_Add_Ons {
 		$value = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
 
 		update_option( 'rpro_woocommerce_enable', $value );
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Enable/Disables the Custom Fonts Feature on switch toggle.
+	 *
+	 * @since 3.2.1
+	 * @access public
+	 */
+	public function responsive_plus_enable_custom_fonts() {
+
+		check_ajax_referer( 'rplus_toggle_custom_fonts', '_nonce' );
+
+		$value = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
+
+		update_option( 'rplus_custom_fonts_enable', $value );
 
 		wp_send_json_success();
 	}
@@ -2895,7 +2931,8 @@ class Responsive_Add_Ons {
 		}
 
 		if ( isset( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) ) {// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$value = array_map( 'esc_attr', sanitize_text_field( wp_unslash( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			$value = array_map( 'esc_attr', wp_unslash( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) );
 			Responsive_Add_Ons_Custom_Fonts_Taxonomy::update_font_links( $value, $term_id );
 		}
 	}
@@ -3250,14 +3287,6 @@ class Responsive_Add_Ons {
 					'message'          => $response_body->message,
 				)
 			);
-		}
-	}
-
-	public function responsive_addons_updated_option( $option_name, $old_value, $value ) {
-
-		if ( 'reads_app_settings' === $option_name ) {
-			global $wcam_lib_responsive_addons;
-			$wcam_lib_responsive_addons->license_key_deactivation();
 		}
 	}
 }

@@ -109,14 +109,10 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Cart' ) ) :
 				$icon_size_label = esc_html__( 'Icon Size (px)', 'responsive-addons' );
 				responsive_drag_number_control( $wp_customize, 'cart_icon_size', $icon_size_label, 'responsive_header_woo_cart', 50, 20, null, 100, 0, 'postMessage' );
 
-				responsive_horizontal_separator_control( $wp_customize, 'header_woo_cart_separator_3', 2, 'responsive_header_woo_cart', 55, 1, );
-
 				$cart_color_label = __( 'Cart Color', 'responsive-addons' );
 				responsive_color_control( $wp_customize, 'cart', $cart_color_label, 'responsive_header_woo_cart', 120, '#000000', null, '', true, '#000000', 'cart_hover' );
 
 				responsive_horizontal_separator_control( $wp_customize, 'header_woo_cart_separator_6', 1, 'responsive_header_woo_cart', 125, 1, );
-
-				responsive_horizontal_separator_control( $wp_customize, 'header_woo_cart_separator_7', 2, 'responsive_header_woo_cart', 135, 1, );
 
 				// Border Heading.
 				$border_heading = __( 'Border', 'responsive-addons' );

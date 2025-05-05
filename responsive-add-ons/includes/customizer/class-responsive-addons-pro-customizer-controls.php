@@ -37,7 +37,6 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 				$dir = RESPONSIVE_THEME_DIR . 'core/includes/customizer/controls/';
 
 				// Load customize control classes.
-				require_once RESPONSIVE_ADDONS_DIR . 'includes/customizer/controls/heading/class-responsive-customizer-heading-control.php';
 				require_once RESPONSIVE_ADDONS_DIR . 'includes/customizer/controls/select/class-responsive-customizer-responsive-select-control.php';
 				require_once RESPONSIVE_ADDONS_DIR . 'includes/customizer/controls/checkbox/class-responsive-customizer-responsive-checkbox-control.php';
 				require_once $dir . 'selectbtn/class-responsive-customizer-responsive-selectbtn-control.php';
@@ -51,6 +50,7 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 				require_once $dir . 'sortable/class-responsive-customizer-sortable-control.php';
 				require_once $dir . 'dimensions/class-responsive-customizer-dimensions-control.php';
 				require_once $dir . 'horizontal-separator/class-responsive-customizer-responsive-horizontal-separator.php';
+				require_once $dir . 'heading/class-responsive-customizer-heading-control.php';
 
 				// Register JS control types.
 				$wp_customize->register_control_type( 'Responsive_Customizer_Color_Control' );

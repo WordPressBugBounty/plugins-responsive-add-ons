@@ -190,8 +190,6 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 			if ( apply_filters( 'wc_am_client_uninstall_disable', true ) ) {
 				global $blog_id;
 
-				$this->license_key_deactivation();
-
 				// Remove options pre API Manager 2.0.
 				if ( is_multisite() ) {
 					switch_to_blog( $blog_id );
@@ -220,24 +218,6 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 						delete_option( $option );
 					}
 				}
-			}
-		}
-
-		/**
-		 * Deactivates the license on the API server
-		 */
-		public function license_key_deactivation() {
-			$activation_status = get_option( $this->wc_am_activated_key );
-			$api_key           = ( is_array( $this->data ) && isset( $this->data[$this->wc_am_api_key_key] ) ) 
-								? $this->data[$this->wc_am_api_key_key] 
-								: '';
-
-			$args = array(
-				'api_key' => $api_key,
-			);
-
-			if ( 'Activated' == $activation_status && '' != $api_key ) {
-				$this->deactivate( $args ); // reset API Key activation.
 			}
 		}
 
@@ -304,24 +284,23 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 			return $args;
 		}
 
-		/**
-		 * Sends the request to deactivate to the API Manager.
-		 *
-		 * @param array $args
-		 *
-		 * @return bool|string
-		 */
-		public function deactivate( $args ) {
+		public function deactivate( $args, $target_url, $header, $id ) {
 			$defaults = array(
-				'wc_am_action' => 'deactivate',
-				'product_id'   => $this->product_id,
-				'instance'     => $this->wc_am_instance_id,
-				'object'       => $this->wc_am_domain,
+				'wc_am_action'    => 'deactivate',
+				'product_id' => $this->product_id,
+				'instance'   => $this->wc_am_instance_id,
+				'object'     => $this->wc_am_domain,
 			);
 
-			$args       = wp_parse_args( $defaults, $args );
-			$target_url = esc_url_raw( $this->create_software_api_url( $args ) );
-			$request    = wp_safe_remote_post( $target_url, array( 'timeout' => 15 ) );
+			$args    = wp_parse_args( $defaults, $args );
+			$request = wp_remote_post( $target_url, array(
+				'timeout' => 15,
+				'body'    => wp_json_encode(array(
+					'id'              => $id,
+					'disconnect_args' => $args,
+				)),
+				'headers' => $header,
+			) );
 
 			if ( is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) != 200 ) {
 				// Request failed.

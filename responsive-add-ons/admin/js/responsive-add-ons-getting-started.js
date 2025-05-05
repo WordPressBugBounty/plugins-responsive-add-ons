@@ -91,17 +91,40 @@ jQuery( document ).ready(
 						let leftPosition = (viewportWidth - popupWidth) / 2;
 						let topPosition  = (viewportHeight - popupHeight) / 2;
 						// Open the popup window at the calculated position
-						let e = window.open(
+						let popup = window.open(
 							response.data.url,
-							"_blank",
+							"saas_auth_popup", // Use a named target
 							"location=no,width=" + popupWidth + ",height=" + popupHeight + ",left=" + leftPosition + ",top=" + topPosition + ",scrollbars=0"
 						);
 
-						if (null === e) {
+						// Store popup reference globally
+						window.saasAuthPopup = popup;
+						
+						// Setup listener BEFORE popup loads
+						window.addEventListener('message', (event) => {
+							
+							if ( ! event.isTrusted || event.origin !== responsiveAddonsGettingStarted.ccAppURL) {
+								return;
+							}
+							
+							if (event.data.type === "request_auth_data") {
+								window.saasAuthPopup.postMessage(
+								{
+									type: "auth_data",
+									cookies: responsiveAddonsGettingStarted.cookies,
+									wp_nonce: responsiveAddonsGettingStarted._nonce,
+									site_url: responsiveAddonsGettingStarted.site_url
+								},
+								responsiveAddonsGettingStarted.ccAppURL
+								);
+							}
+						});
+
+						if (null === popup) {
 						} else {
 							$( $_this ).removeClass( 'disable' );
 							$( $_this ).find( '#loader' ).css( 'display', 'none' );
-							e.focus();
+							popup.focus();
 						}
 					}
 				);
@@ -177,13 +200,40 @@ jQuery( document ).ready(
 						let leftPosition = (viewportWidth - popupWidth) / 2;
 						let topPosition  = (viewportHeight - popupHeight) / 2;
 						// Open the popup window at the calculated position
-						let e = window.open(
+						let popup = window.open(
 							response.data.url,
-							"_blank",
+							"saas_auth_popup",
 							"location=no,width=" + popupWidth + ",height=" + popupHeight + ",left=" + leftPosition + ",top=" + topPosition + ",scrollbars=0"
 						);
-						if ( null == e ) {
-							console.log( 'error while opening the popup window' );
+
+						// Store popup reference globally
+						window.saasAuthPopup = popup;
+						
+						// Setup listener BEFORE popup loads
+						window.addEventListener('message', (event) => {
+							
+							if ( ! event.isTrusted || event.origin !== responsiveAddonsGettingStarted.ccAppURL) {
+								return;
+							}
+							
+							if (event.data.type === "request_auth_data") {
+								window.saasAuthPopup.postMessage(
+								{
+									type: "auth_data",
+									cookies: responsiveAddonsGettingStarted.cookies,
+									wp_nonce: responsiveAddonsGettingStarted._nonce,
+									site_url: responsiveAddonsGettingStarted.site_url
+								},
+								responsiveAddonsGettingStarted.ccAppURL
+								);
+							}
+						});
+
+						if (null === popup) {
+						} else {
+							$( $_this ).removeClass( 'disable' );
+							$( $_this ).find( '#loader' ).css( 'display', 'none' );
+							popup.focus();
 						}
 					}
 				);
