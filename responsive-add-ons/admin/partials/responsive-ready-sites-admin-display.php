@@ -829,7 +829,11 @@ $responsive_sites_header_after_connection_success = false;
 							</div>
 					</div>
 					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard">
+							<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M28.5 2.5L2.5 28.5M28.5 28.5L2.5 2.50002" stroke="black" stroke-width="4" stroke-linecap="round"/>
+							</svg>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -891,7 +895,11 @@ $responsive_sites_header_after_connection_success = false;
 							</div>
 					</div>
 					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard">
+							<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M28.5 2.5L2.5 28.5M28.5 28.5L2.5 2.50002" stroke="black" stroke-width="4" stroke-linecap="round"/>
+							</svg>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -940,6 +948,7 @@ $responsive_sites_header_after_connection_success = false;
 								<p><?php esc_html_e( 'This will delete previously imported site', 'responsive-addons' ); ?></p>
 							<# } #>
 							<ul class="responsive-ready-site-contents">
+								<ul class="responsive-ready-sites-import-dependencies-wrapper">
 								<?php
 								$current_theme = wp_get_theme();
 								if ( ! ( 'Responsive' === $current_theme->get( 'Name' ) ) || ( is_child_theme() && 'Responsive' === $current_theme->parent()->get( 'Name' ) ) ) {
@@ -949,7 +958,7 @@ $responsive_sites_header_after_connection_success = false;
 											<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="reset" checked="checked" id="install_responsive_checkbox">
 											<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><strong><?php esc_html_e( 'Install Responsive Theme', 'responsive-addons' ); ?></strong></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Install Responsive Theme', 'responsive-addons' ); ?></span>
 								</li>
 									<?php
 								}
@@ -959,7 +968,7 @@ $responsive_sites_header_after_connection_success = false;
 										<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="plugins" checked="checked" readonly>
 										<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><strong><?php esc_html_e( 'Install Required Plugins', 'responsive-addons' ); ?></strong></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Install Required Plugins', 'responsive-addons' ); ?></span>
 									<ul class="required-plugins-list" style="display: none;"></ul>
 								</li>
 								<li class="responsive-ready-sites-import-xml">
@@ -967,21 +976,22 @@ $responsive_sites_header_after_connection_success = false;
 										<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="content" checked="checked" class="checkbox">
 										<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><strong><?php esc_html_e( 'Import Content', 'responsive-addons' ); ?></strong></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Import Content', 'responsive-addons' ); ?></span>
 								</li>
 								<li class="responsive-ready-sites-import-customizer">
 									<label class="ready-site-single-import-option">
 										<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="customizer" checked="checked" class="checkbox">
 										<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><strong><?php esc_html_e( 'Import Customizer Settings', 'responsive-addons' ); ?></strong></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Import Customizer Settings', 'responsive-addons' ); ?></span>
 								</li>
+								</ul>
 								<li class="responsive-ready-sites-reset-data">
 									<label class="ready-site-single-import-option">
 										<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="reset" checked="checked" class="checkbox">
 										<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><strong><?php esc_html_e( 'Delete Previous Import', 'responsive-addons' ); ?></strong></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Delete Previous Import', 'responsive-addons' ); ?></span>
 								</li>
 								<p class="responsive-ready-sites-reset-data-message">
 									<?php esc_html_e( 'This option will remove the previous imported content and will perform a fresh and clean install.', 'responsive-addons' ); ?>
@@ -989,10 +999,8 @@ $responsive_sites_header_after_connection_success = false;
 							</ul>
 						</div>
 					</div>
-					<hr />
 					<div class="ready-sites-import-subscription">
 						<h3 class="ready-sites-import-subscription-title"><?php esc_html_e( 'Subscribe and Import', 'responsive-addons' ); ?></h3>
-						<label for="ready-sites-subscriber-email"><?php esc_html_e( 'Email', 'responsive-addons' ); ?></label>
 						<input type="email" id="ready-sites-subscriber-email" name="subscriber_emmail" placeholder="Enter Your Email Address" value="<?php echo isset( $settings['account']['email'] ) ? esc_html( $settings['account']['email'] ) : ''; ?>">
 						<input type="hidden" id="ready-sites-importing-template-name" name="ready-sites-template-name" value="{{data.name}}">
 						<div class="ready-sites-subscription-user-consent">
@@ -1000,21 +1008,20 @@ $responsive_sites_header_after_connection_success = false;
 							<label for="ready-sites-subscription-check"><?php esc_html_e( 'Yes, count me in!', 'responsive-addons' ); ?></label>
 						</div>
 					</div>
-					<hr />
 					<div class="responsive-ready-sites-import-button-wrap">
 						<?php if ( $cc_app_auth->has_auth() ) : ?>
-							<button class="button responsive-ready-site-import-with-sub responsive-addons-ready-site-import">
-								<?php esc_html_e( 'Subscribe & Start Importing', 'responsive-addons' ); ?>
-							</button>
 							<button class="button responsive-ready-site-import-without-sub responsive-addons-ready-site-import">
-								<?php esc_html_e( 'Skip, Start Importing', 'responsive-addons' ); ?>
+								<?php esc_html_e( 'Skip Email', 'responsive-addons' ); ?>
+							</button>
+							<button class="button responsive-ready-site-import-with-sub responsive-addons-ready-site-import">
+								<?php esc_html_e( 'Start Importing', 'responsive-addons' ); ?>
 							</button>
 						<?php else : ?>
-							<button class="button responsive-ready-site-import-with-sub responsive-ready-site-import-{{{data.demo_type}}}">
-								<?php esc_html_e( 'Subscribe & Start Importing', 'responsive-addons' ); ?>
-							</button>
 							<button class="button responsive-ready-site-import-without-sub responsive-ready-site-import-{{{data.demo_type}}}">
-								<?php esc_html_e( 'Skip, Start Importing', 'responsive-addons' ); ?>
+								<?php esc_html_e( 'Skip Email', 'responsive-addons' ); ?>
+							</button>
+							<button class="button responsive-ready-site-import-with-sub responsive-ready-site-import-{{{data.demo_type}}}">
+								<?php esc_html_e( 'Start Importing', 'responsive-addons' ); ?>
 							</button>
 						<?php endif; ?>
 					</div>
@@ -1165,7 +1172,11 @@ $responsive_sites_header_after_connection_success = false;
 							</div>
 					</div>
 					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard">
+							<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M28.5 2.5L2.5 28.5M28.5 28.5L2.5 2.50002" stroke="black" stroke-width="4" stroke-linecap="round"/>
+							</svg>
+						</a>
 					</div>
 				</div>
 		</div>
@@ -1233,10 +1244,8 @@ $responsive_sites_header_after_connection_success = false;
 						</ul>
 					</div>
 				</div>
-				<hr />
 				<div class="ready-sites-import-subscription">
 					<h3 class="ready-sites-import-subscription-title"><?php esc_html_e( 'Subscribe and Import', 'responsive-addons' ); ?></h3>
-					<label for="ready-sites-subscriber-email"><?php esc_html_e( 'Email', 'responsive-addons' ); ?></label>
 					<input type="email" id="ready-sites-subscriber-email" name="subscriber_emmail" placeholder="Enter Your Email Address" value="<?php echo isset( $settings['account']['email'] ) ? esc_html( $settings['account']['email'] ) : ''; ?>">
 					<input type="hidden" id="ready-sites-importing-template-name" name="ready-sites-template-name" value="{{data.name}}">
 					<div class="ready-sites-subscription-user-consent">
@@ -1244,21 +1253,20 @@ $responsive_sites_header_after_connection_success = false;
 						<label for="ready-sites-subscription-check"><?php esc_html_e( 'Yes, count me in!', 'responsive-addons' ); ?></label>
 					</div>
 				</div>
-				<hr />
 				<div class="responsive-ready-sites-import-button-wrap">
 					<?php if ( $cc_app_auth->has_auth() ) : ?>
-						<button class="button responsive-ready-site-import-with-sub import-page responsive-ready-page-import">
-							<?php esc_html_e( 'Subscribe & Start Importing', 'responsive-addons' ); ?>
-						</button>
 						<button class="button responsive-ready-site-import-without-sub import-page responsive-ready-page-import">
-							<?php esc_html_e( 'Skip, Start Importing', 'responsive-addons' ); ?>
+							<?php esc_html_e( 'Skip Email', 'responsive-addons' ); ?>
+						</button>
+						<button class="button responsive-ready-site-import-with-sub import-page responsive-ready-page-import">
+							<?php esc_html_e( 'Start Importing', 'responsive-addons' ); ?>
 						</button>
 					<?php else : ?>
-						<button class="button responsive-ready-site-import-with-sub import-page responsive-ready-page-import-{{{data.demo_type}}}">
-							<?php esc_html_e( 'Subscribe & Start Importing', 'responsive-addons' ); ?>
-						</button>
 						<button class="button responsive-ready-site-import-without-sub import-page responsive-ready-page-import-{{{data.demo_type}}}">
-							<?php esc_html_e( 'Skip, Start Importing', 'responsive-addons' ); ?>
+							<?php esc_html_e( 'Skip Email', 'responsive-addons' ); ?>
+						</button>
+						<button class="button responsive-ready-site-import-with-sub import-page responsive-ready-page-import-{{{data.demo_type}}}">
+							<?php esc_html_e( 'Start Importing', 'responsive-addons' ); ?>
 						</button>
 					<?php endif; ?>
 				</div>
@@ -1288,7 +1296,11 @@ $responsive_sites_header_after_connection_success = false;
 							</div>
 					</div>
 					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard">
+							<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M28.5 2.5L2.5 28.5M28.5 28.5L2.5 2.50002" stroke="black" stroke-width="4" stroke-linecap="round"/>
+							</svg>
+						</a>
 					</div>
 				</div>
 		</div>
@@ -1338,9 +1350,6 @@ $responsive_sites_header_after_connection_success = false;
 								<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/responsive-starter-templates-thumbnail.svg' ); ?>">
 							</div>
 					</div>
-					<div class="responsive-addons-import-btns">
-						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/exit-to-dashboard.svg' ); ?>"></a>
-					</div>
 				</div>
 		</div>
 		<div class="wp-full-overlay-main">
@@ -1349,7 +1358,32 @@ $responsive_sites_header_after_connection_success = false;
 					<div class="responsive-ready-sites-advanced-options">
 						<div class="responsive-ready-sites-import-done-congrats-title-wrap">
 							<h2 class="ready-sites-import-done-congrats-title"><?php esc_html_e( 'Congratulations', 'responsive-addons' ); ?></h2>
-							<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/congratulations.png' ); ?>">
+							<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M1.97894 32.7436C2.58191 33.397 5.0655 32.2575 7.02581 31.3437C8.49472 30.6611 14.373 28.2492 17.2949 26.9981C18.0838 26.6608 19.2313 26.2198 20.0574 25.1334C20.7905 24.1666 22.7349 20.06 18.8196 15.9003C14.8458 11.6769 10.7525 12.843 9.22253 13.9267C8.32206 14.5642 7.58894 16.0012 7.25956 16.7317C5.86769 19.8183 3.88347 25.4734 3.07597 27.6967C2.48362 29.3356 1.38128 32.0955 1.97894 32.7436Z" fill="#FFC107"/>
+								<path d="M6.86647 17.6614C6.90365 18.1236 6.99662 18.8753 7.31537 20.323C7.53318 21.3164 7.88912 22.3577 8.17865 23.0456C9.04725 25.1148 10.2665 25.9489 11.5016 26.6183C13.6001 27.7552 15.0265 27.9677 15.0265 27.9677L13.3158 28.6663C13.3158 28.6663 12.2799 28.4511 10.8668 27.7552C9.52006 27.0911 8.11756 25.9675 7.09225 23.7681C6.64865 22.8145 6.391 21.8902 6.24225 21.157C6.05897 20.2486 6.02975 19.7333 6.02975 19.7333L6.86647 17.6614ZM4.76537 23.0483C4.76537 23.0483 4.97787 24.7722 6.40162 26.9477C8.06975 29.4923 10.3993 29.9094 10.3993 29.9094L8.85068 30.5469C8.85068 30.5469 7.12147 30.0183 5.47725 27.7738C4.45193 26.3739 4.16506 24.7005 4.16506 24.7005L4.76537 23.0483ZM3.29115 27.1336C3.29115 27.1336 3.67896 28.6211 4.52896 29.7314C5.541 31.0569 6.82928 31.442 6.82928 31.442L5.64193 31.968C5.64193 31.968 4.74147 31.7794 3.756 30.5309C3.00693 29.5827 2.79443 28.4936 2.79443 28.4936L3.29115 27.1336Z" fill="#FF8F00"/>
+								<path opacity="0.44" d="M2.64572 30.9108C2.59259 30.7913 2.59259 30.6558 2.64838 30.5389L9.41384 16.5086L10.5268 20.6922L3.40806 30.9745C3.21681 31.2614 2.7865 31.2242 2.64572 30.9108Z" fill="#FFFDE7"/>
+								<path d="M11.0633 22.0973C14.2243 25.7948 17.8235 25.3326 19.0214 24.3976C20.2221 23.46 21.1703 20.238 18.0227 16.6015C14.7236 12.7925 10.9889 13.8789 10.1257 14.7023C9.26238 15.5258 8.16269 18.7053 11.0633 22.0973Z" fill="url(#paint0_linear_81_1846)"/>
+								<path d="M21.9194 23.6194C20.7666 22.6525 20.153 22.8252 19.3296 23.1678C18.2671 23.6087 16.5963 23.9355 14.3279 23.1678L15.0105 21.5236C16.3573 21.9778 17.3321 21.7573 18.1741 21.2606C19.2579 20.6231 20.7401 19.7492 23.0457 21.6856C24.0073 22.4931 24.9927 23.0297 25.7152 22.7853C26.2412 22.61 26.5201 21.8264 26.6609 21.2022C26.6741 21.1464 26.6954 20.987 26.7113 20.8462C26.8388 19.8714 27.0513 17.7677 28.6185 16.6919C30.2946 15.5417 32.0557 15.5417 32.0557 15.5417L32.3744 18.708C31.5643 18.5884 31.0012 18.7531 30.5257 19.0161C28.7354 20.0122 30.2946 23.8372 27.5082 25.1228C24.828 26.3686 22.6366 24.2197 21.9194 23.6194Z" fill="#03A9F4"/>
+								<path d="M12.0593 19.5819L10.9065 18.5486C13.0235 16.1845 12.4657 14.4473 12.0593 13.183C11.9769 12.928 11.8999 12.6862 11.8494 12.4552C11.6688 11.637 11.6316 10.9252 11.6874 10.3036C10.8746 9.29156 10.516 8.23172 10.4921 8.16C9.99803 6.66453 10.3699 5.20625 11.2226 3.83828C12.9465 1.0625 16.0676 1.0625 16.0676 1.0625L17.1088 3.84891C16.3172 3.81703 13.7221 3.85687 12.9252 5.11328C11.9185 6.69641 12.5799 7.67391 12.6277 7.78547C12.8216 7.53312 13.0182 7.33125 13.1935 7.17453C14.4658 6.04563 15.5708 5.88359 16.2747 5.94734C17.0663 6.01906 17.7835 6.4175 18.2962 7.07094C18.8566 7.78813 19.0877 8.72047 18.9097 9.56781C18.7371 10.3939 18.1872 11.0925 17.3612 11.5361C15.9188 12.3117 14.7182 12.2055 13.9133 11.9372C13.9187 11.9558 13.9213 11.977 13.9266 11.9956C13.9558 12.1284 14.0143 12.3144 14.0833 12.5295C14.5535 13.9852 15.4274 16.2961 12.0593 19.5819ZM14.0116 9.61297C14.1657 9.72453 14.3277 9.8175 14.4951 9.88391C15.0529 10.107 15.6612 10.0327 16.3518 9.66078C16.7582 9.44297 16.806 9.20922 16.8219 9.13219C16.8697 8.90109 16.7901 8.60625 16.6174 8.38578C16.466 8.19187 16.2907 8.09094 16.0808 8.06969C15.6824 8.03516 15.1432 8.2875 14.604 8.76828C14.3463 8.99937 14.1497 9.28359 14.0116 9.61297Z" fill="#F44336"/>
+								<path d="M16.6732 20.0148L15.0237 19.9697C15.0237 19.9697 15.8073 15.5444 18.344 14.8006C18.8195 14.6625 19.3401 14.5217 19.8634 14.4447C20.1741 14.3969 20.6656 14.3251 20.9073 14.2348C20.9631 13.8178 20.7877 13.2865 20.5912 12.6836C20.4371 12.2161 20.2777 11.7353 20.1927 11.2094C20.0281 10.184 20.3016 9.27827 20.9631 8.65405C21.7706 7.89702 23.0748 7.6553 24.5463 7.98999C25.3857 8.18124 26.0046 8.59296 26.5491 8.95421C27.3274 9.47217 27.7816 9.73514 28.7326 9.09499C29.8827 8.31936 28.3793 5.28327 27.5798 3.53014L30.5627 2.28702C30.9638 3.16358 32.9002 7.67389 31.6226 10.2478C31.1923 11.1137 30.4512 11.6875 29.479 11.9026C27.3646 12.3755 26.1268 11.552 25.2237 10.9517C24.796 10.6675 24.4215 10.4444 24.0151 10.3275C21.1915 9.52264 25.1334 13.677 23.2873 15.5444C22.1796 16.6626 19.4729 16.9575 19.2976 17C17.5551 17.4197 16.6732 20.0148 16.6732 20.0148Z" fill="#F48FB1"/>
+								<path d="M11.6848 10.3036C11.6343 10.888 11.6104 11.2359 11.7618 11.9956C12.4923 12.5322 14.0834 12.5322 14.0834 12.5322C14.0143 12.317 13.9532 12.1311 13.9267 11.9983C13.9213 11.9797 13.9187 11.9584 13.9134 11.9398C12.2957 11.1323 11.6848 10.3036 11.6848 10.3036Z" fill="#C92B27"/>
+								<path d="M8.37522 12.92L5.62866 11.5733L6.99663 9.59705L9.15085 11.0235L8.37522 12.92Z" fill="#FFC107"/>
+								<path d="M4.32715 9.19062C2.92465 9.00202 1.49559 7.81202 1.33887 7.67656L2.71746 6.0589C3.13449 6.41218 4.01902 7.00452 4.61137 7.08421L4.32715 9.19062Z" fill="#FB8C00"/>
+								<path d="M6.80269 5.64985L4.78394 4.98844C5.01503 4.28188 5.07612 3.51954 4.95659 2.78375L7.05503 2.44641C7.22769 3.51422 7.14003 4.62188 6.80269 5.64985Z" fill="#03A9F4"/>
+								<path d="M19.4099 4.0707L21.4858 3.61649L22.0853 6.35667L20.0094 6.81089L19.4099 4.0707Z" fill="#FB8C00"/>
+								<path d="M24.5596 4.72014L23.0986 3.17686C23.8636 2.4517 24.0389 1.50342 24.0389 1.4928L26.1374 1.83545C26.1108 2.0028 25.8425 3.50624 24.5596 4.72014Z" fill="#FFC107"/>
+								<path d="M25.3708 12.9041L27.2268 12.3239L27.8606 14.3523L26.0046 14.9324L25.3708 12.9041Z" fill="#FB8C00"/>
+								<path d="M25.9117 30.0236L23.8 29.7739C23.8903 29.0222 23.3298 28.1005 23.1758 27.8959L24.8758 26.6209C25.0033 26.7883 26.1109 28.3209 25.9117 30.0236Z" fill="#F44336"/>
+								<path d="M31.9734 27.3301C31.1792 27.2106 30.3663 27.1628 29.5642 27.192L29.4924 25.067C30.4248 25.0351 31.3677 25.0883 32.2895 25.2291L31.9734 27.3301Z" fill="#FB8C00"/>
+								<path d="M29.1162 30.2552L30.609 28.743L32.6636 30.7719L31.1708 32.2838L29.1162 30.2552Z" fill="#F48FB1"/>
+								<path d="M24.7304 16.8231L26.2657 18.5786L24.5102 20.1139L22.9749 18.3584L24.7304 16.8231Z" fill="#F44336"/>
+								<defs>
+								<linearGradient id="paint0_linear_81_1846" x1="19.7583" y1="16.426" x2="11.8514" y2="21.17" gradientUnits="userSpaceOnUse">
+								<stop offset="0.024" stop-color="#8F4700"/>
+								<stop offset="1" stop-color="#703E2D"/>
+								</linearGradient>
+								</defs>
+							</svg>
 						</div>
 						<div class="ready-sites-import-progress-info">
 							<div class="ready-sites-import-progress-info-text"><?php esc_html_e( 'Your Website is ready and it took just ', 'responsive-addons' ); ?><span class="responsive-ready-sites-import-time-taken">60</span><?php esc_html_e( ' seconds to build.', 'responsive-addons' ); ?></div>
@@ -1362,28 +1396,31 @@ $responsive_sites_header_after_connection_success = false;
 						</div>
 						<div class="responsive-sites-import-done-success-section">
 							<div class="responsive-sites-import-done-success">
-								<p class="responsive-sites-tweet-text">
-									<?php esc_html_e( 'I just built my website in ', 'responsive-addons' ); ?><span class="responsive-ready-sites-import-time-taken">60</span><?php esc_html_e( ' seconds with the Responsive Starter Templates plugin by @cyberchimps. It was so easy!', 'responsive-addons' ); ?>
+								<p class="responsive-sites-after-import-rate-text">
+									<?php esc_html_e( 'Every feedback inspires us to keep adding features and improving. If you’re enjoying the plugin, we’d really appreciate a 5-star rating.', 'responsive-addons' ); ?>
 								</p>
 							</div>
-							<div class="responsive-sites-twitter-btn-wrap" >
-								<a href="https://twitter.com/intent/tweet" target="_blank" id="responsive-sites-twitter-tweet-link">
-									<svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 17 15" fill="none">
-										<g clip-path="url(#clip0_5382_13511)">
-											<path d="M12.8694 0.325745H15.2198L10.086 6.17472L16.1476 14.106H11.3849L7.67368 9.29825L3.40579 14.106H1.05536L6.56032 7.85898L0.746094 0.325745H5.63252L9.00353 4.73544L12.8694 0.325745ZM12.0344 12.6974H13.3333L4.9212 1.64253H3.49857L12.0344 12.6974Z" fill="black"/>
+							<div class="responsive-sites-after-import-rate-plugin-btn-wrap" >
+								<a href="https://wordpress.org/support/plugin/responsive-add-ons/reviews/#new-post" target="_blank" id="responsive-sites-after-import-rate-plugin-link">
+									<p class="rate-btn"><?php esc_html_e( 'Rate the plugin', 'responsive-addons' ); ?></p>
+									<?php for( $i=0; $i < 5; $i++ ) : ?>
+									<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<g clip-path="url(#clip0_150_107)">
+										<path d="M9.45387 3.39679C9.62577 2.86774 10.3742 2.86774 10.5461 3.39679L11.8049 7.271C11.8818 7.5076 12.1023 7.66779 12.3511 7.66779H16.4247C16.9809 7.66779 17.2122 8.37962 16.7622 8.70659L13.4666 11.101C13.2653 11.2472 13.1811 11.5064 13.258 11.743L14.5168 15.6172C14.6887 16.1463 14.0832 16.5862 13.6331 16.2592L10.3375 13.8648C10.1363 13.7186 9.86373 13.7186 9.66247 13.8648L6.36687 16.2592C5.91683 16.5862 5.31131 16.1463 5.48321 15.6172L6.74202 11.743C6.81889 11.5064 6.73468 11.2472 6.53341 11.101L3.23781 8.7066C2.78777 8.37962 3.01906 7.66779 3.57534 7.66779H7.64893C7.8977 7.66779 8.11818 7.5076 8.19506 7.271L9.45387 3.39679Z" fill="#FBBF24"/>
 										</g>
 										<defs>
-											<clipPath id="clip0_5382_13511">
-												<rect width="15.4015" height="13.7803" fill="white" transform="translate(0.746094 0.325745)"/>
-											</clipPath>
+										<clipPath id="clip0_150_107">
+										<rect width="20" height="20" fill="white"/>
+										</clipPath>
 										</defs>
 									</svg>
-									<p class="tweet-btn"><?php esc_html_e( 'Tweet', 'responsive-addons' ); ?></p>
+									<?php endfor; ?>
 								</a>
 							</div>
 						</div>
-						<div class="responsive-sites-import-site-btn-wrap">
-							<a href="#" class="responsive-sites-imported-site-link" id="responsive-sites-imported-site-link" target="_blank"><?php esc_html_e( 'View Website', 'responsive-addons' ); ?></a>
+						<div class="responsive-sites-after-import-site-btn-wrap">
+							<a href="<?php echo esc_url( admin_url() ); ?>" class="btn responsive-sites-imported-site-dashboard-link" id="responsive-sites-imported-dashboard-site-link" target="_self"><?php esc_html_e( 'Exit to Dashboard', 'responsive-addons' ); ?></a>
+							<a href="#" class="btn responsive-sites-imported-site-link" id="responsive-sites-imported-site-link" target="_blank"><?php esc_html_e( 'View Website', 'responsive-addons' ); ?></a>
 						</div>
 					</div>
 					</div>

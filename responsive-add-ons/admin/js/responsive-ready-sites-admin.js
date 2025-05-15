@@ -3456,9 +3456,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 			$( '.responsive-ready-sites-import-time-taken' ).text(ResponsiveSitesAdmin.import_total_time);
 			
 			$('#responsive-sites-imported-site-link').attr( "href", importedSiteURL );
-			
-			let tweetMsg = $('.responsive-sites-tweet-text').text();
-			$('#responsive-sites-twitter-tweet-link').attr( "href", "https://twitter.com/intent/tweet?text="+tweetMsg );
 
 			ResponsiveSitesAdmin._importCompletionCongratsConfetti();
 

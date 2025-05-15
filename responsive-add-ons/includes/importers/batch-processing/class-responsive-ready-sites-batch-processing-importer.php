@@ -64,43 +64,47 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 		 * @return array
 		 */
 		public function import_sites( $page = 1 ) {
-
-			$api_args        = array(
-				'timeout' => 60,
-			);
-			$sites_and_pages = array();
-
-			$query_args = apply_filters(
-				'cyb_sites_import_sites_query_args',
-				array(
-					'per_page' => 15,
-					'page'     => $page,
-				)
-			);
-
-			$api_url = add_query_arg( $query_args, self::$api_url . 'cyberchimps-sites' );
-
-			$response = wp_safe_remote_get( $api_url, $api_args );
-
-			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
-				$sites_and_pages = json_decode( wp_remote_retrieve_body( $response ), true );
-
-				if ( isset( $sites_and_pages['code'] ) ) {
-					$message = isset( $sites_and_pages['message'] ) ? $sites_and_pages['message'] : '';
-					return $message;
-				} else {
-
-					foreach ( $sites_and_pages as $key => $site ) {
-						$sites_and_pages[ 'id-' . $site['id'] ] = $site;
-						unset( $sites_and_pages[ $key ] );
+			if ( current_user_can( 'manage_options' ) ) {
+				$api_args = array(
+					'timeout' => 60,
+				);
+				$sites_and_pages = array();
+	
+				$query_args = apply_filters(
+					'cyb_sites_import_sites_query_args',
+					array(
+						'per_page' => 15,
+						'page'     => $page,
+					)
+				);
+	
+				$api_url = add_query_arg( $query_args, self::$api_url . 'cyberchimps-sites' );
+	
+				$response = wp_safe_remote_get( $api_url, $api_args );
+	
+				if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
+					$sites_and_pages = json_decode( wp_remote_retrieve_body( $response ), true );
+	
+					if ( isset( $sites_and_pages['code'] ) ) {
+						$message = isset( $sites_and_pages['message'] ) ? $sites_and_pages['message'] : '';
+						return $message;
+					} else {
+	
+						foreach ( $sites_and_pages as $key => $site ) {
+							$sites_and_pages[ 'id-' . $site['id'] ] = $site;
+							unset( $sites_and_pages[ $key ] );
+						}
+						update_site_option( 'responsive-ready-sites-and-pages-page-' . $page, $sites_and_pages );
 					}
-					update_site_option( 'responsive-ready-sites-and-pages-page-' . $page, $sites_and_pages );
+				} else {
+					error_log( 'API Error: ' . $response->get_error_message() );
 				}
-			} else {
-				error_log( 'API Error: ' . $response->get_error_message() );
+				return $sites_and_pages;
 			}
-
-			return $sites_and_pages;
+			else {
+				// Send a 403 status code with a message
+				wp_send_json_error( esc_html__( 'User does not have permission!', 'responsive-addons' ), 403 );
+			}
 		}
 
 		/**
@@ -112,42 +116,47 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 		 * @return array
 		 */
 		public function import_blocks( $page = 1 ) {
-
-			$api_args = array(
-				'timeout' => 60,
-			);
-			$blocks   = array();
-
-			$query_args = apply_filters(
-				'rst_import_block_query_args',
-				array(
-					'per_page' => 15,
-					'page'     => $page,
-				)
-			);
-
-			$api_url = add_query_arg( $query_args, self::$api_url . 'cyberchimps-blocks' );
-
-			$response = wp_safe_remote_get( $api_url, $api_args );
-
-			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
-				$blocks = json_decode( wp_remote_retrieve_body( $response ), true );
-
-				if ( isset( $blocks['code'] ) ) {
-					$message = isset( $blocks['message'] ) ? $blocks['message'] : '';
-					return $message;
-				} else {
-					foreach ( $blocks as $key => $site ) {
-						$blocks[ 'id-' . $site['id'] ] = $site;
-						unset( $blocks[ $key ] );
+			// Check if the user has the 'administrator' role
+			if ( current_user_can( 'manage_options' ) ) {
+				$api_args = array(
+					'timeout' => 60,
+				);
+				$blocks   = array();
+	
+				$query_args = apply_filters(
+					'rst_import_block_query_args',
+					array(
+						'per_page' => 15,
+						'page'     => $page,
+					)
+				);
+	
+				$api_url = add_query_arg( $query_args, self::$api_url . 'cyberchimps-blocks' );
+	
+				$response = wp_safe_remote_get( $api_url, $api_args );
+	
+				if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
+					$blocks = json_decode( wp_remote_retrieve_body( $response ), true );
+	
+					if ( isset( $blocks['code'] ) ) {
+						$message = isset( $blocks['message'] ) ? $blocks['message'] : '';
+						return $message;
+					} else {
+						foreach ( $blocks as $key => $site ) {
+							$blocks[ 'id-' . $site['id'] ] = $site;
+							unset( $blocks[ $key ] );
+						}
+						update_site_option( 'rst-blocks-page-' . $page, $blocks );
 					}
-					update_site_option( 'rst-blocks-page-' . $page, $blocks );
+				} else {
+					error_log( 'API Error: ' . $response->get_error_message() );
 				}
-			} else {
-				error_log( 'API Error: ' . $response->get_error_message() );
+				return $blocks;
 			}
-
-			return $blocks;
+			else {
+				// Send a 403 status code with a message
+				wp_send_json_error( esc_html__( 'User does not have permission!', 'responsive-addons' ), 403 );
+			}
 		}
 
 		/**
