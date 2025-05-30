@@ -178,7 +178,6 @@ class Responsive_Add_Ons {
 			add_action( 'wp_ajax_responsive-sites-favorite', array( $this, 'add_to_favorite' ) );
 			add_action( 'wp_ajax_responsive-favorite-site-details', array( $this, 'get_favorite_template_site_details' ) );
 			add_action( 'wp_ajax_responsive-update_all_sites_fav_status', array( $this, 'update_all_sites_fav_status' ) );
-			add_action( 'wp_ajax_responsive-ready-sites-add-subscriber-to-moosend', array( $this, 'ready_sites_add_subscriber_to_moosend' ) );
 			add_filter( 'wp_prepare_themes_for_js', __CLASS__ . '::responsive_theme_white_label_update_branding' );
 			add_filter( 'update_right_now_text', array( $this, 'admin_dashboard_page' ) );
 			add_filter( 'gettext', array( $this, 'theme_gettext' ), 20, 3 );
@@ -2405,39 +2404,7 @@ class Responsive_Add_Ons {
 		wp_send_json_success( $this->get_all_sites() );
 	}
 
-		/**
-		 * Add user to Moosend.
-		 *
-		 * @since  2.9.0
-		 */
-	public function ready_sites_add_subscriber_to_moosend() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( 'You are not allowed to perform this action', 'responsive-addons' );
-		}
-
-		// Verify Nonce.
-		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
-		$ready_site_subscribe_checkbox = isset( $_POST['ready_sites_subscripiton_checkbox'] ) ? sanitize_key( wp_unslash( $_POST['ready_sites_subscripiton_checkbox'] ) ) : '';
-		$user_email                    = isset( $_POST['user_email'] ) ? sanitize_text_field( wp_unslash( $_POST['user_email'] ) ) : '';
-		$template_name                 = isset( $_POST['template_name'] ) ? sanitize_text_field( wp_unslash( $_POST['template_name'] ) ) : '';
-
-		if ( ! empty( $ready_site_subscribe_checkbox ) && 'false' !== $ready_site_subscribe_checkbox && filter_var( $user_email, FILTER_VALIDATE_EMAIL ) ) { // Add Email in moosend.
-			$request_uri         = 'https://api.moosend.com/v3/subscribers/0aef6ee1-1d89-4fec-9b5d-55bdcb97b136/subscribe.json?apikey=baa844a9-093b-4281-ba03-958661505919';
-			$wp_args['Email']    = $user_email;
-			$wp_args['Template'] = $template_name;
-		} else {
-			$request_uri         = 'https://api.moosend.com/v3/subscribers/dfe4c71f-7721-487c-b8c5-8cb1433b2cda/subscribe.json?apikey=baa844a9-093b-4281-ba03-958661505919';
-			$user_emailid        = ( filter_var( $user_email, FILTER_VALIDATE_EMAIL ) );
-			$wp_args['Email']    = $user_emailid ? $user_emailid : 'no.email.submitted.' . time() . '@ymail.com';
-			$wp_args['Template'] = $template_name;
-		}
-		$request = wp_safe_remote_post( $request_uri, array( 'body' => $wp_args ) );
-		if ( is_wp_error( $request ) || '200' != wp_remote_retrieve_response_code( $request ) ) {
-			// error.
-		}
-		$events = json_decode( wp_remote_retrieve_body( $request ) );
-	}
-
+	
 	/**
 	 * If RST Blocks Empty, then Insert Data.
 	 *
@@ -3204,9 +3171,10 @@ class Responsive_Add_Ons {
 		$product_id = $settings->get( 'account', 'product_id' );
 
 		if ( empty( $api_key ) || '' === $api_key || empty( $product_id ) || '' === $product_id ) {
+			$err_msg = __( 'Connection details are missing. Please reconnect to Cyberchimps to continue.', 'responsive-addons' );
 			wp_send_json_error(
 				array(
-					'message' => 'Please check your connection with Cyberchimps Responsive Domain',
+					'message' => $err_msg,
 					'error'   => true,
 				),
 			);
@@ -3226,6 +3194,9 @@ class Responsive_Add_Ons {
 
 		$activate_args = $wcam_lib_responsive_addons->activate( $args, $product_id );
 		$status_args   = $wcam_lib_responsive_addons->status( $args, $product_id );
+		$ready_site_subscribe_checkbox = isset( $_POST['ready_sites_subscripiton_checkbox'] ) ? sanitize_key( wp_unslash( $_POST['ready_sites_subscripiton_checkbox'] ) ) : '';
+		$userEmail = isset( $_POST['user_email'] ) ? sanitize_key( wp_unslash( $_POST['user_email'] ) ) : '';
+
 
 		$response      = $this->cc_app_auth->post(
 			'plugin/importcaps',
@@ -3237,23 +3208,40 @@ class Responsive_Add_Ons {
 					'status_args'         => $status_args,
 					'activate_args'       => $activate_args,
 					'wc_am_activated_key' => $wcam_lib_responsive_addons->data,
+					'ready_site_subscribe_checkbox' => $ready_site_subscribe_checkbox,
+					'user_email'          => $userEmail,
 				)
 			)
 		);
 		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 !== $response_code ) {
+		$response_body = json_decode( wp_remote_retrieve_body( $response ) );
+
+		if ( 403 === $response_code ) {
 			wp_send_json_error(
 				array(
-					'message' => 'Cannot made request with Cyberchimps Responsive Domain. Some data is missing.',
+					'message' => $response_body->message,
 					'error'   => true,
+					'error_code' => $response_code,
 				),
 			);
 		}
-		$response_body = json_decode( wp_remote_retrieve_body( $response ) );
-		if ( ! $response_body->allow_import ) {
+		if ( 200 !== $response_code ) {
+			$err_msg = sprintf(
+				__( '%1$s Please reconnect to Cyberchimps to continue.', 'responsive-addons' ), $response_body->message );
+
 			wp_send_json_error(
 				array(
-					'message' => 'Please check your connection with Cyberchimps Responsive Domain',
+					'message' => $err_msg,
+					'error'   => true,
+					'error_code' => $response_code,
+				),
+			);
+		}
+
+		if ( isset( $response_body->allow_import ) && ! $response_body->allow_import ) {
+			wp_send_json_error(
+				array(
+					'message' => "You don't have an active membership of Cyberchimps Responsive Domain.",
 					'error'   => true,
 				),
 			);
@@ -3279,6 +3267,14 @@ class Responsive_Add_Ons {
 					'connection_status' => $response_body->connection_status,
 					'error'             => false,
 				),
+			);
+		} else if ( isset($response_body->error_code) ) {
+			wp_send_json_error(
+				array(
+					'message'    => $response_body->message,
+					'error_code' => $response_body->error_code,
+					'error'      => true,
+				)
 			);
 		} else {
 			wp_send_json_success(

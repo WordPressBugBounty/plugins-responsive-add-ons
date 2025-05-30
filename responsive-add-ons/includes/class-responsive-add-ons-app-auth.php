@@ -213,9 +213,17 @@ class Responsive_Add_Ons_App_Auth {
 		
 		if ( 'Activated' === $activation_status && '' !== $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] ) {
 			// deactivates API Key activation.
-			$deactivate_results = json_decode( $wcam_lib_responsive_addons->deactivate( $args,$this->get_api_path('plugin/disconnect'), $headers, $id ), true );
+			$deactivate_results= json_decode(
+				json_decode($wcam_lib_responsive_addons->deactivate(
+					$args,
+					$this->get_api_path('plugin/disconnect'),
+					$headers,
+					$id
+				), true)['body'],
+				true
+			);
 
-			if ( true === $deactivate_results['success'] && true === $deactivate_results['deactivated'] ) {
+			if ( isset( $deactivate_results['success'] ) && true === $deactivate_results['success'] && isset( $deactivate_results['deactivated'] ) && true === $deactivate_results['deactivated'] ) {
 				if ( ! empty( $wcam_lib_responsive_addons->wc_am_activated_key ) ) {
 					update_option( $wcam_lib_responsive_addons->wc_am_activated_key, 'Deactivated' );
 				}

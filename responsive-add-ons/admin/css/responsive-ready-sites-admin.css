@@ -2004,7 +2004,7 @@ input:checked + .ready-site-import-option-input-slider:before {
 	border-bottom: 1px solid #E5E7EB;
 }
 .responsive-ready-sites-import-progress-container .site-import-options{
-	padding: 39px 30px 0;
+	padding: 40px 30px 0;
 	margin-bottom: 0;
 }
 .responsive-ready-sites-advanced-options-wrap .ready-sites-import-subscription{
@@ -2528,4 +2528,65 @@ input:checked + .ready-site-import-option-input-slider:before {
 	font-weight: 600;
 	font-size: 18px;
 	line-height: 100%;
+}
+.current-importing-status-error-wrap {
+	text-align: left;
+	background-color: #f8f9fa;
+	padding: 12px 16px;
+	border: 1px solid #dee2e6;
+	border-radius: 6px;
+	font-family: Roboto, sans-serif;
+	font-size: 14px;
+	max-width: 100%;
+	overflow-x: auto;
+	line-height: 24px;
+}
+.current-importing-status-error-title {
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 100%;
+	color: #374151;
+	text-align: left;
+	margin-top: 0;
+    padding-top: 32px;
+    border-top: 1px solid #E5E7EB;
+}
+.responsive-ready-sites-import-error-page .error-status {
+	display: flex;
+	gap: 8px;
+	font-size: 14px;
+}
+.responsive-ready-sites-import-error-page .ready-sites-import-process-error-retry {
+	cursor: pointer;
+	padding: 14px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 16px;
+	background: #2271B1;
+    color: #FFF;
+	border: none;
+	width: 100%;
+}
+.responsive-ready-sites-import-error-page .current-importing-status-error-btns {
+	display: flex;
+	gap: 10px;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin-top: 30px;
+	margin-bottom: 40px;
+}
+.ready-sites-import-process-error-support {
+	color: #2271B1;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+}
+.current-importing-status-error-sub-title {
+	margin-top: 0;
+	font-size: 16px;
+	color: #374151;
 }

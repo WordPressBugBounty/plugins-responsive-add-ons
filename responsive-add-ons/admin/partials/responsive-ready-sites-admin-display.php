@@ -776,7 +776,7 @@ $responsive_sites_header_after_connection_success = false;
 						<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-addons' ); ?></h2>
 						<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-addons' ); ?></p>
 						<button type="button" class="rst-start-auth rst-start-auth-new"><?php esc_html_e( 'New? Create a free account', 'responsive-addons' ); ?><span id="loader"></span></button>
-						<p class=""><?php esc_html_e( 'Already have an account? ', 'responsive-addons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-addons' ); ?><span id="loader"></span></span></p>
+						<p class=""><?php esc_html_e( 'Already have an account on CyberChimps Responsive? ', 'responsive-addons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-addons' ); ?><span id="loader"></span></span></p>
 					</div>
 				</div>
 
@@ -789,9 +789,13 @@ $responsive_sites_header_after_connection_success = false;
 						</div>
 						<div class="responsive-addons-app-unlock-access-modal-body">
 							<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-addons' ); ?></h2>
-							<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-addons' ); ?></p>
+							<# if ( 'free' === data.demo_type ) { #>
+								<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-addons' ) ?></p>
+							<# } else { #>
+								<p><?php esc_html_e( 'Create an account to connect with Cyberchimps Responsive.', 'responsive-addons' ) ?></p>
+							<# } #>
 							<button type="button" class="raddons-upgrade-the-plan"><?php esc_html_e( 'Unlock Premium Template Access at just $1.97/month', 'responsive-addons' ); ?><span style="margin-left: 8px" class="dashicons dashicons-lock"></span><span id="loader"></span></button>
-							<p style="color:#000000; padding-bottom: 15px;"class=""><?php esc_html_e( 'Already have an account on app.cyberchimps.com? ', 'responsive-addons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-addons' ); ?><span id="loader"></span></span></p>
+							<p style="color:#000000; padding-bottom: 15px;"class=""><?php esc_html_e( 'Already have an account on CyberChimps Responsive? ', 'responsive-addons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-addons' ); ?><span id="loader"></span></span></p>
 						</div>
 					</div>
 				</div>
@@ -1427,6 +1431,62 @@ $responsive_sites_header_after_connection_success = false;
 				</div>
 				<div class="result_preview" style="display: none">
 				</div>
+		</div>
+	</div>
+</script>
+
+<script type="text/template" id="tmpl-responsive-ready-sites-import-error-page">
+	<div class="responsive-ready-sites-advanced-options-wrap responsive-ready-sites-import-error-page wp-full-overlay collapsed">
+		<div class="wp-full-overlay-header">
+			<div class="responsive-advanced-options-wrap">
+					<div class="responsive-sites-demo-details">
+							<div class="responsive-sites-demo-preview-logo-wrap">
+								<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/responsive-starter-templates-thumbnail.svg' ); ?>">
+							</div>
+					</div>
+					<div class="responsive-addons-import-btns">
+						<a href="<?php echo esc_url( home_url( esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) ) ) ); ?>" class="rst-exit-to-dashboard">
+							<svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M28.5 2.5L2.5 28.5M28.5 28.5L2.5 2.50002" stroke="black" stroke-width="4" stroke-linecap="round"/>
+							</svg>
+						</a>
+					</div>
+				</div>
+		</div>
+		<div class="wp-full-overlay-main">
+			<div class="responsive-ready-sites-import-progress-container">
+				<div class="site-import-options">
+					<div class="responsive-ready-sites-advanced-options">
+						<h2 class="ready-sites-import-progress-title"><?php esc_html_e( 'We are Building your Website', 'responsive-addons' ); ?></h2>
+						<div class="sites-import-process-errors-container">
+							<div class="import-process-error">
+								<h4 class="current-importing-status-error-title">
+									<?php esc_html_e( 'Sorry, something went wrong.', 'responsive-addons' ); ?>
+								</h4>
+								<div class="current-importing-status-error-wrap">
+									<h5 class="current-importing-status-error-sub-title">
+										<?php esc_html_e( 'What went wrong?', 'responsive-addons' ); ?>
+									</h5>
+									<# if( data.error_code ) { #>
+									<p class="current-importing-status-error-code error-status"><span><?php esc_html_e( 'Code:', 'responsive-addons' ); ?></span><span>{{{data.error_code}}}</span></p>
+									<# } #>
+									<# if( data.message ) { #>
+									<p class="current-importing-status-error-text error-status"><span><?php esc_html_e( 'Message:', 'responsive-addons' ); ?></span><span>"{{{data.message}}}"</span></p>
+									<# } #>
+									<# if( ! data.message && ! data.error_code ) { #>
+									<p class="current-importing-status-error-text error-status"><span><?php esc_html_e( 'Message', 'responsive-addons' ); ?></span><span>"{{{data}}}"</span></p>
+									<# } #>
+								</div>
+								<div class="current-importing-status-error-btns">
+									<button class="ready-sites-import-process-error-retry" onclick="location.reload()"><?php esc_html_e( "Click here to try again", 'responsive-addons' ); ?></button>
+									<a class="ready-sites-import-process-error-support" href="https://cyberchimps.com/open-a-ticket/" target="_blank"><?php esc_html_e( 'or, get in touch', 'responsive-addons' ); ?></a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="result_preview" style="display: none"></div>
+			</div>
 		</div>
 	</div>
 </script>

@@ -112,8 +112,8 @@ class Responsive_Ready_Sites_Options_Importer {
 	 */
 	public function import_options( $options = array() ) {
 
-		if ( ! isset( $options ) ) {
-			return;
+		if ( empty( $options ) || ! is_array( $options ) ) {
+			throw new Exception( 'Invalid or empty site options.' );
 		}
 
 		foreach ( $options as $option_name => $option_value ) {

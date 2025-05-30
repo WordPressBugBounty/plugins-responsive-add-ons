@@ -53,83 +53,72 @@ jQuery( document ).ready(
 			}
 		);
 
-		function _startAppAuth(event)  {
+		function _startAppAuth(event) {
 			event.preventDefault();
-			$( this ).addClass( 'disable' );
-			let is_new_user = this.classList.contains( 'rst-start-auth-new' );
-			$_this          = '';
+		
+			let $_this = this; 
+			$( $_this ).addClass('disable');
+		
+			let is_new_user = $_this.classList.contains('rst-start-auth-new');
+		
 			if (is_new_user) {
-				$_this = this;
-				$( '.rst-start-auth-new #loader' ).css( 'display', 'inline-block' );
+				$('.rst-start-auth-new #loader').css('display', 'inline-block');
 			} else {
-				$_this = this;
-				$( '.rst-start-auth-exist #loader' ).css( 'display', 'inline-block' );
+				$('.rst-start-auth-exist #loader').css('display', 'inline-block');
 			}
-			$.ajax(
-				{
-					url  : responsiveAddonsGettingStarted.ajaxurl,
-					type : 'POST',
-					data : {
-						action      : 'cyberchimps_app_start_auth',
-						_ajax_nonce : responsiveAddonsGettingStarted._ajax_nonce,
-						is_new_user : is_new_user,
-					},
-				}
-			)
-				.done(
-					function ( response ) {
-
-						// Get the width and height of the viewport
-						let viewportWidth  = window.innerWidth;
-						let viewportHeight = window.innerHeight;
-
-						// Set the dimensions of the popup
-						let popupWidth  = 1260;
-						let popupHeight = 740;
-
-						// Calculate the position to center the popup
-						let leftPosition = (viewportWidth - popupWidth) / 2;
-						let topPosition  = (viewportHeight - popupHeight) / 2;
-						// Open the popup window at the calculated position
-						let popup = window.open(
-							response.data.url,
-							"saas_auth_popup", // Use a named target
-							"location=no,width=" + popupWidth + ",height=" + popupHeight + ",left=" + leftPosition + ",top=" + topPosition + ",scrollbars=0"
-						);
-
-						// Store popup reference globally
-						window.saasAuthPopup = popup;
-						
-						// Setup listener BEFORE popup loads
-						window.addEventListener('message', (event) => {
-							
-							if ( ! event.isTrusted || event.origin !== responsiveAddonsGettingStarted.ccAppURL) {
-								return;
-							}
-							
-							if (event.data.type === "request_auth_data") {
-								window.saasAuthPopup.postMessage(
-								{
-									type: "auth_data",
-									cookies: responsiveAddonsGettingStarted.cookies,
-									wp_nonce: responsiveAddonsGettingStarted._nonce,
-									site_url: responsiveAddonsGettingStarted.site_url
-								},
-								responsiveAddonsGettingStarted.ccAppURL
-								);
-							}
-						});
-
-						if (null === popup) {
-						} else {
-							$( $_this ).removeClass( 'disable' );
-							$( $_this ).find( '#loader' ).css( 'display', 'none' );
-							popup.focus();
-						}
-					}
+		
+			$.ajax({
+				url: responsiveAddonsGettingStarted.ajaxurl,
+				type: 'POST',
+				data: {
+					action: 'cyberchimps_app_start_auth',
+					_ajax_nonce: responsiveAddonsGettingStarted._ajax_nonce,
+					is_new_user: is_new_user,
+				},
+			})
+			.done(function (response) {
+				let viewportWidth = window.innerWidth;
+				let viewportHeight = window.innerHeight;
+		
+				let popupWidth = 1260;
+				let popupHeight = 740;
+		
+				let leftPosition = (viewportWidth - popupWidth) / 2;
+				let topPosition = (viewportHeight - popupHeight) / 2;
+		
+				let popup = window.open(
+					response.data.url,
+					"saas_auth_popup",
+					"location=no,width=" + popupWidth + ",height=" + popupHeight +
+					",left=" + leftPosition + ",top=" + topPosition + ",scrollbars=0"
 				);
-
+		
+				window.saasAuthPopup = popup;
+		
+				// Setup listener BEFORE popup loads
+				window.addEventListener('message', (event) => {
+					if (!event.isTrusted || event.origin !== responsiveAddonsGettingStarted.ccAppURL) {
+						return;
+					}
+		
+					if (event.data.type === "request_auth_data") {
+						window.saasAuthPopup.postMessage({
+							type: "auth_data",
+							cookies: responsiveAddonsGettingStarted.cookies,
+							wp_nonce: responsiveAddonsGettingStarted._nonce,
+							site_url: responsiveAddonsGettingStarted.site_url
+						}, responsiveAddonsGettingStarted.ccAppURL);
+					}
+				});
+				// Re-enable the button and hide loader
+				if (popup !== null) {
+					$( $_this ).removeClass('disable');
+					$( $_this ).find('#loader').css('display', 'none');
+					popup.focus();
+				}
+			});
 		}
+		
 
 		function _storeAuth(data) {
 			$.ajax(
@@ -175,70 +164,61 @@ jQuery( document ).ready(
 
 		function _addonsUpgradePlan(event)  {
 			event.preventDefault();
-			$.ajax(
-				{
-					url  : responsiveAddonsGettingStarted.ajaxurl,
-					type : 'POST',
-					data : {
-						action      : 'cyberchimps_app_upgrade_user_plan',
-						_ajax_nonce : responsiveAddonsGettingStarted._ajax_nonce,
-					},
-				}
-			)
-				.done(
-					function ( response ) {
-
-						// Get the width and height of the viewport
-						let viewportWidth  = window.innerWidth;
-						let viewportHeight = window.innerHeight;
-
-						// Set the dimensions of the popup
-						let popupWidth  = 1260;
-						let popupHeight = 740;
-
-						// Calculate the position to center the popup
-						let leftPosition = (viewportWidth - popupWidth) / 2;
-						let topPosition  = (viewportHeight - popupHeight) / 2;
-						// Open the popup window at the calculated position
-						let popup = window.open(
-							response.data.url,
-							"saas_auth_popup",
-							"location=no,width=" + popupWidth + ",height=" + popupHeight + ",left=" + leftPosition + ",top=" + topPosition + ",scrollbars=0"
-						);
-
-						// Store popup reference globally
-						window.saasAuthPopup = popup;
-						
-						// Setup listener BEFORE popup loads
-						window.addEventListener('message', (event) => {
-							
-							if ( ! event.isTrusted || event.origin !== responsiveAddonsGettingStarted.ccAppURL) {
-								return;
-							}
-							
-							if (event.data.type === "request_auth_data") {
-								window.saasAuthPopup.postMessage(
-								{
-									type: "auth_data",
-									cookies: responsiveAddonsGettingStarted.cookies,
-									wp_nonce: responsiveAddonsGettingStarted._nonce,
-									site_url: responsiveAddonsGettingStarted.site_url
-								},
-								responsiveAddonsGettingStarted.ccAppURL
-								);
-							}
-						});
-
-						if (null === popup) {
-						} else {
-							$( $_this ).removeClass( 'disable' );
-							$( $_this ).find( '#loader' ).css( 'display', 'none' );
-							popup.focus();
-						}
-					}
+		
+			let $_this = event.currentTarget;
+		
+			$( $_this ).addClass( 'disable' );
+			$( $_this ).find( '#loader' ).css( 'display', 'inline-block' );
+		
+			$.ajax({
+				url  : responsiveAddonsGettingStarted.ajaxurl,
+				type : 'POST',
+				data : {
+					action      : 'cyberchimps_app_upgrade_user_plan',
+					_ajax_nonce : responsiveAddonsGettingStarted._ajax_nonce,
+				},
+			})
+			.done(function (response) {
+				let viewportWidth  = window.innerWidth;
+				let viewportHeight = window.innerHeight;
+		
+				let popupWidth  = 1260;
+				let popupHeight = 740;
+		
+				let leftPosition = (viewportWidth - popupWidth) / 2;
+				let topPosition  = (viewportHeight - popupHeight) / 2;
+		
+				let popup = window.open(
+					response.data.url,
+					"saas_auth_popup",
+					"location=no,width=" + popupWidth + ",height=" + popupHeight + ",left=" + leftPosition + ",top=" + topPosition + ",scrollbars=0"
 				);
+		
+				window.saasAuthPopup = popup;
+		
+				window.addEventListener('message', (event) => {
+					if (!event.isTrusted || event.origin !== responsiveAddonsGettingStarted.ccAppURL) {
+						return;
+					}
+		
+					if (event.data.type === "request_auth_data") {
+						window.saasAuthPopup.postMessage({
+							type: "auth_data",
+							cookies: responsiveAddonsGettingStarted.cookies,
+							wp_nonce: responsiveAddonsGettingStarted._nonce,
+							site_url: responsiveAddonsGettingStarted.site_url
+						}, responsiveAddonsGettingStarted.ccAppURL);
+					}
+				});
+		
+				if (popup !== null) {
+					$( $_this ).removeClass( 'disable' );
+					$( $_this ).find( '#loader' ).css( 'display', 'none' );
+					popup.focus();
+				}
+			});
 		}
-
+		
 		function _syncAppAuth(event) {
 			event.preventDefault();
 			$( '.rst-sync-auth .dashicons-update' ).addClass( 'rst-syncing-auth' );

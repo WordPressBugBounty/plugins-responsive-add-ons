@@ -179,25 +179,6 @@ class Responsive_Ready_Sites_Batch_Processing_Elementor extends Source_Local {
 			// Import the data.
 			$data = $this->process_export_import_content( $data, 'on_import' );
 
-			// Replace the site urls.
-			$demo_data = get_option( 'responsive_ready_sites_import_data', array() );
-
-			if ( isset( $demo_data ) ) {
-				$site_url      = get_site_url();
-				$site_url      = str_replace( '/', '\/', $site_url );
-				$demo_site_url = 'https:' . $demo_data;
-				$demo_site_url = str_replace( '/', '\/', $demo_site_url );
-				if ( ! is_array( $data ) ) {
-					$data = str_replace( $demo_site_url, $site_url, $data );
-				} else {
-					$data = wp_json_encode( $data, true );
-					if ( ! empty( $data ) ) {
-						$data = str_replace( $demo_site_url, $site_url, $data );
-						$data = json_decode( $data, true );
-					}
-				}
-			}
-
 			// Update processed meta.
 			update_metadata( 'post', $post_id, '_elementor_data', $data );
 

@@ -9,7 +9,7 @@
  *
  * @since 1.0.0
  */
- var ResponsiveSitesAjaxQueue = (function () {
+var ResponsiveSitesAjaxQueue = (function () {
 
 	var requests = [];
 
@@ -116,6 +116,7 @@
 		requiredPlugins: [],
 		requiredPagePlugins: [],
 		requiredBlockPlugins: [],
+		requiredProTempPlugins: [],
 		requiredProBlockPlugins: [],
 		canImport: false,
 		canInsert: false,
@@ -214,8 +215,7 @@
 						$( document ).on('click', '#responsive-addons-app-unlock-template-modal-close', ResponsiveElementorSitesAdmin._closeUnlockTemplatesModal);
 
 						$( document ).on('click', '.rst-library-template-install-rea', ResponsiveElementorSitesAdmin._installProPlugins);
-
-						// Other events.
+	
 						$rst_elscope.find('.responsive-sites-content-wrap').scroll(ResponsiveElementorSitesAdmin._loadLargeImages);
 
 						$(document).on('change', '#rst-sites-modal .elementor-template-library-order-input', ResponsiveElementorSitesAdmin._changeType);
@@ -788,28 +788,22 @@
 
 		_requiredPluginsMarkup: function (requiredPlugins, requiredProPlugins) {
 
-			if ('' === requiredPlugins) {
+			if ('' === requiredPlugins && '' === requiredProPlugins) {
 				return;
 			}
-
+		
 			if (
 				ResponsiveElementorSitesAdmin.type == 'blocks' &&
 				ResponsiveElementorSitesAdmin.demo_type != undefined &&
 				ResponsiveElementorSitesAdmin.demo_type != 'free'
 			) {
-
 				if (!responsiveElementorSites.license_status) {
-
-					output = '<p class="rst-validate">' + responsiveElementorSites.license_block_msg + '</p>';
-
+					let output = '<p class="rst-validate">' + responsiveElementorSites.license_block_msg + '</p>';
+		
 					$rst_elscope.find('.required-plugins-list').html(output);
 					$rst_elscope.find('.rst-tooltip-wrap').css('opacity', 1);
 					$rst_elscope.find('.responsive-sites-tooltip').css('opacity', 1);
-
-					/**
-					 * Enable Demo Import Button
-					 * @type number
-					 */
+		
 					ResponsiveElementorSitesAdmin.requiredPlugins = [];
 					ResponsiveElementorSitesAdmin.canImport = true;
 					ResponsiveElementorSitesAdmin.canInsert = true;
@@ -817,127 +811,100 @@
 					return;
 				}
 			}
-
-			// Required Required.
+		
+			var postData = {
+				action: 'responsive-ready-sites-required-plugins',
+				_ajax_nonce: responsiveElementorSites._ajax_nonce,
+				required_plugins: requiredPlugins,
+				required_pro_plugins: requiredProPlugins,
+			};
+		
 			$.ajax({
 				url: responsiveElementorSites.ajaxurl,
 				type: 'POST',
-				data: {
-					action: 'responsive-ready-sites-required-plugins',
-					_ajax_nonce: responsiveElementorSites._ajax_nonce,
-					required_plugins: requiredPlugins,
-					required_pro_plugins : requiredProPlugins,
-				},
+				data: postData,
 			})
-				.fail(function (jqXHR) {
-					console.groupEnd();
-				})
-				.done(function (response) {
-					if (false === response.success) {
+			.fail(function (jqXHR) {
+				console.groupEnd();
+			})
+			.done(function (response) {
+				if (false === response.success) {
+					$rst_elscope = $('#rst-sites-modal');
+					$rst_elscope.find('#rst-sites-floating-notice-wrap-id').show().removeClass('error');
+					$rst_elscope.find('#rst-sites-floating-notice-wrap-id .rst-sites-floating-notice').show().html('<span class="message">Insufficient Permission. Please contact your Super Admin to allow the install required plugin permissions.<span>');
+					$rst_elscope.find('#rst-sites-floating-notice-wrap-id').addClass('error slide-in').removeClass('refreshed-notice');
+				} else {
+					var output = '';
+					var remaining_plugins = 0;
+		
+					var allRequired = response.data['required_plugins'];
+					var allProRequired = requiredProPlugins;
 
-						$rst_elscope = $('#rst-sites-modal');
-						$rst_elscope.find('#rst-sites-floating-notice-wrap-id').show().removeClass('error');
-						$rst_elscope.find('#rst-sites-floating-notice-wrap-id .rst-sites-floating-notice').show().html('<span class="message">Insufficient Permission. Please contact your Super Admin to allow the install required plugin permissions.<span>');
-						$rst_elscope.find('#rst-sites-floating-notice-wrap-id').addClass('error slide-in').removeClass('refreshed-notice');
-
-					} else {
-						var output = '';
-
-						/**
-						 * Count remaining plugins.
-						 * @type number
-						 */
-						var remaining_plugins = 0;
-						var required_plugins_markup = '';
-
-						required_plugins = response.data['required_plugins'];
-
-						if (response.data['required_plugins'].length) {
-							$( response.data['required_plugins'] ).each(function (index, plugin) {
-								output += '<li class="plugin-card plugin-card-' + plugin.slug + '" data-slug="' + plugin.slug + '" data-init="' + plugin.init + '" data-name="' + plugin.name + '">' + plugin.name + '</li>';
-							});
-						}
-
-						/**
-						 * Not Installed
-						 *
-						 * List of not installed required plugins.
-						 */
-						if (typeof required_plugins.notinstalled !== 'undefined') {
-
-							// Add not have installed plugins count.
-							remaining_plugins += parseInt(required_plugins.notinstalled.length);
-							$(required_plugins.notinstalled).each(function (index, plugin) {
-								if ('elementor' == plugin.slug) {
-									return;
-								}
-								output += '<li class="plugin-card plugin-card-' + plugin.slug + '" data-slug="' + plugin.slug + '" data-init="' + plugin.init + '" data-name="' + plugin.name + '">' + plugin.name + '</li>';
-							});
-						}
-
-						/**
-						 * Inactive
-						 *
-						 * List of not inactive required plugins.
-						 */
-						if (typeof required_plugins.inactive !== 'undefined') {
-
-							// Add inactive plugins count.
-							remaining_plugins += parseInt(required_plugins.inactive.length);
-
-							$(required_plugins.inactive).each(function (index, plugin) {
-								if ('elementor' == plugin.slug) {
-									return;
-								}
-								output += '<li class="plugin-card plugin-card-' + plugin.slug + '" data-slug="' + plugin.slug + '" data-init="' + plugin.init + '" data-name="' + plugin.name + '">' + plugin.name + '</li>';
-							});
-						}
-
-						/**
-						 * Active
-						 *
-						 * List of active required plugins.
-						 */
-						if (typeof required_plugins.active !== 'undefined') {
-							
-
-							$(required_plugins.active).each(function (index, plugin) {
-								if ('elementor' == plugin.slug) {
-									return;
-								}
-								output += '<li class="plugin-card plugin-card-' + plugin.slug + '" data-slug="' + plugin.slug + '" data-init="' + plugin.init + '" data-name="' + plugin.name + '">' + plugin.name + '</li>';
-							});
-						}
-
-						
-						if ('' != output) {
-							output = '<li class="plugin-card-head"><strong>' + responsiveElementorSites.install_plugin_text + '</strong></li>' + output;
-							$rst_elscope.find('.required-plugins-list').html(output);
-							$rst_elscope.find('.rst-tooltip-wrap').css('opacity', 1);
-							$rst_elscope.find('.responsive-sites-tooltip').css('opacity', 1);
-						}
-
-						if ( '' === output ) {
-							output = '<li class="plugin-card-head"><strong>' + responsiveElementorSites.noPlugins + '</strong></li>';
-							$rst_elscope.find('.required-plugins-list').html(output);
-							$rst_elscope.find('.plugin-card-head').css('border-bottom', 'none')
-							$rst_elscope.find('.plugin-card-head').css('padding-bottom', '0')
-							$rst_elscope.find('.rst-tooltip-wrap').css('opacity', 1);
-							$rst_elscope.find('.responsive-sites-tooltip').css('opacity', 1);
-						}
-
-						/**
-						 * Enable Demo Import Button
-						 * @type number
-						 */
-						// ResponsiveElementorSitesAdmin.requiredPlugins = response.data['required_plugins'];
-						ResponsiveElementorSitesAdmin.requiredPagePlugins = response.data['required_plugins'];
-						ResponsiveElementorSitesAdmin.canImport = true;
-						ResponsiveElementorSitesAdmin.canInsert = true;
-						$rst_elscope.find('.responsive-sites-import-template-action > div').removeClass('disabled');
+					function generatePluginMarkup(pluginList) {
+						var markup = '';
+						$(pluginList).each(function (index, plugin) {
+							if ('elementor' == plugin.slug) return;
+							markup += '<li class="plugin-card plugin-card-' + plugin.slug + '" data-slug="' + plugin.slug + '" data-init="' + plugin.init + '" data-name="' + plugin.name + '">' + plugin.name + '</li>';
+						});
+						return markup;
 					}
-				});
+		
+					// Handle normal plugins
+					if (typeof allRequired === 'object') {
+						if (Array.isArray(allRequired)) {
+							output += generatePluginMarkup(allRequired);
+						} else {
+							if (typeof allRequired.notinstalled !== 'undefined') {
+								remaining_plugins += allRequired.notinstalled.length;
+								output += generatePluginMarkup(allRequired.notinstalled);
+							}
+							if (typeof allRequired.inactive !== 'undefined') {
+								remaining_plugins += allRequired.inactive.length;
+								output += generatePluginMarkup(allRequired.inactive);
+							}
+							if (typeof allRequired.active !== 'undefined') {
+								output += generatePluginMarkup(allRequired.active);
+							}
+						}
+					}
+		
+					// Handle Pro plugins
+					if (typeof allProRequired === 'object') {
+						if (typeof allProRequired.notinstalled !== 'undefined') {
+							remaining_plugins += allProRequired.notinstalled.length;
+							output += generatePluginMarkup(allProRequired.notinstalled);
+						}
+						if (typeof allProRequired.inactive !== 'undefined') {
+							remaining_plugins += allProRequired.inactive.length;
+							output += generatePluginMarkup(allProRequired.inactive);
+						}
+						if (typeof allProRequired.active !== 'undefined') {
+							output += generatePluginMarkup(allProRequired.active);
+						}
+					}
+		
+					if (output !== '') {
+						output = '<li class="plugin-card-head"><strong>' + responsiveElementorSites.install_plugin_text + '</strong></li>' + output;
+						$rst_elscope.find('.required-plugins-list').html(output);
+						$rst_elscope.find('.rst-tooltip-wrap').css('opacity', 1);
+						$rst_elscope.find('.responsive-sites-tooltip').css('opacity', 1);
+					} else {
+						output = '<li class="plugin-card-head"><strong>' + responsiveElementorSites.noPlugins + '</strong></li>';
+						$rst_elscope.find('.required-plugins-list').html(output);
+						$rst_elscope.find('.plugin-card-head').css('border-bottom', 'none').css('padding-bottom', '0');
+						$rst_elscope.find('.rst-tooltip-wrap').css('opacity', 1);
+						$rst_elscope.find('.responsive-sites-tooltip').css('opacity', 1);
+					}
+		
+					ResponsiveElementorSitesAdmin.requiredPagePlugins = allRequired;
+					ResponsiveElementorSitesAdmin.requiredProTempPlugins = allProRequired;
+					ResponsiveElementorSitesAdmin.canImport = true;
+					ResponsiveElementorSitesAdmin.canInsert = true;
+					$rst_elscope.find('.responsive-sites-import-template-action > div').removeClass('disabled');
+				}
+			});
 		},
+		
 
 		_step1: function (e) {
 			if ('pages' == ResponsiveElementorSitesAdmin.type) {
@@ -1068,28 +1035,29 @@
 			$(document).trigger('responsive-sites__elementor-plugin-check', { 'id': template_object.page_id });
 		},
 
-		_insert: function (e) {
+		_insert: async function (e) {
 			$(".rst-library-template-insert").addClass('installing');
 			$(".rst-library-template-insert").text('Importing... ');
-
-			if( ! responsiveElementorSites.proActivated ) {
-				let importPromise = new Promise((resolve, reject) => {
-					ResponsiveElementorSitesAdmin._checkImportCapabilities(function(result) {
-						resolve(result);
+		
+			try {
+				if (!responsiveElementorSites.proActivated) {
+					const importCaps = await new Promise((resolve) => {
+						ResponsiveElementorSitesAdmin._checkImportCapabilities(resolve);
 					});
-				});
-				
-				importPromise.then((importCaps) => {
+		
 					if (!importCaps) {
 						return;
 					}
-					ResponsiveElementorSitesAdmin._insertTemplate();
-				});
-			} else {
+				}
+				
 				ResponsiveElementorSitesAdmin._insertTemplate();
-			}
-		},
+			} catch (error) {
+				console.error("Error during template import:", error);
+			} finally {
 
+			}
+		},		
+		
 		_insertTemplate: function() {
 			if (!ResponsiveElementorSitesAdmin.canInsert) {
 				return;
@@ -1198,12 +1166,21 @@
 			});
 			ResponsiveSitesAjaxQueue.run();
 		},
-
-		/**
-		 * Install Pro Plugins.
-		 */
 		_installProPlugins: function () {
-			let pro_plugins = ResponsiveElementorSitesAdmin.requiredPagePlugins.proplugins;
+			// let pro_plugins = ResponsiveElementorSitesAdmin.requiredPagePlugins.proplugins;
+			let pro_plugins = ResponsiveElementorSitesAdmin.requiredProTempPlugins;
+
+			if (!pro_plugins || pro_plugins.length === 0) {	
+				$('.rst-library-template-install-rea').removeClass('disable');
+				$('#rst-plugin-install-loader').css('display', 'none');
+
+				$(".rst-library-template-install-rea").addClass('installing');
+				$(".rst-library-template-install-rea").text('Importing...');
+
+				ResponsiveSitesAjaxQueue.run();
+				ResponsiveElementorSitesAdmin._insert();
+				return;
+			}
 			$(this).addClass( 'disable' );
 			$('#rst-plugin-install-loader').css( 'display', 'inline-block' );
 			$.ajax(
@@ -1221,13 +1198,16 @@
 					function (result) {
 						if ( false === result.success ) {
 						} else {
-							$('.rst-library-template-install-rea').removeClass( 'disable' );
-							$('#rst-plugin-install-loader').css( 'display', 'none' );
-							location.reload();
+							$('.rst-library-template-install-rea').removeClass('disable');
+							$('#rst-plugin-install-loader').css('display', 'none');
+
+							$(".rst-library-template-install-rea").addClass('installing');
+							$(".rst-library-template-install-rea").text('Importing...');
 						}
 					}
 				);
 			ResponsiveSitesAjaxQueue.run();
+			ResponsiveElementorSitesAdmin._insert();
 		},
 
 		/**
@@ -1267,7 +1247,6 @@
 				})
 				.done(function (response) {
 					console.groupEnd();
-
 					if( response.success ) {
 						ResponsiveElementorSitesAdmin.insertData = response.data;
 						if ('insert' == ResponsiveElementorSitesAdmin.action) {
@@ -1396,9 +1375,8 @@
 
 						ResponsiveElementorSitesAdmin.processing = false;
 						$rst_elscope.find('.responsive-sites-content-wrap').removeClass('processing');
-
 						page_content = response.data;
-
+						
 						page_content = page_content.map(function (item) {
 							item.id = Math.random().toString(36).substr(2, 7);
 							return item;
@@ -1688,8 +1666,7 @@
 				}
 			)
 				.fail(
-					function( jqXHR ){
-						// ResponsiveSitesAdmin._log_error( "There was an error while processing import. Please try again.", true );					
+					function( jqXHR ){					
 						console.log( "There was an error while processing import. Please try again." );					
 					}
 				)
