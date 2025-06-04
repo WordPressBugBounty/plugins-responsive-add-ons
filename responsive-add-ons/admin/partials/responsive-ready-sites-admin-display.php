@@ -1474,7 +1474,7 @@ $responsive_sites_header_after_connection_success = false;
 									<p class="current-importing-status-error-text error-status"><span><?php esc_html_e( 'Message:', 'responsive-addons' ); ?></span><span>"{{{data.message}}}"</span></p>
 									<# } #>
 									<# if( ! data.message && ! data.error_code ) { #>
-									<p class="current-importing-status-error-text error-status"><span><?php esc_html_e( 'Message', 'responsive-addons' ); ?></span><span>"{{{data}}}"</span></p>
+									<p class="current-importing-status-error-text error-status"><span><?php esc_html_e( 'Message:', 'responsive-addons' ); ?></span><span>"{{{data}}}"</span></p>
 									<# } #>
 								</div>
 								<div class="current-importing-status-error-btns">

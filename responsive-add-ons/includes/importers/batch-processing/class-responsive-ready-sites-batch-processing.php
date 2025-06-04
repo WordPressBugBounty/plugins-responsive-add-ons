@@ -248,6 +248,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @return void
 		 */
 		public function import_sites() {
+			// Verify Nonce.
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
 			$page_no = isset( $_POST['page_no'] ) ? absint( $_POST['page_no'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( $page_no ) {
 				$sites_and_pages = Responsive_Ready_Sites_Batch_Processing_Importer::get_instance()->import_sites( $page_no );
@@ -265,6 +268,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @return void
 		 */
 		public function import_blocks() {
+			// Verify Nonce.
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+			
 			$page_no = isset( $_POST['page_no'] ) ? absint( $_POST['page_no'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( $page_no ) {
 				$blocks = Responsive_Ready_Sites_Batch_Processing_Importer::get_instance()->import_blocks( $page_no );
@@ -280,6 +286,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @return void
 		 */
 		public function update_templates_library_complete() {
+			// Verify Nonce.
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 			$this->update_latest_checksums();
 			wp_send_json_success();
 		}
@@ -366,6 +374,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @return void
 		 */
 		public function ready_sites_requests_count() {
+			// Verify Nonce.
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 			// Get count.
 			$total_requests = $this->get_total_requests();
@@ -383,6 +393,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @return void
 		 */
 		public function rst_blocks_requests_count() {
+			// Verify Nonce.
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 			// Get count.
 			$total_requests = $this->get_total_rst_blocks_requests();
@@ -409,6 +421,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @return void
 		 */
 		public function update_sites_library() {
+			// Verify Nonce.
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 			if ( 'no' === $this->get_last_export_checksums() ) {
 				wp_send_json_success( 'updated' );

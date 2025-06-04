@@ -206,8 +206,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			if ( ! empty( $demo_api_uri ) ) {
 
 				$demo_data = self::get_responsive_single_demo( $demo_api_uri );
-				if ( ! $demo_data['success'] ) {
-					wp_send_json( $demo_data );
+				if ( empty( $demo_data ) || isset( $demo_data['success'] ) && ! $demo_data['success'] ) {
+					wp_send_json_error( $demo_data );
 				}
 
 				update_option( 'responsive_ready_sites_import_data', $demo_data );

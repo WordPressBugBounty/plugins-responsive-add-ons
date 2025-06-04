@@ -1526,6 +1526,9 @@ class Responsive_Add_Ons {
 	 * Check if Responsive Addons Pro is installed.
 	 */
 	public function is_responsive_pro_is_installed() {
+		// Verify Nonce.
+		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
 		$responsive_pro_slug = 'responsive-addons-pro/responsive-addons-pro.php';
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -2035,6 +2038,8 @@ class Responsive_Add_Ons {
 	 * @since 2.1.1
 	 */
 	public function get_responsive_theme() {
+		// Verify Nonce.
+		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'install_themes' ) ) {
 			wp_die( esc_html__( 'Sorry, you are not allowed to install themes on this site.' ) );
@@ -2241,6 +2246,10 @@ class Responsive_Add_Ons {
 	}
 
 	public function get_favorite_template_site_details() {
+
+		// Verify Nonce.
+		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
 		$favorite_sites = array();
 
 		$current_page_builder_sites = $this->get_sites_by_page_builder();

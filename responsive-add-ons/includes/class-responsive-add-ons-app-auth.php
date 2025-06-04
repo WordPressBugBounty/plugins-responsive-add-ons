@@ -138,7 +138,7 @@ class Responsive_Add_Ons_App_Auth {
 	 * @return void
 	 */
 	public function store_app_auth() {
-		check_ajax_referer( 'responsive-addons' );
+		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( esc_html__( 'You do not have permissions to connect Responsive Addons to Cyberchimps.', 'responsive-addons' ) );
@@ -190,7 +190,7 @@ class Responsive_Add_Ons_App_Auth {
 	 * @return void
 	 */
 	public function delete_app_auth() {
-		check_ajax_referer( 'responsive-addons' );
+		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( esc_html__( 'You do not have permissions to disconnect Responsive Addons to Cyberchimps Responsive Domain.', 'responsive-addons' ) );

@@ -1165,8 +1165,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 						// Check is site imported recently and set flag.
 
 						// 1. Fail - Request Site Import.
-						if ( false === demo_data.success ) {
-							ResponsiveSitesAdmin._display_error_message( demo_data.data, true );
+						if ( false === demo_data.data || false === demo_data.success ) {
+							ResponsiveSitesAdmin._display_error_message( 'Error while retrieving site import data. Please try again.' );
 						} else {
 							ResponsiveSitesAdmin.xml_path                       = encodeURI( demo_data.data['xml_path'] ) || '';
 							ResponsiveSitesAdmin.wpforms_path                   = encodeURI( demo_data.data['wpforms_path'] ) || '';
@@ -2502,6 +2502,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				type: 'POST',
 				data: {
 					action: 'responsive-sites-get-sites-request-count',
+					_ajax_nonce  : responsiveSitesAdmin._ajax_nonce,
 				},
 			})
 				.fail(function (jqXHR) {
@@ -2519,6 +2520,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 							data: {
 								action  : 'responsive-ready-sites-import-sites',
 								page_no : i,
+								_ajax_nonce: responsiveSitesAdmin._ajax_nonce,
 							},
 							success: function( result ){
 								if( is_append ) {
@@ -2575,6 +2577,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				type: 'POST',
 				data: {
 					action: 'responsive-ready-sites-update-templates-library-complete',
+					_ajax_nonce  : responsiveSitesAdmin._ajax_nonce,
 				},
 			}).done(function (response) {
 				console.log("Ready Sites data Updated");
@@ -2611,6 +2614,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				type: 'POST',
 				data: {
 					action: 'responsive-ready-sites-update-templates-library',
+					_ajax_nonce  : responsiveSitesAdmin._ajax_nonce,
 				},
 			})
 				.done(function (response) {

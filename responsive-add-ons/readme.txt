@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 3.2.2
+Stable tag: 3.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -236,6 +236,9 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 
 == Changelog ==
 
+= 3.2.3 - 4th June 2025 =
+* Improvement : Strengthened the codebase.
+
 = 3.2.2 - 30th May 2025 =
 * Improvement: Improved the template import process. Now, you’ll see helpful error messages if something goes wrong during import.
 * Improvement: Optimized the templates search functionality for better performance.
@@ -243,12 +246,12 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 
 = 3.2.1 - 15th May 2025 =
 * Improvement: Improved UI for the Template Import Process to Enhance Accessibility.
-* Fix: Addressed the reported vulnerability.
+* Improvement : Strengthened the codebase.
 
 = 3.2.0 - 5th May 2025 =
 * Improvement: Added Custom Fonts card in Responsive Dashboard.
 * Improvement: Made compatible with Responsive theme 6.1.7.
-* Fix: Addressed the reported vulnerability.
+* Improvement : Strengthened the codebase.
 
 = 3.1.9 - 14th April 2025 =
 * Improvement:  Improved UI of Starter Template Library Page for enhanced readability.
