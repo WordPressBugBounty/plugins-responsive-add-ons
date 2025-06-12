@@ -1,6 +1,17 @@
 <?php
+/**
+ * WooCommerce - Customizer
+ *
+ * @package Responsive Addons
+ * @since 1.1.0
+ */
 
 if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
+	/**
+	 * Responsive_Customizer_WooCommerce_Add_Ons initial setup.
+	 *
+	 * @since 1.1.0
+	 */
 	class Responsive_Addons_Woocommerce_Ext {
 		/**
 		 * Member Varible
@@ -56,7 +67,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 
 			do_action( 'responsive_shop_pagination_infinite' );
 
-			$query_vars = array(); // Default value
+			$query_vars = array(); // Default value.
 			if ( isset( $_POST['query_vars'] ) ) {
 				// Pre-sanitizing the response using a custom function to ensure all values are cleaned.
 				// PHPCS incorrectly flags this as unsanitized, so the warning is suppressed.
@@ -65,7 +76,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 				if ( is_array( $query_vars ) ) {
 					$query_vars = map_deep( $query_vars, 'sanitize_text_field' );
 				} else {
-					$query_vars = array(); // Reset to an empty array if decoding fails
+					$query_vars = array(); // Reset to an empty array if decoding fails.
 				}
 			}
 			$query_vars['paged']       = isset( $_POST['page_no'] ) ? absint( $_POST['page_no'] ) : 1;
@@ -105,7 +116,15 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$this->init_quick_view();
 			$this->shop_pagination();
 		}
-
+		/**
+		 * Initializes the Quick View functionality for WooCommerce shop listings.
+		 *
+		 * Adds actions for loading scripts, CSS, buttons, and modal templates based on the
+		 * selected Quick View display option.
+		 *
+		 * @since 1.1.0
+		 * @return void
+		 */
 		function init_quick_view() {
 			$qv_enable = get_theme_mod( 'shop_pagination_quick_view' );
 			if ( 'disabled' !== $qv_enable ) {
@@ -126,24 +145,21 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		}
 
 		/**
-		 * Quick view localize.
+		 * Enqueues and localizes Quick View JavaScript variables.
 		 *
 		 * @since 1.0
-		 * @param array $localize   JS localize variables.
-		 * @return array
+		 * @return void
 		 */
 		function qv_js_localize() {
 			global $wp_query;
 
 			$suffix    = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
-			$directory = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? 'assets/js/' : 'assets/js/';
+			$directory = 'assets/js/';
+
 			wp_enqueue_script(
 				'responsive-shop-quick-view',
 				plugin_dir_url( __FILE__ ) . $directory . 'quick-view' . $suffix . '.js',
-				array(
-					'jquery',
-					'wp-util',
-				),
+				array( 'jquery', 'wp-util' ),
 				'3.17.2',
 				true
 			);
@@ -155,14 +171,18 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 				true
 			);
 
-			$localize['query_vars']                  = wp_json_encode( $wp_query->query_vars );
-			$localize['edit_post_url']               = admin_url( 'post.php?post={{id}}&action=edit' );
-			$localize['ajax_url']                    = admin_url( 'admin-ajax.php' );
-			$localize['shop_quick_view_enable']      = get_theme_mod( 'shop_pagination_quick_view' );
-			$localize['shop_quick_view_auto_height'] = true;
-			$localize['is_cart']                     = is_cart();
-			$localize['is_single_product']           = is_product();
-			$localize['view_cart']                   = esc_attr__( 'View cart', 'responsive-addons-pro' );
+			$localize = array(
+				'query_vars'                  => wp_json_encode( $wp_query->query_vars ),
+				'edit_post_url'               => admin_url( 'post.php?post={{id}}&action=edit' ),
+				'ajax_url'                    => admin_url( 'admin-ajax.php' ),
+				'shop_quick_view_enable'      => get_theme_mod( 'shop_pagination_quick_view' ),
+				'shop_quick_view_auto_height' => true,
+				'is_cart'                     => is_cart(),
+				'is_single_product'           => is_product(),
+				'view_cart'                   => esc_attr__( 'View cart', 'responsive-addons-pro' ),
+				'nonce'                       => wp_create_nonce( 'responsive_quick_view_nonce' ),
+			);
+
 			wp_localize_script( 'responsive-shop-quick-view', 'responsiveShopQuickView', $localize );
 		}
 
@@ -170,24 +190,25 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		 * Quick view ajax
 		 */
 		function responsive_load_product_quick_view_ajax() {
+			if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'responsive_quick_view_nonce' ) ) {
+				wp_send_json_error( 'Invalid nonce', 403 );
+			}
 			if ( ! isset( $_REQUEST['product_id'] ) ) {
 				die();
 			}
-
+			
 			$product_id = intval( $_REQUEST['product_id'] );
-
+			
 			// set the main wp query for the product.
 			wp( 'p=' . $product_id . '&post_type=product' );
-
+			
 			// remove product thumbnails gallery.
 			remove_action( 'woocommerce_product_thumbnails', 'woocommerce_show_product_thumbnails', 20 );
-
 			ob_start();
 
 			// load content template.
 			load_template( __DIR__ . '/template-parts/quick-view-product.php' );
-			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
+			echo ob_get_clean(); 
 			die();
 		}
 
@@ -204,60 +225,62 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		}
 
 		/**
-		 * Show the product title in the product loop. By default this is an H2.
+		 * Outputs the single product content structure as per configured element order.
 		 *
-		 * @param string $product_type product type.
+		 * @since 1.0.0
+		 * @return void
 		 */
 		public function single_product_content_structure() {
-
+		
 			$single_product_structure = Responsive\WooCommerce\responsive_woocommerce_product_elements_positioning();
-			if ( is_array( $single_product_structure ) && ! empty( $single_product_structure ) ) {
-
-				foreach ( $single_product_structure as $value ) {
-
-					switch ( $value ) {
-						case 'title':
-							/**
-							* Product Title on single product page.
-							*/
-							woocommerce_template_single_title();
-							break;
-						case 'price':
-							/**
-							* Product Price on single product.
-							*/
-							woocommerce_template_single_price();
-							break;
-						case 'ratings':
-							/**
-							* Rating on single product.
-							*/
-							woocommerce_template_single_rating();
-							break;
-						case 'short_desc':
-							/**
-							* Short description on single product.
-							*/
-							woocommerce_template_single_excerpt();
-							break;
-						case 'add_cart':
-							/**
-							* Add to cart action on single product
-							*/
+		
+			if ( ! is_array( $single_product_structure ) ) {
+				return;
+			}
+		
+			if ( empty( $single_product_structure ) ) {
+				return;
+			}
+		
+			foreach ( $single_product_structure as $value ) {
+				
+				if ($value == 'add_cart'){
+					continue;
+				}
+				switch ( $value ) {
+					case 'title':
+						woocommerce_template_single_title();
+						break;
+		
+					case 'price':
+						woocommerce_template_single_price();
+						break;
+		
+					case 'ratings':
+						woocommerce_template_single_rating();
+						break;
+		
+					case 'short_desc':
+						woocommerce_template_single_excerpt();
+						break;
+		
+					case 'add_cart':
+						if ( method_exists( $this, 'add_to_cart_quick_view_button' ) ) {
 							$this->add_to_cart_quick_view_button();
-							break;
-						case 'meta':
-							/**
-							* Meta content on single product
-							*/
-							woocommerce_template_single_meta();
-							break;
-						default:
-							break;
-					}
+						}
+						break;
+
+					case 'meta':
+						woocommerce_template_single_meta();
+						break;
+		
+					default:
+						break;
 				}
 			}
+		
 		}
+		
 		/**
 		 * Footer markup.
 		 */
@@ -282,7 +305,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$button  = apply_filters( 'responsive_woo_add_quick_view_button_html', $button, $label, $product );
 
 			echo wp_kses_post( $button, $allowed_html );
-			// echo  $button;
 		}
 
 		/**
@@ -302,7 +324,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$button = apply_filters( 'responsive_woo_add_quick_view_text_html', $button, $label, $product );
 
 			echo wp_kses_post( $button, $allowed_html );
-			// echo $button;
 		}
 
 		/**
@@ -319,7 +340,6 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$button = apply_filters( 'responsive_woo_add_quick_view_data_html', $button, $product );
 
 			echo wp_kses_post( $button, $allowed_html );
-			// echo $button;
 		}
 
 		/**
@@ -456,10 +476,11 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 
 			$infinite_event = get_theme_mod( 'shop-infinite-scroll-event', 'scroll' );
 			$load_more_text = get_theme_mod( 'shop-load-more-text', 'Load More' );
-
+			
 			if ( '' === $load_more_text ) {
 				$load_more_text = __( 'Load More', 'responsive-addons-pro' );
 			}
+
 			if ( $wp_query->max_num_pages > 1 ) {
 				?>
 				<nav class="responsive-shop-pagination-infinite">
@@ -523,13 +544,14 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 				$add_to_cart = woocommerce_template_single_add_to_cart();
 			}
 
-			echo $add_to_cart; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $add_to_cart; 
 		}
 		/**
-		 * Update the cart fragments on AJAX
+		 * Update the cart fragments on AJAX.
 		 *
-		 * @param [type] $fragments
-		 * @return void
+		 * @since 1.0.0
+		 * @param array $fragments Array of cart fragments.
+		 * @return array Modified cart fragments.
 		 */
 		public function woocommerce_header_add_to_cart_fragment( $fragments ) {
 			$fragments['.responsive-woo-total']      = '<span class="responsive-woo-total">' . WC()->cart->get_total() . '</span>';
@@ -538,11 +560,12 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			return $fragments;
 		}
 		/**
-		 * ajax add to cart button
+		 * Add quantity input to loop add-to-cart button for Ajax behavior.
 		 *
-		 * @param [type] $html
-		 * @param [type] $product
-		 * @return void
+		 * @since 1.0.0
+		 * @param string     $html    Original HTML output.
+		 * @param WC_Product $product Product object.
+		 * @return string Modified HTML with quantity input.
 		 */
 		public function quantity_inputs_for_loop_ajax_add_to_cart( $html, $product ) {
 			if ( $product && $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock() && ! $product->is_sold_individually() ) {

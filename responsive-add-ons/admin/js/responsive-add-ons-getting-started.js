@@ -132,7 +132,9 @@ jQuery( document ).ready(
 						origin: data.origin,
 					},
 					success: function (response) {
-						location.reload();
+						setTimeout( () => {
+							location.reload();
+						}, 800 );
 					},
 					error: function (error) {
 					}

@@ -580,6 +580,32 @@ $responsive_sites_header_after_connection_success = false;
 	</div>
 	<div class="responsive-sites-separator"></div>
 	<div class="theme-browser rendered">
+		<div id="responsive-sites-loading" class="themes wp-clearfix">
+			<div class="responsive-sites-loading-skeleton">
+				<div class="responsive-sites-loading-skeleton-image"></div>
+				<div class="responsive-sites-loading-skeleton-content">
+					<div class="responsive-sites-loading-skeleton-line responsive-sites-loading-skeleton-title"></div>
+				</div>
+			</div>
+			<div class="responsive-sites-loading-skeleton">
+				<div class="responsive-sites-loading-skeleton-image"></div>
+				<div class="responsive-sites-loading-skeleton-content">
+					<div class="responsive-sites-loading-skeleton-line responsive-sites-loading-skeleton-title"></div>
+				</div>
+			</div>
+			<div class="responsive-sites-loading-skeleton">
+				<div class="responsive-sites-loading-skeleton-image"></div>
+				<div class="responsive-sites-loading-skeleton-content">
+					<div class="responsive-sites-loading-skeleton-line responsive-sites-loading-skeleton-title"></div>
+				</div>
+			</div>
+			<div class="responsive-sites-loading-skeleton">
+				<div class="responsive-sites-loading-skeleton-image"></div>
+				<div class="responsive-sites-loading-skeleton-content">
+					<div class="responsive-sites-loading-skeleton-line responsive-sites-loading-skeleton-title"></div>
+				</div>
+			</div>
+		</div>
 		<div id="responsive-sites" class="themes wp-clearfix"></div>
 	</div>
 </div>
@@ -1401,7 +1427,7 @@ $responsive_sites_header_after_connection_success = false;
 						<div class="responsive-sites-import-done-success-section">
 							<div class="responsive-sites-import-done-success">
 								<p class="responsive-sites-after-import-rate-text">
-									<?php esc_html_e( 'Every feedback inspires us to keep adding features and improving. If you’re enjoying the plugin, we’d really appreciate a 5-star rating.', 'responsive-addons' ); ?>
+									<?php esc_html_e( 'Every feedback inspires us to keep adding features and improving. If you\'re enjoying the plugin, we\'d really appreciate a 5-star rating.', 'responsive-addons' ); ?>
 								</p>
 							</div>
 							<div class="responsive-sites-after-import-rate-plugin-btn-wrap" >

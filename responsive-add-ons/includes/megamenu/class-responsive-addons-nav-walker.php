@@ -32,6 +32,7 @@ class Responsive_Addons_Nav_Walker {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'dequeue_theme_script' ), 999 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_toastr_assets' ) );
 		if ( 'nav-menus.php' === $pagenow ) {
 			add_action( 'admin_footer', array( $this, 'responsive_pro_mega_menu_modal' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_backend_css' ) );
@@ -40,6 +41,25 @@ class Responsive_Addons_Nav_Walker {
 		add_action( 'rest_api_init', array( $this, 'responive_pro_rest_routes' ) );
 	}
 
+	public function enqueue_toastr_assets() {
+		// Enqueue Toastr CSS
+		wp_enqueue_style('toastr-css', RESPONSIVE_ADDONS_URI .'/admin/css/toastr.min.css', array(), 'latest');
+		// Enqueue Toastr JS
+		wp_enqueue_script('toastr-js', RESPONSIVE_ADDONS_URI . '/admin/js/toastr.min.js', array('jquery'), 'latest', true);
+		// Enqueue your custom JS script
+		wp_enqueue_script('custom-sync-script', get_template_directory_uri() . '/js/sync-library.js', array('jquery', 'toastr-js'), '1.0', true);
+	
+		// Pass AJAX URL and nonce to the script
+		wp_localize_script('custom-sync-script', 'responsiveSitesAdmin', array(
+			'ajaxurl' => admin_url('admin-ajax.php'),
+			'_ajax_nonce' => wp_create_nonce('sync_templates_nonce'),
+			'syncTemplatesLibraryStart' => __('Syncing templates library started...', 'text-domain'),
+			'dismiss' => __('Dismiss this notice', 'text-domain'),
+			'strings' => array(
+				'syncCompleteMessage' => __('Templates library synced successfully!', 'text-domain'),
+			),
+		));
+	}
 	/**
 	 * Add custom megamenu fields data to the menu.
 	 *

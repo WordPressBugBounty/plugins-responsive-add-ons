@@ -300,11 +300,16 @@ var ResponsiveSitesAjaxQueue = (function() {
 			if (Object.keys(responsiveSitesAdmin.default_page_builder_sites).length) {
 				var template = wp.template('responsive-sites-list');
 				var data = null;
+				$('#responsive-sites').empty();
+				$('#responsive-sites-loading').addClass('responsive-sites-loading-visible');
 		
 				try {
 					const updated_sites = await ResponsiveSitesAdmin.__updateFavoriteSites();
 					data = updated_sites.data;
 					data = ResponsiveSitesAdmin._filter_sites_by_page_builder(data);
+					if ( null !== data && $('#responsive-sites-loading').hasClass('responsive-sites-loading-visible') ) {
+						$('#responsive-sites-loading').removeClass('responsive-sites-loading-visible');
+					}
 					ResponsiveSitesAdmin.add_sites(data);
 				} catch (error) {
 					console.log(error);
@@ -1092,6 +1097,9 @@ var ResponsiveSitesAjaxQueue = (function() {
 									importCapsHandler(true);
 								}
 							} else {
+								if( response.data?.activate_results === null ) {
+									ResponsiveSitesAdmin._display_error_message("Failed to verify the connection. Try import again." );
+								}
 								ResponsiveSitesAdmin._display_error_message(response.data || "No Connections available. Upgrade the plan to import the template." );
 							}
 						}
@@ -2584,77 +2592,46 @@ var ResponsiveSitesAjaxQueue = (function() {
 			});
 		},
 
-		_sync_library: function (event) {
+		_sync_library : function (event) {
 			event.preventDefault();
-			var button = $(this);
-
-			if (button.hasClass('updating-message')) {
+			const button = $(this);
+			if (button.hasClass('updating-message')
+		) {
 				return;
 			}
-
 			button.addClass('updating-message');
-
-			const refreshNoticeIcon = `<svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M18 4L14 8H17C17 11.315 14.315 14 11 14C9.985 14 9.035 13.745 8.195 13.305L6.735 14.765C7.975 15.54 9.43 16 11 16C15.42 16 19 12.42 19 8H22L18 4ZM5 8C5 4.685 7.685 2 11 2C12.015 2 12.965 2.255 13.805 2.695L15.265 1.235C14.025 0.46 12.57 0 11 0C6.58 0 3 3.58 3 8H0L4 12L8 8H5Z" fill="#A6A6A7"/>
-								</svg>`;
-
-			$('.responsive-ready-sites-sync-templates-library-message').remove();
-			var noticeContent = wp.updates.adminNotice({
-				className: 'responsive-ready-sites-sync-templates-library-message responsive-ready-sites-notice notice notice-info',
-				message: '<span class="responsive-ready-sites-notice-icon-container"><span class="responsive-ready-sites-notice-icon">' + refreshNoticeIcon + '</span>' + '<span class="responsive-ready-sites-notice-message>' + responsiveSitesAdmin.syncTemplatesLibraryStart + '</span></span>' + '<button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
+			toastr.info(responsiveSitesAdmin.syncTemplatesLibraryStart, 'Syncing', {
+				timeOut: 3000,
 			});
-
-			$('#responsive-sites-header').css('margin-top', '0px');
-			$('#responsive-sites-header').before(noticeContent);
-
-			$(document).trigger('wp-updates-notice-added');
-
+		
 			$.ajax({
 				url: responsiveSitesAdmin.ajaxurl,
 				type: 'POST',
 				data: {
 					action: 'responsive-ready-sites-update-templates-library',
-					_ajax_nonce  : responsiveSitesAdmin._ajax_nonce,
+					_ajax_nonce: responsiveSitesAdmin._ajax_nonce,
 				},
 			})
 				.done(function (response) {
 					if (response.success) {
-						if ('updated' === response.data) {
-
-							$('#wpbody-content').find('.responsive-ready-sites-sync-templates-library-message').remove();
-
-							const successNoticeIcon = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-														<mask id="mask0_802_1480" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20">
-														<path d="M10 19C11.1821 19.0015 12.3529 18.7693 13.445 18.3169C14.5371 17.8645 15.5291 17.2008 16.3639 16.3639C17.2008 15.5291 17.8645 14.5371 18.3169 13.445C18.7693 12.3529 19.0015 11.1821 19 10C19.0015 8.81789 18.7693 7.64714 18.3169 6.55502C17.8645 5.4629 17.2008 4.47093 16.3639 3.6361C15.5291 2.79918 14.5371 2.13545 13.445 1.68307C12.3529 1.23068 11.1821 0.998549 10 1.00001C8.81789 0.998549 7.64714 1.23068 6.55502 1.68307C5.4629 2.13545 4.47093 2.79918 3.6361 3.6361C2.79918 4.47093 2.13545 5.4629 1.68307 6.55502C1.23068 7.64714 0.998549 8.81789 1.00001 10C0.998549 11.1821 1.23068 12.3529 1.68307 13.445C2.13545 14.5371 2.79918 15.5291 3.6361 16.3639C4.47093 17.2008 5.4629 17.8645 6.55502 18.3169C7.64714 18.7693 8.81789 19.0015 10 19Z" fill="white" stroke="white" stroke-width="2" stroke-linejoin="round"/>
-														<path d="M6.40039 9.99999L9.10039 12.7L14.5004 7.29999" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-														</mask>
-														<g mask="url(#mask0_802_1480)">
-														<path d="M-2 -2H22V22H-2V-2Z" fill="#2BAD47"/>
-														</g>
-														</svg>`;
-
-							var noticeContent = wp.updates.adminNotice({
-								className: 'notice responsive-ready-sites-notice notice-success is-dismissible responsive-ready-sites-sync-templates-library-message',
-								message:  '<span class="responsive-ready-sites-notice-icon-container"><span class="responsive-ready-sites-notice-icon">' + successNoticeIcon + '</span>' + '<span class="responsive-ready-sites-notice-message">' + responsiveSitesAdmin.strings.syncCompleteMessage + '</span></span>' + ' <button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
-							});
-							$('#responsive-sites-header').css('margin-top', '0px');
-							$('#responsive-sites-header').before(noticeContent);
-							button.removeClass('updating-message');
-						} else {
-							ResponsiveSitesAdmin._sync_templates_library_with_ajax();
-						}
-					} else {
-						$('#wpbody-content').find('.responsive-ready-sites-sync-templates-library-message').remove();
-						var noticeContent = wp.updates.adminNotice({
-							className: 'notice responsive-ready-sites-notice notice-error is-dismissible responsive-ready-sites-sync-templates-library-message',
-							message: '<span>' +  response.data + '</span>' + ' <button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
+						toastr.success(responsiveSitesAdmin.strings.syncCompleteMessage, 'Success', {
+							timeOut: 3000,
 						});
-						$('#responsive-sites-header').css('margin-top', '0px');
-						$('#responsive-sites-header').before(noticeContent);
-						button.removeClass('updating-message');
+					} else {
+						toastr.error('An error occurred while syncing.', 'Error', {
+							timeOut: 3000,
+						});
 					}
+				})
+				.fail(function () {
+					toastr.error('Failed to sync library. Please try again later.', 'Error', {
+						timeOut: 3000,
+					});
+				})
+				.always(function () {
+					button.removeClass('updating-message');
 				});
-		},
+		},		
 
 		_toggleSiteTypeFilter: function( e ) {
 			e.stopPropagation();
@@ -2943,6 +2920,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 						if (!ResponsiveSitesAdmin.isEmpty(items)) {
 							if (searchTemplateFlag) {
 								ResponsiveSitesAdmin.add_sites_after_search(items);
+								$('#responsive-sites-loading').removeClass('responsive-sites-loading-visible');
 							} else {
 								ResponsiveSitesAdmin.add_sites(items);
 							}
@@ -2955,6 +2933,9 @@ var ResponsiveSitesAjaxQueue = (function() {
 								$('body').addClass('responsive-sites-no-search-result');
 							}
 							$('.search-container').removeClass('hide-border-radius');
+							if ( $('#responsive-sites-loading').hasClass('responsive-sites-loading-visible') ) {
+								$('#responsive-sites-loading').removeClass('responsive-sites-loading-visible')
+							}
 							$('#responsive-sites').html(wp.template('responsive-sites-suggestions'));
 						}
 					})
@@ -2985,6 +2966,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 				$('#clear-search').css('display', 'block');
 				$('#responsive-sites-admin').addClass('searching');
 				searchTemplateFlag = true;
+				$('#responsive-sites').empty();
+				$('#responsive-sites-loading').addClass('responsive-sites-loading-visible')
 			} else {
 				search_input.removeClass('has-input');
 				$('#clear-search').css('display', 'none');
@@ -3408,7 +3391,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				})
 				.fail(function(jqXHR) {
 				  reject('Error'); // Reject the Promise with an error message
-				  ResponsiveSitesAdmin._display_error_message('Error while updating favorite templates. Please try again.');
+				  ResponsiveSitesAdmin._log_error('Error while updating favorite templates. Please try again.');
 				});
 			  });
 

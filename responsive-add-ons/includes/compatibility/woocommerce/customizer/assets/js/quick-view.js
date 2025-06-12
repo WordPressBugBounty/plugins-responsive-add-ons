@@ -88,16 +88,12 @@
 			if ( ! quick_view.hasClass( 'loading' ) ) {
 				quick_view.addClass( 'loading' );
 			}
-
 			if ( ! quick_view_bg.hasClass( 'responsive-quick-view-bg-ready' ) ) {
 				quick_view_bg.addClass( 'responsive-quick-view-bg-ready' );
 			}
 
 			// stop loader
 			$( document ).trigger( 'responsive_quick_view_loading' );
-
-			// Append the single product markup into the popup.
-			// Process the AJAX to open the product.
 			$.ajax(
 				{
 					url        : responsiveShopQuickView.ajax_url,
@@ -105,7 +101,8 @@
 					dataType   : 'html',
 					data       : {
 						action     : 'responsive_load_product_quick_view',
-						product_id : product_id
+						product_id : product_id,
+						nonce: responsiveShopQuickView.nonce
 					},
 					success: function (data) {
 						$( document ).find( '#responsive-quick-view-modal' ).find( '#responsive-quick-view-content' ).html( data );

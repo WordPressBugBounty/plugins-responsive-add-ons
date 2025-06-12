@@ -154,7 +154,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 					array(
 						'default'           => 'Load More',
 						'transport'         => 'refresh',
-						'sanitize_callback' => 'responsive_sanitize_select',
+						'sanitize_callback' => 'sanitize_text_field',
 					)
 				);
 				$wp_customize->add_control(

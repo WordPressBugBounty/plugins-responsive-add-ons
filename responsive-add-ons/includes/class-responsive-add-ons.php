@@ -3204,7 +3204,7 @@ class Responsive_Add_Ons {
 		$activate_args = $wcam_lib_responsive_addons->activate( $args, $product_id );
 		$status_args   = $wcam_lib_responsive_addons->status( $args, $product_id );
 		$ready_site_subscribe_checkbox = isset( $_POST['ready_sites_subscripiton_checkbox'] ) ? sanitize_key( wp_unslash( $_POST['ready_sites_subscripiton_checkbox'] ) ) : '';
-		$userEmail = isset( $_POST['user_email'] ) ? sanitize_key( wp_unslash( $_POST['user_email'] ) ) : '';
+		$userEmail = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
 
 
 		$response      = $this->cc_app_auth->post(
@@ -3288,8 +3288,8 @@ class Responsive_Add_Ons {
 		} else {
 			wp_send_json_success(
 				array(
-					'activate_results' => $response_body->activate_results,
-					'message'          => $response_body->message,
+					'activate_results' => $response_body->activate_results ?? null,
+					'message'          => $response_body->message ?? "Failed to verify the connection. Try import again.",
 				)
 			);
 		}

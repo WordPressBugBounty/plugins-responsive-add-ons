@@ -1195,6 +1195,63 @@
 		}
 	);
 
+	api('box_shadow_options', function(value) {
+		value.bind(function(newval) {
+			// Define shadow levels (1–5)
+			const shadowPresets = {
+				1: '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.1)',
+				2: '0 3px 6px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1)',
+				3: '0 10px 20px rgba(0, 0, 0, 0.15), 0 6px 6px rgba(0, 0, 0, 0.1)',
+				4: '0 14px 28px rgba(0, 0, 0, 0.16), 0 10px 10px rgba(0, 0, 0, 0.12)',
+				5: '0 20px 30px rgba(0, 0, 0, 0.2), 0 15px 12px rgba(0, 0, 0, 0.15)'
+			};
+	
+			const boxShadow = shadowPresets[newval] || 'none';
+	
+			// Apply shadow on desktop screens
+			function applyShadowIfDesktop(x) {
+				if (x.matches) {
+					jQuery('.woocommerce ul.products .product.type-product').css('box-shadow', boxShadow);
+				}
+			}
+	
+			const mq = window.matchMedia("(min-width: 992px)");
+			applyShadowIfDesktop(mq);
+			mq.addEventListener('change', applyShadowIfDesktop);
+		});
+	});
+	
+	// Hover box shadow
+	api('box_shadow_hover_options', function(value) {
+		value.bind(function(newval) {
+			var shadowPresets = {
+				1: '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.1)',
+				2: '0 3px 6px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1)',
+				3: '0 10px 20px rgba(0, 0, 0, 0.15), 0 6px 6px rgba(0, 0, 0, 0.1)',
+				4: '0 14px 28px rgba(0, 0, 0, 0.16), 0 10px 10px rgba(0, 0, 0, 0.12)',
+				5: '0 20px 30px rgba(0, 0, 0, 0.2), 0 15px 12px rgba(0, 0, 0, 0.15)'
+			};
+
+			var hoverShadow = shadowPresets[newval] || 'none';
+			
+			var styleTag = document.getElementById('dynamic-hover-shadow-style');
+			if (!styleTag) {
+				styleTag = document.createElement('style');
+				styleTag.id = 'dynamic-hover-shadow-style';
+				document.head.appendChild(styleTag);
+			}
+
+			styleTag.textContent = [
+				'@media (min-width: 992px) {',
+				'  .woocommerce ul.products .product.type-product:hover {',
+				'    box-shadow: ' + hoverShadow + ' !important;',
+				'  }',
+				'}'
+			].join('\n');
+		});
+	});
+
+
 	// header woo cart border radius.
 	function applyCartRadius(controlName) {
 		api(

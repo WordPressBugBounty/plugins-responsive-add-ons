@@ -46,6 +46,15 @@ if ( ! function_exists( 'is_responsive_version_greater' ) ) {
 
 /* To convert font size units */
 if ( ! function_exists( 'responsive_typography_unit_conversion' ) ) {
+	/**
+	 * Converts a given font size from various CSS units (px, rem, em, %) to a pixel value.
+	 *
+	 * @param string    $font_size        The font size value including unit (e.g., '16px', '1.2em', '100%').
+	 * @param int|float $parent_font_size Optional. The parent font size in pixels, used for relative units. Default 0.
+	 * @param int|float $root_font_size   Optional. The root font size in pixels, used for rem conversion. Default 0.
+	 *
+	 * @return float|int The font size converted to pixels.
+	 */
 	function responsive_typography_unit_conversion( $font_size, $parent_font_size = 0, $root_font_size = 0 ) {
 		if ( false !== strpos( $font_size, 'px' ) ) {
 			$font_size = str_replace( 'px', '', $font_size );
@@ -105,14 +114,12 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 			$cart_mobile_top_right_radius    = absint( get_theme_mod( 'responsive_cart_radius_mobile_top_right_radius', 0 ) );
 			$cart_mobile_bottom_right_radius = absint( get_theme_mod( 'responsive_cart_radius_mobile_bottom_right_radius', 0 ) );
 			$cart_mobile_bottom_left_radius  = absint( get_theme_mod( 'responsive_cart_radius_mobile_bottom_left_radius', 0 ) );
-
 		}
 		if ( 'off' === get_option( 'rpro_woocommerce_enable' ) ) {
 			$breadcrumb_flag   = 1;
 			$toolbar_flag      = 1;
 			$content_alignment = 'left';
 		}
-
 		$sticky_header_background_color             = get_theme_mod( 'responsive_sticky_header_background_color' );
 		$sticky_header_site_title_color             = get_theme_mod( 'responsive_sticky_header_site_title_color' );
 		$sticky_header_site_title_hover_color       = get_theme_mod( 'responsive_sticky_header_site_title_hover_color' );
@@ -412,10 +419,9 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 					$box_shadow_hover = 'none';
 			}
 		}
-		$custom_css = '';
+		$custom_css = "";
 		if ( 'on' === get_option( 'rpro_woocommerce_enable' ) ) {
-
-			$custom_css = "
+			$custom_css .= "
 				.woocommerce .woocommerce-breadcrumb{
 					display: {$breadcrumb_display};
 				}
@@ -762,7 +768,7 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 				';
 			}
 			if ( 'outline' === $cart_style ) {
-				$custom_css = "
+				$custom_css .= "
 				.res-addon-cart-wrap {
 					border: {$header_woo_cart_border_width}px solid {$cart_color};
 					color: {$cart_color};
@@ -780,7 +786,7 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 			";
 			}
 			if ( 'fill' === $cart_style ) {
-				$custom_css = "
+				$custom_css .= "
 				.res-addon-cart-wrap {
 					background-color: {$cart_color};
 				}
@@ -1305,7 +1311,7 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 		}
 
 		$responsive_disable_sticky_header_mobile_menu = get_theme_mod( 'responsive_disable_sticky_header_mobile_menu', 0 );
-		if ( '1' == $responsive_disable_sticky_header_mobile_menu ) {
+		if ( '1' === $responsive_disable_sticky_header_mobile_menu ) {
 			$custom_css .= "@media (max-width:{$mobile_menu_breakpoint}px) {
 				#masthead.sticky-header, .res-transparent-header #masthead.sticky-header, .res-transparent-header:not(.woocommerce-cart):not(.woocommerce-checkout) #masthead.sticky-header {
 					position: relative;
@@ -1427,50 +1433,50 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 			}
 
 			// Popup padding.
-			if ( isset( $top_padding ) && '50' !== $top_padding && '' !== $top_padding
-					|| isset( $right_padding ) && '25' !== $right_padding && '' !== $right_padding
-					|| isset( $bottom_padding ) && '50' !== $bottom_padding && '' !== $bottom_padding
-					|| isset( $left_padding ) && '25' !== $left_padding && '' !== $left_padding ) {
+			if ( ( isset( $top_padding ) && '50' !== $top_padding && '' !== $top_padding )
+				|| ( isset( $right_padding ) && '25' !== $right_padding && '' !== $right_padding )
+				|| ( isset( $bottom_padding ) && '50' !== $bottom_padding && '' !== $bottom_padding )
+				|| ( isset( $left_padding ) && '25' !== $left_padding && '' !== $left_padding ) ) {
 				$custom_css .= '#woo-popup-wrap #woo-popup-inner{padding:' . responsive_spacing_css( $top_padding, $right_padding, $bottom_padding, $left_padding ) . '}';
 			}
 
 			// Tablet popup padding.
-			if ( isset( $tablet_top_padding ) && '20' !== $tablet_top_padding && '' !== $tablet_top_padding
-					|| isset( $tablet_right_padding ) && '20' !== $tablet_right_padding && '' !== $tablet_right_padding
-					|| isset( $tablet_bottom_padding ) && '20' !== $tablet_bottom_padding && '' !== $tablet_bottom_padding
-					|| isset( $tablet_left_padding ) && '20' !== $tablet_left_padding && '' !== $tablet_left_padding ) {
-					$custom_css .= '@media (max-width: 768px){#woo-popup-wrap #woo-popup-inner{padding:' . responsive_spacing_css( $tablet_top_padding, $tablet_right_padding, $tablet_bottom_padding, $tablet_left_padding ) . '}}';
+			if ( ( isset( $tablet_top_padding ) && '20' !== $tablet_top_padding && '' !== $tablet_top_padding )
+				|| ( isset( $tablet_right_padding ) && '20' !== $tablet_right_padding && '' !== $tablet_right_padding )
+				|| ( isset( $tablet_bottom_padding ) && '20' !== $tablet_bottom_padding && '' !== $tablet_bottom_padding )
+				|| ( isset( $tablet_left_padding ) && '20' !== $tablet_left_padding && '' !== $tablet_left_padding ) ) {
+				$custom_css .= '@media (max-width: 768px){#woo-popup-wrap #woo-popup-inner{padding:' . responsive_spacing_css( $tablet_top_padding, $tablet_right_padding, $tablet_bottom_padding, $tablet_left_padding ) . '}}';
 			}
 
 			// Mobile popup padding.
-			if ( isset( $mobile_top_padding ) && '' !== $mobile_top_padding
-					|| isset( $mobile_right_padding ) && '' !== $mobile_right_padding
-					|| isset( $mobile_bottom_padding ) && '' !== $mobile_bottom_padding
-					|| isset( $mobile_left_padding ) && '' !== $mobile_left_padding ) {
-					$custom_css .= '@media (max-width: 480px){#woo-popup-wrap #woo-popup-inner{padding:' . responsive_spacing_css( $mobile_top_padding, $mobile_right_padding, $mobile_bottom_padding, $mobile_left_padding ) . '}}';
+			if ( ( isset( $mobile_top_padding ) && '' !== $mobile_top_padding )
+				|| ( isset( $mobile_right_padding ) && '' !== $mobile_right_padding )
+				|| ( isset( $mobile_bottom_padding ) && '' !== $mobile_bottom_padding )
+				|| ( isset( $mobile_left_padding ) && '' !== $mobile_left_padding ) ) {
+				$custom_css .= '@media (max-width: 480px){#woo-popup-wrap #woo-popup-inner{padding:' . responsive_spacing_css( $mobile_top_padding, $mobile_right_padding, $mobile_bottom_padding, $mobile_left_padding ) . '}}';
 			}
 
 			// Popup border radius.
-			if ( isset( $top_radius ) && '600' !== $top_radius && '' !== $top_radius
-					|| isset( $right_radius ) && '600' !== $right_radius && '' !== $right_radius
-					|| isset( $bottom_radius ) && '600' !== $bottom_radius && '' !== $bottom_radius
-					|| isset( $left_radius ) && '600' !== $left_radius && '' !== $left_radius ) {
+			if ( ( isset( $top_radius ) && '600' !== $top_radius && '' !== $top_radius )
+				|| ( isset( $right_radius ) && '600' !== $right_radius && '' !== $right_radius )
+				|| ( isset( $bottom_radius ) && '600' !== $bottom_radius && '' !== $bottom_radius )
+				|| ( isset( $left_radius ) && '600' !== $left_radius && '' !== $left_radius ) ) {
 				$custom_css .= '#woo-popup-wrap #woo-popup-inner{border-radius:' . responsive_spacing_css( $top_radius, $right_radius, $bottom_radius, $left_radius ) . '}';
 			}
 
 			// Tablet popup border radius.
-			if ( isset( $tablet_top_radius ) && '' !== $tablet_top_radius
-					|| isset( $tablet_right_radius ) && '' !== $tablet_right_radius
-					|| isset( $tablet_bottom_radius ) && '' !== $tablet_bottom_radius
-					|| isset( $tablet_left_radius ) && '' !== $tablet_left_radius ) {
+			if ( ( isset( $tablet_top_radius ) && '' !== $tablet_top_radius )
+				|| ( isset( $tablet_right_radius ) && '' !== $tablet_right_radius )
+				|| ( isset( $tablet_bottom_radius ) && '' !== $tablet_bottom_radius )
+				|| ( isset( $tablet_left_radius ) && '' !== $tablet_left_radius ) ) {
 				$custom_css .= '@media (max-width: 768px){#woo-popup-wrap #woo-popup-inner{border-radius:' . responsive_spacing_css( $tablet_top_radius, $tablet_right_radius, $tablet_bottom_radius, $tablet_left_radius ) . '}}';
 			}
 
 			// Mobile popup border radius.
-			if ( isset( $mobile_top_radius ) && '' !== $mobile_top_radius
-					|| isset( $mobile_right_radius ) && '' !== $mobile_right_radius
-					|| isset( $mobile_bottom_radius ) && '' !== $mobile_bottom_radius
-					|| isset( $mobile_left_radius ) && '' !== $mobile_left_radius ) {
+			if ( ( isset( $mobile_top_radius ) && '' !== $mobile_top_radius )
+				|| ( isset( $mobile_right_radius ) && '' !== $mobile_right_radius )
+				|| ( isset( $mobile_bottom_radius ) && '' !== $mobile_bottom_radius )
+				|| ( isset( $mobile_left_radius ) && '' !== $mobile_left_radius ) ) {
 				$custom_css .= '@media (max-width: 480px){#woo-popup-wrap #woo-popup-inner{border-radius:' . responsive_spacing_css( $mobile_top_radius, $mobile_right_radius, $mobile_bottom_radius, $mobile_left_radius ) . '}}';
 			}
 
