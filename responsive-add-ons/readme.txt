@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 3.2.4
+Stable tag: 3.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -236,7 +236,11 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 
 == Changelog ==
 
-= 3.2.4 - 12th May 2025 =
+= 3.2.5 - 11th July 2025 =
+* Fix - Fixed dashboard UI issues with non-English characters in the white label.
+* Fix - Fixed Responsive theme's native cart popup settings.
+
+= 3.2.4 - 12th June 2025 =
 * Improvement – UI enhancements on the template library screen.
 * Fix – WooCommerce Module: Breadcrumb, toolbar, and content alignment settings.
 * Fix – WooCommerce Module: Box shadow, hover shadow, product image hover style, and price color issues.

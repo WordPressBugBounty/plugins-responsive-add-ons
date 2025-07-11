@@ -87,6 +87,16 @@ if ( ! function_exists( 'responsive_addons_menu_search_icon' ) ) {
 	}
 }
 
+/**
+ * Check if off canvas is active
+ *
+ * @return mixed
+ */
+function enable_native_cart_popup_check() {
+	$val = get_theme_mod( 'responsive_enable_native_cart_popup', false );
+	return ( $val === true || $val === '1' || $val === 1 );
+}
+
 if ( ! function_exists( 'responsive_addons_checkbox_control' ) ) {
 	/**
 	 * [responsive_addons_checkbox_control description]

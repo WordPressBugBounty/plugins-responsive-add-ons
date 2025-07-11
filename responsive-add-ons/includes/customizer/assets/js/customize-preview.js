@@ -385,33 +385,27 @@
 	}
 
 	// Native POPUP
-	api(
-		'responsive_native_cart_popup_display',
-		function ( value ) {
-			value.bind(
-				function ( newval ) {
+	api( 'responsive_native_cart_popup_display', function( value ) {
+		value.bind( function( newval ) {
+			if ( newval === true || newval === '1' || newval === 1 ) {
+				// Show popup container if hidden
+				$( '#woo-popup-wrap' ).css( { display: 'block' } );
 
-					if ( newval === true ) {
+				// Open magnific popup modal
+				$.magnificPopup.open({
+					items: {
+						src: '#woo-popup-wrap',
+					},
+					modal: true,
+					closeOnBgClick: true,
+				});
+			} else {
+				// Close popup if open
+				$.magnificPopup.close();
+			}
+		});
+	});
 
-							$( '#woo-popup-wrap' ).css( {'display':'block'} );
-							$.magnificPopup.open(
-								{
-									items: {
-										src: '#woo-popup-wrap',
-
-									},
-									modal: true,
-									closeOnBgClick: true
-
-								}
-							);
-					} else {
-						$.magnificPopup.close();
-					}
-				}
-			);
-		}
-	);
 
 	// Title text
 	api(

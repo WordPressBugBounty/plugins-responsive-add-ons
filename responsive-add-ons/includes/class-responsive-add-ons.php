@@ -846,17 +846,22 @@ class Responsive_Add_Ons {
 		);
 		wp_localize_script( 'install-responsive-theme', 'ResponsiveInstallThemeVars', $data );
 		$settings   = get_option( 'rpro_elementor_settings' );
-		$theme_name = ! empty( $settings['theme_name'] ) ? strtolower( $settings['theme_name'] ) : 'responsive';
+		$theme_name = ! empty( $settings['theme_name'] ) ? mb_strtolower( $settings['theme_name'], 'UTF-8' ) : 'responsive';
+		$theme_name = str_replace( [ ' ', '/' ], '-', $theme_name );
 
-		// Check if white labeled theme name has white space. If found, replace white space with hypen.
-		$theme_name               = str_replace( ' ', '-', $theme_name );
-		$theme_name               = str_replace( '/', '-', $theme_name );
-		$characters_to_remove     = array( "'", '\\', '?', '|', '*' ); // Add any other characters want to remove.
-		$theme_name               = str_replace( $characters_to_remove, '', $theme_name );
+		$characters_to_remove = [ "'", '\\', '?', '|', '*', '"', '`' ];
+		$theme_name = str_replace( $characters_to_remove, '', $theme_name );
+
+		$theme_name = preg_replace( '/[^\p{L}\p{N}-]/u', '', $theme_name );
+
+
 		$pro_plugin_active_status = is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) ? true : false;
+		
+		$parts = explode('_page_responsive_add_ons', $hook);
+		$encoded_part = isset($parts[0]) ? $parts[0] : '';
+		$decoded_theme_name = urldecode($encoded_part);
 
-		if ( ( 'toplevel_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons' === $hook ) && empty( $_GET['action'] ) ) {
-
+		if ( ( 'toplevel_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons' === $hook  || $theme_name . '_page_responsive_add_ons' === $decoded_theme_name . '_page_responsive_add_ons') && empty( $_GET['action'] ) ) {
 			wp_enqueue_script( 'responsive-ready-sites-admin-js', RESPONSIVE_ADDONS_URI . 'admin/js/responsive-ready-sites-admin.js', array( 'jquery', 'wp-util', 'updates', 'jquery-ui-autocomplete', 'canvas-confetti' ), RESPONSIVE_ADDONS_VER, true );
 			wp_enqueue_script( 'canvas-confetti', 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js', array(), RESPONSIVE_ADDONS_VER, true );
 
@@ -934,14 +939,17 @@ class Responsive_Add_Ons {
 	 */
 	public function responsive_ready_sites_admin_enqueue_styles( $hook = '' ) {
 		$settings   = get_option( 'rpro_elementor_settings' );
-		$theme_name = ! empty( $settings['theme_name'] ) ? strtolower( $settings['theme_name'] ) : 'responsive';
-		// Check if white labeled theme name has white space. If found, replace white space with hypen.
-		$theme_name           = str_replace( ' ', '-', $theme_name );
-		$theme_name           = str_replace( '/', '-', $theme_name );
-		$characters_to_remove = array( "'", '\\', '?', '|', '*' ); // Add any other characters want to remove.
-		$theme_name           = str_replace( $characters_to_remove, '', $theme_name );
+		$theme_name = ! empty( $settings['theme_name'] ) ? mb_strtolower( $settings['theme_name'], 'UTF-8' ) : 'responsive';
+		$theme_name = str_replace( [ ' ', '/' ], '-', $theme_name );
+		$characters_to_remove = [ "'", '\\', '?', '|', '*', '"', '`' ];
+		$theme_name = str_replace( $characters_to_remove, '', $theme_name );
+		$theme_name = preg_replace( '/[^\p{L}\p{N}-]/u', '', $theme_name );
+		
+		$parts = explode('_page_responsive_add_ons', $hook);
+		$encoded_part = isset($parts[0]) ? $parts[0] : '';
+		$decoded_theme_name = urldecode($encoded_part);
 
-		if ( 'toplevel_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons_go_pro' === $hook || $theme_name . '_page_responsive_add_ons' === $hook ) {
+		if ( 'toplevel_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons_go_pro' === $hook || $theme_name . '_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons' === $decoded_theme_name . '_page_responsive_add_ons') {
 			// Responsive Ready Sites admin styles.
 			wp_register_style( 'responsive-ready-sites-admin', RESPONSIVE_ADDONS_URI . 'admin/css/responsive-ready-sites-admin.css', false, RESPONSIVE_ADDONS_VER );
 			wp_enqueue_style( 'responsive-ready-sites-admin' );
@@ -3204,7 +3212,7 @@ class Responsive_Add_Ons {
 		$activate_args = $wcam_lib_responsive_addons->activate( $args, $product_id );
 		$status_args   = $wcam_lib_responsive_addons->status( $args, $product_id );
 		$ready_site_subscribe_checkbox = isset( $_POST['ready_sites_subscripiton_checkbox'] ) ? sanitize_key( wp_unslash( $_POST['ready_sites_subscripiton_checkbox'] ) ) : '';
-		$userEmail = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
+		$userEmail = isset( $_POST['user_email'] ) ? sanitize_key( wp_unslash( $_POST['user_email'] ) ) : '';
 
 
 		$response      = $this->cc_app_auth->post(

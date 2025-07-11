@@ -2486,18 +2486,17 @@ input:checked + .ready-site-import-option-input-slider:before {
 .rst-nav-tab-wrapper-icon {
 	height: 24px;
 	width: 24px;
-	/* flex: 1 1 auto; */
 }
 
 .toplevel_page_responsive_add_ons #wpcontent,
-.responsive_page_responsive_add_ons #wpcontent{
+ #wpcontent{
 	padding: 0;
 	padding-left: 0px;
 	background-color: rgba(240, 244, 247, 0.8);
 }
 
 .toplevel_page_responsive_add_ons .wrap,
-.responsive_page_responsive_add_ons .wrap{
+ .wrap{
 	position: relative;
 	width: 100%;
 	display: flex;
@@ -2505,12 +2504,12 @@ input:checked + .ready-site-import-option-input-slider:before {
 	margin: 0;
 }
 
-.responsive_page_responsive_add_ons #wpbody-content{
+ #wpbody-content{
 	overflow: hidden;
 }
 
 .toplevel_page_responsive_add_ons .wrap .responsive-sites-menu-page-wrapper,
-.responsive_page_responsive_add_ons .wrap .responsive-sites-menu-page-wrapper{
+ .wrap .responsive-sites-menu-page-wrapper{
 	position: relative;
 	width: 100%;
 }
