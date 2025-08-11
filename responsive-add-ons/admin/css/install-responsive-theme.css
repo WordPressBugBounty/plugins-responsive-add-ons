@@ -912,3 +912,8 @@
 .rst-ask-for-review-notice-container {
 	display: flex;
 }
+
+body.responsive_page_responsive-site-builder #toplevel_page_responsive .toplevel_page_responsive img,
+body.responsive_page_responsive-site-builder #toplevel_page_responsive_add_ons .toplevel_page_responsive_add_ons img {
+	display: inline;
+}

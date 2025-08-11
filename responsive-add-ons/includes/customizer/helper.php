@@ -713,3 +713,140 @@ if ( ! function_exists( 'responsive_addons_distraction_free_woocommerce' ) ) {
 		return ( 1 === get_theme_mod( 'responsive_distraction_free_woocommerce', 0 ) ) ? true : false;
 	}
 }
+
+/**
+ * Return current content layout.
+ */
+if ( ! function_exists( 'responsive_addons_get_content_layout' ) ) {
+
+	/**
+	 * Return current content layout.
+	 *
+	 * @since 3.3.0
+	 * @return mixed content layout.
+	 */
+	function responsive_addons_get_content_layout() {
+		$layout = null;
+		return apply_filters( 'responsive_addons_get_content_layout', $layout );
+	}
+}
+
+if ( ! function_exists( 'responsive_addons_return_content_layout_site_builder' ) ) {
+
+	/**
+	 * String for content layout - site-builder
+	 *
+	 * @since  3.3.0
+	 * @return String site-builder string used for filter `astra_get_content_layout`
+	 */
+	function responsive_addons_return_content_layout_site_builder() {
+		return 'site-builder';
+	}
+}
+
+add_filter( 'responsive_site_builder_sticky_header_css', 'responsive_addons_site_builder_sticky_header_css', 10, 1 );
+
+function responsive_addons_site_builder_sticky_header_css( $css ) {
+
+	$device_type = apply_filters( 'responsive_site_builder_header_sticky_device', null );
+	if ( ! $device_type ) {
+		return $css;
+	}
+
+	if ( 'both' === $device_type ) {
+		$css .= "
+			.responsive-sb-sticky-header-both .sticky-header {
+				position: fixed;
+				top: 0;
+				left: 0;
+				z-index: 9999;
+				width: 100%;
+			}
+			@media (max-width: 920px) {
+				.responsive-sb-sticky-header-both.admin-bar .sticky-header {
+					top: 46px;
+				}
+			}
+			@media (min-width: 921px) {
+				.responsive-sb-sticky-header-both.admin-bar .sticky-header {
+					top: 32px;
+				}
+			}
+		";
+	} elseif ( 'desktop' === $device_type ) {
+		$css .= "
+			@media (min-width: 921px) {
+				.responsive-sb-sticky-header-desktop .sticky-header {
+					position: fixed;
+					top: 0;
+					left: 0;
+					z-index: 9999;
+					width: 100%;
+				}
+				.responsive-sb-sticky-header-desktop.admin-bar .sticky-header {
+					top: 32px;
+				}
+			}";
+	} elseif ( 'mobile' === $device_type ) {
+		$css .= "
+			@media (max-width: 920px) {
+				.responsive-sb-sticky-header-mobile .sticky-header {
+					position: fixed;
+					top: 0;
+					left: 0;
+					z-index: 9999;
+					width: 100%;
+				}
+				.responsive-sb-sticky-header-mobile.admin-bar .sticky-header {
+					top: 46px;
+				}
+			}";
+	}
+	return $css;
+}
+
+add_filter( 'responsive_site_builder_sticky_footer_css', 'responsive_addons_site_builder_sticky_footer_css', 10, 1 );
+
+function responsive_addons_site_builder_sticky_footer_css( $css ) {
+
+	$device_type = apply_filters( 'responsive_site_builder_footer_sticky_device', null );
+	if ( ! $device_type ) {
+		return $css;
+	}
+
+	if ( 'both' === $device_type ) {
+		$css .= "
+			.responsive-sb-sticky-footer-both .responsive-site-builder-footer {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				z-index: 9999;
+				width: 100%;
+			}
+		";
+	} elseif ( 'desktop' === $device_type ) {
+		$css .= "
+			@media (min-width: 921px) {
+				.responsive-sb-sticky-footer-desktop .responsive-site-builder-footer {
+					position: fixed;
+					bottom: 0;
+					left: 0;
+					z-index: 9999;
+					width: 100%;
+				}
+			}";
+	} elseif ( 'mobile' === $device_type ) {
+		$css .= "
+			@media (max-width: 920px) {
+				.responsive-sb-sticky-footer-mobile .responsive-site-builder-footer {
+					position: fixed;
+					bottom: 0;
+					left: 0;
+					z-index: 9999;
+					width: 100%;
+				}
+			}";
+	}
+
+	return $css;
+}

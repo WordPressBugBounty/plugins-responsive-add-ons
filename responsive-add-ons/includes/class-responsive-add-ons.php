@@ -194,6 +194,7 @@ class Responsive_Add_Ons {
 			add_action( 'wp_ajax_responsive-pro-enable-megamenu', array( $this, 'responsive_pro_enable_megamenu' ) );
 			add_action( 'wp_ajax_responsive-pro-enable-woocommerce', array( $this, 'responsive_pro_enable_woocommerce' ) );
 			add_action( 'wp_ajax_responsive-plus-enable-custom-fonts', array( $this, 'responsive_plus_enable_custom_fonts' ) );
+			add_action( 'wp_ajax_responsive-plus-enable-site-builder', array( $this, 'responsive_plus_enable_site_builder' ) );
 
 			// Get current installation import permissions.
 			add_action( 'wp_ajax_responsive-ready-sites-get-import-capabilities', array( $this, 'responsive_addons_get_user_import_capabilities' ) );
@@ -255,6 +256,12 @@ class Responsive_Add_Ons {
 
 		self::set_api_url();
 		self::set_rst_blocks_api_url();
+
+		// Load class early in the plugin lifecycle
+		if ( $this->responsive_addons_is_theme_site_builder_compatible() && 'on' === get_option( 'rplus_site_builder_enable' ) ) {
+			require_once RESPONSIVE_ADDONS_DIR . 'admin/site-builder/class-responsive-add-ons-site-builder.php';
+		}
+
 	}
 
 
@@ -864,6 +871,8 @@ class Responsive_Add_Ons {
 		if ( ( 'toplevel_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons' === $hook  || $theme_name . '_page_responsive_add_ons' === $decoded_theme_name . '_page_responsive_add_ons') && empty( $_GET['action'] ) ) {
 			wp_enqueue_script( 'responsive-ready-sites-admin-js', RESPONSIVE_ADDONS_URI . 'admin/js/responsive-ready-sites-admin.js', array( 'jquery', 'wp-util', 'updates', 'jquery-ui-autocomplete', 'canvas-confetti' ), RESPONSIVE_ADDONS_VER, true );
 			wp_enqueue_script( 'canvas-confetti', 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js', array(), RESPONSIVE_ADDONS_VER, true );
+			wp_enqueue_style( 'toastr-css', RESPONSIVE_ADDONS_URI .'/admin/css/toastr.min.css', array(), RESPONSIVE_ADDONS_VER );
+			wp_enqueue_script( 'toastr-js', RESPONSIVE_ADDONS_URI . '/admin/js/toastr.min.js', array( 'jquery' ), RESPONSIVE_ADDONS_VER, true );
 
 			$data = apply_filters(
 				'responsive_sites_localize_vars',
@@ -980,7 +989,7 @@ class Responsive_Add_Ons {
 		$pro_plugin_active_status = is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) ? true : false;
 		$cc_app_auth              = $this->cc_app_auth->has_auth() ? true : false;
 		$settings                 = get_option( 'reads_app_settings' );
-		$user_plan                = $settings['account']['plan'];
+		$user_plan                = $settings['account']['plan'] ?? 'free';
 
 		$pro_purchase_url = 'https://cyberchimps.com/responsive-go-pro/?utm_source=free-to-pro&utm_medium=responsive-add-ons&utm_campaign=responsive-pro&utm_content=preview-ready-site';
 
@@ -2446,6 +2455,17 @@ class Responsive_Add_Ons {
 			'responsive_add_ons',
 			array( $this, 'responsive_add_ons_templates' ),
 		);
+		$theme = wp_get_theme();
+		if ( $this->responsive_addons_is_theme_site_builder_compatible() && 'on' === get_option( 'rplus_site_builder_enable' ) && ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) ) {
+			add_submenu_page(
+				$slug,
+				__( 'Site Builder', 'responsive-addons' ),
+				__( 'Site Builder', 'responsive-addons' ),
+				'manage_options',
+				'responsive-site-builder',
+				array( $this, 'responsive_site_builder' ),
+			);
+		}
 	}
 
 	/**
@@ -2777,6 +2797,24 @@ class Responsive_Add_Ons {
 		update_option( 'rplus_custom_fonts_enable', $value );
 
 		wp_send_json_success();
+	}
+
+	/**
+	 * Enable/Disables the Site Builder Feature on Switch toggle.
+	 *
+	 * @since 3.3.0
+	 * @access public
+	 */
+	public function responsive_plus_enable_site_builder() {
+
+		check_ajax_referer( 'rplus_toggle_site_builder', '_nonce' );
+
+		$value = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
+
+		update_option( 'rplus_site_builder_enable', $value );
+
+		wp_send_json_success();
+		
 	}
 
 	/**
@@ -3302,4 +3340,40 @@ class Responsive_Add_Ons {
 			);
 		}
 	}
+
+	public function responsive_site_builder() {
+
+		?>
+		 <div class="responsive-sb-menu-page-wrapper">
+			<div id="responsive-sb-menu-page">
+				<div class="responsive-sb-menu-page-content">
+					<div id="responsive-sb-app-root" class="responsive-sb-app-root"></div>
+				</div>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Verify if the version of responsive theme is compatible with site builder or not.
+	 *
+	 * @since 3.3.0
+	 */
+	public function responsive_addons_is_theme_site_builder_compatible() {
+		$theme = wp_get_theme();
+		if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
+			if ( 'Responsive' === $theme->parent_theme ) {
+				$theme = wp_get_theme( 'responsive' );
+			}
+		} else {
+			return false;
+		}
+
+		if ( version_compare( $theme['Version'], '6.2.1', '>' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
 }
