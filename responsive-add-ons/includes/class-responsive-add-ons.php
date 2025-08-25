@@ -857,10 +857,8 @@ class Responsive_Add_Ons {
 		$theme_name = str_replace( [ ' ', '/' ], '-', $theme_name );
 
 		$characters_to_remove = [ "'", '\\', '?', '|', '*', '"', '`' ];
-		$theme_name = str_replace( $characters_to_remove, '', $theme_name );
-
-		$theme_name = preg_replace( '/[^\p{L}\p{N}-]/u', '', $theme_name );
-
+		$theme_name           = str_replace( $characters_to_remove, '', $theme_name );
+		$theme_name           = preg_replace( '/[^\p{L}\p{N}_-]/u', '', $theme_name );
 
 		$pro_plugin_active_status = is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) ? true : false;
 		
@@ -952,7 +950,7 @@ class Responsive_Add_Ons {
 		$theme_name = str_replace( [ ' ', '/' ], '-', $theme_name );
 		$characters_to_remove = [ "'", '\\', '?', '|', '*', '"', '`' ];
 		$theme_name = str_replace( $characters_to_remove, '', $theme_name );
-		$theme_name = preg_replace( '/[^\p{L}\p{N}-]/u', '', $theme_name );
+		$theme_name = preg_replace( '/[^\p{L}\p{N}_-]/u', '', $theme_name );
 		
 		$parts = explode('_page_responsive_add_ons', $hook);
 		$encoded_part = isset($parts[0]) ? $parts[0] : '';

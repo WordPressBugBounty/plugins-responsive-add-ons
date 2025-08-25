@@ -76,35 +76,71 @@ $wl_settings = get_option( 'rpro_elementor_settings' );
 			</div>
 		</div>
 		<div class="responsive-theme-single-setting-section">
-			<div class="mb-2">
-				<label for="resp_wl_theme_screenshot_url" class="responsive-theme-setting-input-label"><?php esc_html_e( 'Theme Screenshot URL', 'responsive-add-ons' ); ?></label>
-				<input type="url" pattern="https?://.+" class="form-control responsive-theme-setting-form-control" autocomplete="off" 
-				<?php
-				if ( ! empty( $wl_settings ) ) {
-					?>
-					value="<?php echo esc_url( $wl_settings['theme_screenshot_url'] ); ?>"
-					<?php
-				}
-				?>
-				id="resp_wl_theme_screenshot_url">
-			</div>
-			<p class="mt-2 responsive-theme-setting-form-control-hint"><?php esc_html_e( 'The recommended image size is 1200px wide and 900px tall.', 'responsive-add-ons' ); ?></p>
-		</div>
-		<div class="responsive-theme-single-setting-section">
-			<div class="mb-2">
-				<label for="resp_wl_theme_icon_url" class="responsive-theme-setting-input-label"><?php esc_html_e( 'Theme Icon URL', 'responsive-add-ons' ); ?></label>
-				<input type="text" class="form-control responsive-theme-setting-form-control" autocomplete="off"
-				<?php
-				if ( ! empty( $wl_settings ) ) {
-					?>
-					value="<?php echo esc_attr( $wl_settings['theme_icon_url'] ); ?>"
-					<?php
-				}
-				?>
-				id="resp_wl_theme_icon_url">
-			</div>
-			<p class="mt-2 responsive-theme-setting-form-control-hint"><?php esc_html_e( 'The recommended icon should have some background to get adjust properly.', 'responsive-add-ons' ); ?></p>
-		</div>
+  <div class="mb-2">
+    <label for="resp_wl_theme_screenshot_url" class="responsive-theme-setting-input-label">
+      <?php esc_html_e( 'Theme Screenshot', 'responsive-add-ons' ); ?>
+    </label>
+
+    <div class="screenshot-preview mb-2">
+      <img id="theme_screenshot_preview"
+           src="<?php echo esc_url( $wl_settings['theme_screenshot_url'] ?? '' ); ?>"
+           style="max-width: 200px; <?php echo empty( $wl_settings['theme_screenshot_url'] ) ? 'display:none;' : ''; ?>" />
+    </div>
+
+    <div class="input-group" style="width: 60%;">
+      <input type="url"
+             id="resp_wl_theme_screenshot_url"
+             class="form-control responsive-theme-setting-form-control"
+             placeholder="<?php esc_attr_e( 'Enter image URL...', 'responsive-add-ons' ); ?>"
+             value="<?php echo esc_url( $wl_settings['theme_screenshot_url'] ?? '' ); ?>">
+
+      <button class="btn btn-secondary upload-image-button"
+              type="button"
+              data-target="resp_wl_theme_screenshot_url"
+              data-preview="theme_screenshot_preview">
+        <?php esc_html_e( 'Upload', 'responsive-add-ons' ); ?>
+      </button>
+    </div>
+
+    <p class="mt-2 responsive-theme-setting-form-control-hint">
+      <?php esc_html_e( 'The recommended image size is 1200px wide and 900px tall.', 'responsive-add-ons' ); ?>
+    </p>
+  </div>
+</div>
+<div class="responsive-theme-single-setting-section">
+  <div class="mb-2">
+    <label for="resp_wl_theme_icon_url" class="responsive-theme-setting-input-label">
+      <?php esc_html_e( 'Theme Icon', 'responsive-add-ons' ); ?>
+    </label>
+
+    <div class="icon-preview mb-2">
+      <img id="theme_icon_preview"
+           src="<?php echo esc_url( $wl_settings['theme_icon_url'] ?? '' ); ?>"
+           style="max-width: 100px; <?php echo empty( $wl_settings['theme_icon_url'] ) ? 'display:none;' : ''; ?>" />
+    </div>
+
+    <div class="input-group" style="width: 60%;">
+      <input type="text"
+             id="resp_wl_theme_icon_url"
+             class="form-control responsive-theme-setting-form-control"
+             placeholder="<?php esc_attr_e( 'Enter icon URL...', 'responsive-add-ons' ); ?>"
+             value="<?php echo esc_url( $wl_settings['theme_icon_url'] ?? '' ); ?>">
+
+      <button class="btn btn-secondary upload-image-button"
+              type="button"
+              data-target="resp_wl_theme_icon_url"
+              data-preview="theme_icon_preview">
+        <?php esc_html_e( 'Upload', 'responsive-add-ons' ); ?>
+      </button>
+    </div>
+
+    <p class="mt-2 responsive-theme-setting-form-control-hint">
+      <?php esc_html_e( 'The recommended icon should have some background to get adjusted properly.', 'responsive-add-ons' ); ?>
+    </p>
+  </div>
+</div>
+
+
 		<div class="responsive-theme-single-setting-section">
 			<div>
 				<input type="checkbox" name="resp_wl_hide_settings" id="resp_wl_hide_settings"  />

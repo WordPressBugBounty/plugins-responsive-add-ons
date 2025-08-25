@@ -64,7 +64,21 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
          * Enqueue admin scripts and styles for the site builder.
          */
         public function responsive_site_builder_admin_enqueue_scripts( $hook = '' ) {
-            if( 'responsive_page_responsive-site-builder' !== $hook ) return;
+
+			$settings   = get_option( 'rpro_elementor_settings' );
+			$theme_name = ! empty( $settings['theme_name'] ) ? mb_strtolower( $settings['theme_name'], 'UTF-8' ) : 'responsive';
+			$theme_name = str_replace( [ ' ', '/' ], '-', $theme_name );
+
+			$characters_to_remove = [ "'", '\\', '?', '|', '*', '"', '`' ];
+			$theme_name           = str_replace( $characters_to_remove, '', $theme_name );
+			$theme_name 		  = preg_replace( '/[^\p{L}\p{N}_-]/u', '', $theme_name );
+
+			$parts              = explode('_page_responsive-site-builder', $hook);
+			$encoded_part       = isset($parts[0]) ? $parts[0] : '';
+			$decoded_theme_name = urldecode($encoded_part);
+
+			// Check if the current page is the Responsive Site Builder page.
+            if( $theme_name . '_page_responsive-site-builder' !== $hook && $theme_name . '_page_responsive-site-builder' !== $decoded_theme_name . '_page_responsive-site-builder' ) return;
 
             wp_enqueue_script( 'responsive-site-builder-script', RESPONSIVE_ADDONS_SITE_BUILDER_URI . 'react/build/index.js', array( 'react', 'react-dom', 'wp-components', 'wp-api-fetch' ), RESPONSIVE_ADDONS_VER, true );
             wp_enqueue_style( 'responsive-site-builder-style', RESPONSIVE_ADDONS_SITE_BUILDER_URI . 'react/build/output.css', array(), RESPONSIVE_ADDONS_VER );

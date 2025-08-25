@@ -332,8 +332,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 					return $total_requests;
 				}
 			}
-
-			$this->get_total_requests();
 		}
 
 		/**

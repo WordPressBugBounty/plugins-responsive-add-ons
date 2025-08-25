@@ -382,9 +382,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 			$( document ).on( 'click'                     , '.responsive-addons-go-back-btn', ResponsiveSitesAdmin._closeFullOverlay );
 			$( document ).on( 'click', '.responsive-demo-import-options-free, .responsive-addons-demo-import-options', ResponsiveSitesAdmin._importSiteOptionsScreen );
 			$( document ).on( 'click', '.responsive-ready-site-import-with-sub, .responsive-ready-site-import-without-sub', ResponsiveSitesAdmin._importSiteProgressScreen );
-			$( document ).on( 'responsive-get-active-theme' , ResponsiveSitesAdmin._is_responsive_theme_active );
 			$( document ).on( 'responsive-theme-install-activate' , ResponsiveSitesAdmin._getResponsiveTheme );
-			$( document ).on( 'responsive-ready-sites-install-start'       , ResponsiveSitesAdmin._process_import );
 			$( document ).on( 'responsive-ready-sites-import-set-site-data-done'   		, ResponsiveSitesAdmin._installRequiredPlugins );
 			$( document ).on( 'responsive-ready-sites-install-and-activate-required-plugins-done', ResponsiveSitesAdmin._resetData );
 			$( document ).on( 'responsive-ready-sites-reset-data'							, ResponsiveSitesAdmin._backup_before_reset_options );
@@ -457,8 +455,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 		 * Run Theme and Other Processes in Parallel.
 		 */
 		_allProcessRun: function() {
-			ResponsiveSitesAdmin.import_start_time = performance.now();
 			if(responsiveSitesAdmin.isResponsiveProActive) {
+				ResponsiveSitesAdmin.import_start_time = performance.now();
 				ResponsiveSitesAdmin.import_progress_percent += 2;
 				ResponsiveSitesAdmin._process_import();
 				ResponsiveSitesAdmin._isInstallResponsiveThemeChecked();
@@ -468,9 +466,9 @@ var ResponsiveSitesAjaxQueue = (function() {
 						resolve(result);
 					});
 				});
-				
 				importPromise.then((importCaps) => {
 					if (importCaps) {
+						ResponsiveSitesAdmin.import_start_time = performance.now();
 						ResponsiveSitesAdmin._process_import();
 						ResponsiveSitesAdmin._isInstallResponsiveThemeChecked();
 					}
@@ -803,26 +801,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 		},
 
 		/**
-		 * Fires when a nav item is clicked.
-		 */
-		_importDemo: function(event) {
-			event.preventDefault();
-
-			$( '.sites-import-process-errors .current-importing-status-error-title' ).html( '' );
-
-			$( '.sites-import-process-errors' ).hide();
-			$( '.responsive-ready-site-import-free' ).addClass( 'updating-message installing' )
-				.text( "Importing.." );
-			$( '.responsive-ready-site-import-free' ).addClass( 'disabled not-click-able' );
-
-			var output = '<div class="current-importing-status-title"></div><div class="current-importing-status-description"></div>';
-			$( '.current-importing-status' ).html( output );
-
-			$( document ).trigger( 'responsive-get-active-theme' );
-
-		},
-
-		/**
 		 * Installs and Activate Responsive Theme
 		 */
 		_getResponsiveTheme: function(event) {
@@ -847,56 +825,9 @@ var ResponsiveSitesAjaxQueue = (function() {
 					ResponsiveSitesAdmin.import_progress_percent += 2;
 					ResponsiveSitesAdmin.import_progress_status_text = "Installed Responsive Theme....";
 					ResponsiveSitesAdmin._updateImportProcessStatusText(ResponsiveSitesAdmin.import_progress_status_text);
-					// WordPress adds "Activate" button after waiting for 1000ms. So we will run our activation after that.
-					setTimeout( function() {
-
-						$.ajax({
-							url: ResponsiveInstallThemeVars.ajaxurl,
-							type: 'POST',
-							data: {
-								'action' : 'responsive-ready-sites-activate-theme',
-								'_ajax_nonce' : ResponsiveInstallThemeVars._ajax_nonce,
-							},
-						})
-							.done(function (result) {
-								if( result.success ) {
-									ResponsiveSitesAdmin.import_progress_percent += 2;
-									ResponsiveSitesAdmin.import_progress_status_text = "Activated Responsive Theme....";
-									ResponsiveSitesAdmin._updateImportProcessStatusText(ResponsiveSitesAdmin.import_progress_status_text);
-									$('#responsive-theme-activation a').text( ResponsiveInstallThemeVars.activated );
-								}
-							});
-
-					}, 1200 );
 				}
 			);
 
-		},
-
-		/**
-		 * Check if Responsive theme is active
-		 */
-		_is_responsive_theme_active: function() {
-			ResponsiveSitesAdmin.import_progress_percent += 2;
-			$.ajax(
-				{
-					url: responsiveSitesAdmin.ajaxurl,
-					type: 'POST',
-					data: {
-						'action': 'responsive-is-theme-active',
-						'_ajax_nonce'      : responsiveSitesAdmin._ajax_nonce,
-					},
-				}
-			)
-				.done(
-					function (result) {
-						if (result.success) {
-							$( document ).trigger( 'responsive-ready-sites-install-start' );
-						} else {
-							$( document ).trigger( 'responsive-theme-install-activate' );
-						}
-					}
-				);
 		},
 
 		/**
@@ -1894,7 +1825,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 
 											ResponsiveSitesAdmin.import_progress_percent = ResponsiveSitesAdmin.import_progress_percent < 75 ? 75 : ResponsiveSitesAdmin.import_progress_percent;
 											ResponsiveSitesAdmin._updateImportProcessStatusText(ResponsiveSitesAdmin.import_progress_status_text);
-
 											$( document ).trigger( 'responsive-ready-sites-import-xml-done' );
 
 											break;
@@ -2076,24 +2006,21 @@ var ResponsiveSitesAjaxQueue = (function() {
 				ResponsiveSitesAdmin._display_error_message(errorMessage);
 			})
 			.done(function(data) {
-					
 					// Fail - Import In-Complete.
 					if (!data || data.success === false) {
 						const errorText = (data?.data) || 'An unknown error occurred during the final import step.';
 						ResponsiveSitesAdmin._display_error_message(errorText);
 						return;
 					}
+					ResponsiveSitesAdmin.import_end_time = performance.now();
+					// Calculate the total time taken lin seconds
+					ResponsiveSitesAdmin.import_total_time = Math.floor((ResponsiveSitesAdmin.import_end_time  - ResponsiveSitesAdmin.import_start_time ) / 1000); // Convert milliseconds to seconds
 					setTimeout( function () {
-						ResponsiveSitesAdmin.import_end_time = performance.now();
 						ResponsiveSitesAdmin.import_progress_percent = 100;
 						ResponsiveSitesAdmin.import_progress_status_text = "Import Done";
-
-						// Calculate the total time taken in seconds
-						ResponsiveSitesAdmin.import_total_time = Math.floor((ResponsiveSitesAdmin.import_end_time  - ResponsiveSitesAdmin.import_start_time ) / 1000); // Convert milliseconds to seconds
-
 						ResponsiveSitesAdmin._updateImportProcessStatusText(ResponsiveSitesAdmin.import_progress_status_text);
 						ResponsiveSitesAdmin._importCompletionCongratsScreen(responsiveSitesAdmin.siteURL);
-					}, 8000);
+					}, 4000);
 				}
 			);
 		},
@@ -2517,7 +2444,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 					console.log('The api request to fetch the sites request count fails');
 				})
 				.done(function (response) {
-
 					var total = response.data;
 
 					for( let i = 1; i <= total; i++ ) {
@@ -2973,7 +2899,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 				$('#clear-search').css('display', 'none');
 				$('.search-container').removeClass('hide-border-radius');
 				$('#responsive-sites-admin').removeClass('searching');
-				ResponsiveSitesAdmin._filterClick();
 				return;
 			}
 

@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 3.3.0
+Stable tag: 3.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -235,6 +235,12 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 8. Responsive Plus advanced features.
 
 == Changelog ==
+
+= 3.3.1 - 25th August 2025 =
+* New - Added upload image option in White Label tab for theme icon and theme screenshot
+* Fix - Fixed issue where clicking "White Label Settings" in plugin settings redirected to "Connect Account" instead of White Label tab
+* Fix - Fixed broken Mega Menu docs link inside plugin
+* Improvement - Minor improvement in import process performance
 
 = 3.3.0 - 11th August 2025 =
 * New - Introducing Site Builder in the Responsive Plus Plugin. Now you can set advanced headers, footers and 404 pages with simple display rules.
