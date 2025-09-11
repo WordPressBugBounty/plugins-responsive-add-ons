@@ -92,6 +92,8 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
                 'nonce'            => wp_create_nonce( 'wp_rest' ),
 				'rest_url'         => get_rest_url( '', '/responsive-addons/v1/' ),
 				'displayRules'     => Responsive_Add_Ons_Site_Builder_Display_Rules::get_location_selections(),
+				'singleDisplayRules'  => Responsive_Add_Ons_Site_Builder_Display_Rules::get_location_selections( 'single' ),
+				'archiveDisplayRules' => Responsive_Add_Ons_Site_Builder_Display_Rules::get_location_selections( 'archive' ),
 				'userRoles'        => Responsive_Add_Ons_Site_Builder_Display_Rules::get_user_selections(),
 				'builderPostType'  => RESPONSIVE_BUILDER_POST_TYPE,
 				'ajax_nonce'       => wp_create_nonce( 'responsive-sb-get-posts-by-query' ),
@@ -197,7 +199,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
 
 			$results = array();
 			// Defined layout types for user selection.
-			$defined_layouts = array('header', 'footer', '404-page');
+			$defined_layouts = array('header', 'footer', '404-page', 'single', 'archive');
 
 			foreach ( $custom_layouts->posts as $post ) {
 
@@ -217,6 +219,9 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
 				// Get the custom field values
 				$layout_value  = get_post_meta( $post->ID, 'responsive-site-builder-layout', true );
 				$layout_status = get_post_meta( $post->ID, 'responsive-site-builder-layout-status', true );
+
+				// Get the post preview link if type is template.
+				$post_preview_link = $this->get_single_archive_preview_link( $post, $post_preview_link, $layout_value );
 
 				if( in_array(  $layout_value, $defined_layouts ) ) {
 					$layout_data = array(
@@ -425,6 +430,130 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
 				wp_safe_redirect( admin_url( 'admin.php?page=responsive-site-builder' ) );
 				exit;
 			}
+		}
+
+		/**
+		 * Gets the specific preview link for the template.
+		 *
+		 * @since 3.3.2
+		 * @return string Preview link.
+		 */
+		public function get_single_archive_preview_link( $post, $post_preview_link, $layout_value ) {
+
+			if ( in_array( $layout_value, array( 'single', 'archive' ) ) ) {
+
+				/**
+				 * Get the display conditions.
+				 * Based on the display conditions get the appropriate preview link.
+				 * Return the preview link.
+				 */
+
+				$display_conditions = get_post_meta( $post->ID, 'responsive-site-builder-layout-location', true );
+
+				if ( 'single' === $layout_value ) {
+					if ( isset( $display_conditions['rule'] ) ) {
+						$display_rule = $display_conditions['rule'];
+						if ( isset( $display_rule ) && isset( $display_rule[0] ) ) {
+							$ruleParts = explode( '|', $display_rule[0] );
+							if ( isset( $ruleParts ) && $ruleParts[0] ) {
+								$pageValue = $ruleParts[0];
+								if ( isset( $pageValue ) ) {
+									if ( 'basic-global' === $pageValue || 'basic-singulars' === $pageValue ) {
+										$pageValue = 'post';
+									} elseif ( 'specifics' === $pageValue ) {
+										$specific_post = $display_conditions['specific'];
+										if ( isset( $specific_post ) && isset( $specific_post[0] ) ) {
+											$specific_post = explode( '-', $specific_post[0] );
+											if ( isset( $specific_post[1] ) ) {
+												$specific_post_id = (int) $specific_post[1];
+												$args             = array(
+													'p' => $specific_post_id,
+												);
+												$specific_post    = get_posts( $args );
+												if ( isset( $specific_post ) && isset( $specific_post[0] ) ) {
+													$post_preview_link = get_preview_post_link( $specific_post[0]->ID );
+												}
+											}
+										}
+									} else {
+										$args        = array(
+											'posts_per_page' => 1,
+											'orderby'   => 'rand',
+											'post_type' => $pageValue,
+										);
+										$random_post = get_posts( $args );
+										if ( isset( $random_post ) && isset( $random_post[0] ) ) {
+											$post_preview_link = get_preview_post_link( $random_post[0]->ID );
+										}
+									}
+								}
+							}
+						}
+					}
+				} elseif ( 'archive' === $layout_value ) {
+					$display_rule = isset( $display_conditions['rule'] ) ? $display_conditions['rule'] : array();
+					if ( isset( $display_rule ) && isset( $display_rule[0] ) ) {
+						$display_rule = $display_rule[0];
+
+						if ( 'basic-global' === $display_rule || 'special-blog' === $display_rule ) {
+
+							// URL for the entire site
+							$post_preview_link = home_url();
+						} elseif ( 'special-404' === $display_rule ) {
+
+							// URL for the 404 Page
+							$post_preview_link = home_url( '/mamama' );
+						} elseif ( 'special-search' === $display_rule ) {
+
+							// URL for the Search Page
+							$post_preview_link = home_url( '/?s=' );
+						} elseif ( 'special-front' === $display_rule ) {
+
+							// URL for the Front Page
+							$post_preview_link = home_url();
+						} elseif ( 'special-date' === $display_rule || 'basic-archives' === $display_rule ) {
+
+							// URL for the Date Archive & All Archives
+							$year  = date( 'Y' );
+							$month = date( 'm' );
+							if ( isset( $year ) && isset( $month ) ) {
+								$post_preview_link = get_month_link( $year, $month );
+							} else {
+								$post_preview_link = get_preview_post_link( $post );
+							}
+						} elseif ( 'special-author' === $display_rule ) {
+
+							// URL for the Author Archive
+							$author_id = 1;
+							$author    = get_userdata( $author_id );
+							if ( isset( $author ) ) {
+								$author_slug       = $author->user_nicename;
+								$post_preview_link = home_url( '/author/' . $author_slug );
+							} else {
+								$post_preview_link = get_preview_post_link( $post );
+							}
+						} elseif ( 'post|all|archive' === $display_rule || 'post|all|taxarchive|category' === $display_rule ) {
+
+							// URL for All Posts Archive & All Categories Archive
+							$categories = get_categories( array( 'number' => 1 ) );
+							if ( ! empty( $categories ) ) {
+								$category_slug     = $categories[0]->slug;
+								$post_preview_link = get_term_link( $category_slug, 'category' );
+							}
+						} elseif ( 'post|all|taxarchive|post_tag' === $display_rule ) {
+
+							// URL for All Tags Archive
+							$tags = get_tags( array( 'number' => 1 ) );
+							if ( ! empty( $tags ) ) {
+								$tag_slug          = $tags[0]->slug;
+								$post_preview_link = get_term_link( $tag_slug, 'post_tag' );
+							}
+						}
+					}
+				}
+			}
+
+			return $post_preview_link;
 		}
 
     }

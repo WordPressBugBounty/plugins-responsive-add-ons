@@ -363,11 +363,6 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 
 		if ( 'on' === get_option( 'rpro_woocommerce_enable' ) ) {
 
-			if ( $breadcrumb_flag ) {
-				$breadcrumb_display = 'block';
-			} else {
-				$breadcrumb_display = 'none';
-			}
 
 			if ( $toolbar_flag ) {
 				$toolbar_display = 'block';
@@ -421,13 +416,14 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 		}
 		$custom_css = "";
 		if ( 'on' === get_option( 'rpro_woocommerce_enable' ) ) {
+
+			$breadcrumb_display_value        = $breadcrumb_flag ? 'block' : 'none';
+
 			$custom_css .= "
-				.woocommerce .woocommerce-breadcrumb{
-					display: {$breadcrumb_display};
+				.woocommerce-breadcrumb.is-shop {
+					display: {$breadcrumb_display_value}
 				}
-				.single-product .site-content-header {
-					display: {$breadcrumb_display};
-				}
+					
 				.woocommerce .woocommerce-result-count,
 				.woocommerce .woocommerce-ordering{
 					display: {$toolbar_display};

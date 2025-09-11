@@ -45,6 +45,8 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 			add_filter( 'single_template', array( $this, 'get_custom_post_type_template' ) );
 			add_action( 'responsive_site_builder_template', array( $this, 'template_empty_content' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_responsive_block_editor_addons_blocks_assets' ) );
+
+			add_action( 'template_include', array( $this, 'override_template_include' ), 999 );
         }
 
 		public function enqueue_frontend_scripts() {
@@ -576,6 +578,90 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 					}
 				}
 			}
+		}
+
+		/**
+		 * Overriding default template.
+		 *
+		 * @since 3.3.2
+		 * @param mixed $template template.
+		 * @return string
+		 */
+		public function override_template_include( $template ) {
+
+			$post_type = get_post_type();
+
+			if ( RESPONSIVE_BUILDER_POST_TYPE !== $post_type ) {
+				$option = array(
+					'location'  => 'responsive-site-builder-layout-location',
+					'exclusion' => 'responsive-site-builder-layout-exclusion',
+					'users'     => 'responsive-site-builder-layout-users',
+				);
+
+				$posts   = Responsive_Add_Ons_Site_Builder_Display_Rules::get_instance()->get_posts_by_conditions( RESPONSIVE_BUILDER_POST_TYPE, $option );
+				$posts   = array_keys( $posts );
+				$layouts = array();
+
+				foreach( $posts as $post_id ) {
+					$layout = get_post_meta( $post_id, 'responsive-site-builder-layout', true );
+					if ( ! empty( $layout ) && in_array( $layout, array( 'single', 'archive' ), true ) ) {
+						$layouts[] = $post_id;
+					}
+				}
+
+				if ( empty( $layouts ) ) {
+					return $template;
+				}
+
+				if ( is_singular() ) {
+					$page_template = get_page_template_slug();
+					if( $page_template ) {
+						return $template;
+					}
+				}
+
+				$post_id = isset( $layouts[0] ) ? $layouts[0] : 0;
+				if( ! $post_id ) {
+					return $template;
+				}
+				$layout     = get_post_meta( $post_id, 'responsive-site-builder-layout', true );
+				$is_enabled = get_post_meta( $post_id, 'responsive-site-builder-layout-status', true );
+
+				if ( false === apply_filters( 'responsive_addons_render_single_archive_content', true, $post_id ) || 'disabled' === $is_enabled || ! in_array( $layout, array( 'single', 'archive' ) ) ) {
+					return $template;
+				}
+
+				$args = array(
+					'layout_id' => $post_id,
+				);
+
+				include RESPONSIVE_ADDONS_SITE_BUILDER_DIR . 'template/dynamic-content.php';
+				return;
+			}
+
+			return $template;
+		}
+
+		public function render_overridden_template( $post_id ) {
+
+			$post_content = get_post( $post_id );
+			if ( empty( $post_content ) ) {
+				return;
+			}
+
+			get_header();
+			?>
+			<div id="wrapper" class="site-content clearfix">
+				<div class="content-outer container">
+			<?php
+			ob_start();
+			self::get_instance()->get_action_content( $post_id );
+			echo do_shortcode( ob_get_clean() );
+			?>
+				</div><!-- .content-outer -->
+			</div><!-- #wrapper -->
+			<?php
+			get_footer();
 		}
     }
 }

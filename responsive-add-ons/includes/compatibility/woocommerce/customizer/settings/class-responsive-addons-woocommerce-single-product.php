@@ -50,7 +50,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Single_Product' ) ) :
 				array(
 					'title'    => esc_html__( 'Distraction Free', 'responsive' ),
 					'panel'    => 'woocommerce',
-					'priority' => 70,
+					'priority' => 6,
 				)
 			);
 

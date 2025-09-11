@@ -65,6 +65,8 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Editor' ) ) {
                 'layouts'       => $this->get_layout_type(),
 				'deviceOptions' => $this->get_device_type(),
 				'displayRules'  => Responsive_Add_Ons_Site_Builder_Display_Rules::get_location_selections(),
+				'singleDisplayRules'  => Responsive_Add_Ons_Site_Builder_Display_Rules::get_location_selections( 'single' ),
+				'archiveDisplayRules' => Responsive_Add_Ons_Site_Builder_Display_Rules::get_location_selections( 'archive' ),
 				'ajax_nonce'    => wp_create_nonce( 'responsive-sb-get-posts-by-query' ),
 				'userRoles'     => Responsive_Add_Ons_Site_Builder_Display_Rules::get_user_selections(),
 				'siteUrl'       => get_site_url(),
@@ -119,6 +121,8 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Editor' ) ) {
 				'header'   => __( 'Header', 'responsive-addons' ),
 				'footer'   => __( 'Footer', 'responsive-addons' ),
 				'404-page' => __( '404 Page', 'responsive-addons' ),
+				'single'   => __( 'Single', 'responsive-addons' ),
+				'archive'  => __( 'Archive', 'responsive-addons' ),
 			);
 		}
 
