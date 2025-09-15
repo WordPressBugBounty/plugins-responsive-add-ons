@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 3.3.2
+Stable tag: 3.3.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -236,7 +236,10 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 
 == Changelog ==
 
-= 3.3.2 - 10th September 2025 =
+= 3.3.2.1 - 15th September 2025 =
+* Improvement - Enhanced the template import process by adding helpful error messages.
+
+= 3.3.2 - 11th September 2025 =
 * New - Introduced Single and Archive layouts in the Site Builder.
 * Improvement - Added separate breadcrumb support for single product and shop page.
 

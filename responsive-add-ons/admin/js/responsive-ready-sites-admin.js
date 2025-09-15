@@ -449,6 +449,24 @@ var ResponsiveSitesAjaxQueue = (function() {
 			$(document).on( 'click' , '.plan-upgraded-success-msg .notice-dismiss', function() {
 				$( '.responsive-templates-app-plan-upgraded-msg' ).remove();
 			});
+
+			jQuery(document).on('wp-plugin-install-error wp-plugin-activate-error', function(event, response) {
+
+				let pluginsArray = {
+					'responsive-addons-for-elementor' : 'Responsive Addons for Elementor',
+					'responsive-block-editor-addons': 'Responsive Blocks - WordPress Gutenberg Blocks',
+				};
+
+				if( event.type === 'wp-plugin-activate-error' ) {
+					ResponsiveSitesAdmin._display_error_message('Plugin activation failed for ' + response.slug + '. Please try activating the required plugin manually to continue importing.' );
+				} else if (event.type === 'wp-plugin-install-error' && pluginsArray.hasOwnProperty(response.slug)) {
+					ResponsiveSitesAdmin._display_error_message(
+						'Plugin installation failed. ' + pluginsArray[response.slug] +
+						' is temporarily unavailable. Please download the required plugin from your Cyberchimps Dashboard or open a support ticket using the link below. Once the plugin is installed and activated, please re-attempt the import process.'
+					);
+				}
+			});
+
 		},
 
 		/**
