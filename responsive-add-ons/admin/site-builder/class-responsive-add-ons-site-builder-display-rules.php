@@ -118,51 +118,51 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Display_Rules' ) ) {
 			$post_types = apply_filters( 'responsive_site_builder_location_rule_post_types', array_merge( $post_types, $custom_post_type ) );
 
 			$special_pages = array(
-				'special-404'    => __( '404 Page', 'responsive-addons' ),
-				'special-search' => __( 'Search Page', 'responsive-addons' ),
-				'special-blog'   => __( 'Blog / Posts Page', 'responsive-addons' ),
-				'special-front'  => __( 'Front Page', 'responsive-addons' ),
-				'special-date'   => __( 'Date Archive', 'responsive-addons' ),
-				'special-author' => __( 'Author Archive', 'responsive-addons' ),
+				'special-404'    => __( '404 Page', 'responsive-add-ons' ),
+				'special-search' => __( 'Search Page', 'responsive-add-ons' ),
+				'special-blog'   => __( 'Blog / Posts Page', 'responsive-add-ons' ),
+				'special-front'  => __( 'Front Page', 'responsive-add-ons' ),
+				'special-date'   => __( 'Date Archive', 'responsive-add-ons' ),
+				'special-author' => __( 'Author Archive', 'responsive-add-ons' ),
 			);
 
 			if ( class_exists( 'WooCommerce' ) ) {
-				$special_pages['special-woo-shop'] = __( 'WooCommerce Shop Page', 'responsive-addons' );
+				$special_pages['special-woo-shop'] = __( 'WooCommerce Shop Page', 'responsive-add-ons' );
 			}
 
 			if ( 'single' === $consider_type ) {
 				$global_val = array(
-					'basic-global'    => __( 'Entire Website', 'responsive-addons' ),
-					'basic-singulars' => __( 'All Singulars', 'responsive-addons' ),
+					'basic-global'    => __( 'Entire Website', 'responsive-add-ons' ),
+					'basic-singulars' => __( 'All Singulars', 'responsive-add-ons' ),
 				);
 			} elseif ( 'archive' === $consider_type ) {
 				$global_val = array(
-					'basic-global'   => __( 'Entire Website', 'responsive-addons' ),
-					'basic-archives' => __( 'All Archives', 'responsive-addons' ),
+					'basic-global'   => __( 'Entire Website', 'responsive-add-ons' ),
+					'basic-archives' => __( 'All Archives', 'responsive-add-ons' ),
 				);
 			} else {
 				$global_val = array(
-					'basic-global'    => __( 'Entire Website', 'responsive-addons' ),
-					'basic-singulars' => __( 'All Singulars', 'responsive-addons' ),
-					'basic-archives'  => __( 'All Archives', 'responsive-addons' ),
+					'basic-global'    => __( 'Entire Website', 'responsive-add-ons' ),
+					'basic-singulars' => __( 'All Singulars', 'responsive-add-ons' ),
+					'basic-archives'  => __( 'All Archives', 'responsive-add-ons' ),
 				);
 			}
 
 			if ( 'single' === $consider_type ) {
 				$selection_options = array(
 					'basic' => array(
-						'label' => __( 'Basic', 'responsive-addons' ),
+						'label' => __( 'Basic', 'responsive-add-ons' ),
 						'value' => $global_val,
 					),
 				);
 			} else {
 				$selection_options = array(
 					'basic'         => array(
-						'label' => __( 'Basic', 'responsive-addons' ),
+						'label' => __( 'Basic', 'responsive-add-ons' ),
 						'value' => $global_val,
 					),
 					'special-pages' => array(
-						'label' => __( 'Special Pages', 'responsive-addons' ),
+						'label' => __( 'Special Pages', 'responsive-add-ons' ),
 						'value' => $special_pages,
 					),
 				);
@@ -208,9 +208,9 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Display_Rules' ) ) {
 			}
 
 			$selection_options['specific-target'] = array(
-				'label' => __( 'Specific Target', 'responsive-addons' ),
+				'label' => __( 'Specific Target', 'responsive-add-ons' ),
 				'value' => array(
-					'specifics' => __( 'Specific Pages / Posts / Taxonomies, etc.', 'responsive-addons' ),
+					'specifics' => __( 'Specific Pages / Posts / Taxonomies, etc.', 'responsive-add-ons' ),
 				),
 			);
 
@@ -240,13 +240,13 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Display_Rules' ) ) {
 
 			if ( 'archive' !== $consider_type ) {
 				/* translators: %s post label */
-				$all_posts                          = sprintf( __( 'All %s', 'responsive-addons' ), $post_label );
+				$all_posts                          = sprintf( __( 'All %s', 'responsive-add-ons' ), $post_label );
 				$post_option[ $post_name . '|all' ] = $all_posts;
 			}
 
 			if ( 'pages' !== $post_key && 'single' !== $consider_type ) {
 				/* translators: %s post label */
-				$all_archive                                = sprintf( __( 'All %s Archive', 'responsive-addons' ), $post_label );
+				$all_archive                                = sprintf( __( 'All %s Archive', 'responsive-add-ons' ), $post_label );
 				$post_option[ $post_name . '|all|archive' ] = $all_archive;
 			}
 
@@ -256,7 +256,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Display_Rules' ) ) {
 					$tax_name  = $taxonomy->name;
 
 					/* translators: %s taxonomy label */
-					$tax_archive = sprintf( __( 'All %s Archive', 'responsive-addons' ), $tax_label );
+					$tax_archive = sprintf( __( 'All %s Archive', 'responsive-add-ons' ), $tax_label );
 
 					$post_option[ $post_name . '|all|taxarchive|' . $tax_name ] = $tax_archive;
 				}
@@ -429,16 +429,16 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Display_Rules' ) ) {
 		public static function get_user_selections() {
 			$selection_options = array(
 				'basic'    => array(
-					'label' => __( 'Basic', 'responsive-addons' ),
+					'label' => __( 'Basic', 'responsive-add-ons' ),
 					'value' => array(
-						'all'        => __( 'All', 'responsive-addons' ),
-						'logged-in'  => __( 'Logged In', 'responsive-addons' ),
-						'logged-out' => __( 'Logged Out', 'responsive-addons' ),
+						'all'        => __( 'All', 'responsive-add-ons' ),
+						'logged-in'  => __( 'Logged In', 'responsive-add-ons' ),
+						'logged-out' => __( 'Logged Out', 'responsive-add-ons' ),
 					),
 				),
 
 				'advanced' => array(
-					'label' => __( 'Advanced', 'responsive-addons' ),
+					'label' => __( 'Advanced', 'responsive-add-ons' ),
 					'value' => array(),
 				),
 			);

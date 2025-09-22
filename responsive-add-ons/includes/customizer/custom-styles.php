@@ -380,7 +380,7 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 					$box_shadow = '0 1px 3px -2px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.1)';
 					break;
 				case 2:
-					$box_shadow = '0 3px 6px -5px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1))';
+					$box_shadow = '0 3px 6px -5px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1)';
 					break;
 				case 3:
 					$box_shadow = '0 10px 20px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1)';
@@ -399,7 +399,7 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 					$box_shadow_hover = '0 1px 3px -2px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.1)';
 					break;
 				case 2:
-					$box_shadow_hover = '0 3px 6px -5px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1))';
+					$box_shadow_hover = '0 3px 6px -5px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1)';
 					break;
 				case 3:
 					$box_shadow_hover = '0 10px 20px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1)';

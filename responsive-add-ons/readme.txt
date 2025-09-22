@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 3.3.2.1
+Stable tag: 3.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -154,6 +154,13 @@ Here's how it works:
 
 [youtube https://www.youtube.com/watch?v=JNeQKg1QJhk&t=2s]
 
+== Use of 3rd Party Services ==
+
+To improve the user experience, Responsive Plus may use the following 3rd party services if the required feature is enabled:
+
+- Google Fonts – are loaded to add additional fonts to your website. Google’s [TOS](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
+- [Mixpanel](https://mixpanel.com/) - used to send data about the usage of the Responsive Plus plugin when you [agree with sharing usage data with us](https://cyberchimps.com/docs/responsive-plus/modules-settings/usage-tracking-policy/). [TOS](https://mixpanel.com/legal/terms-of-use/) and [Privacy Policy](https://mixpanel.com/legal/privacy-policy/)
+
 == Help Resources==
 
 Check out the following help resources to know more about Responsive Plus Plugin:
@@ -235,6 +242,11 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 8. Responsive Plus advanced features.
 
 == Changelog ==
+
+= 3.3.3 - 22nd September 2025 =
+* Improvement - Added user consent for event tracking for improving plugin performance.
+* Improvement - Added translations for newer texts across the plugin.
+* Fix - WooCommerce Module: Fixed Shop page box shadow setting.
 
 = 3.3.2.1 - 15th September 2025 =
 * Improvement - Enhanced the template import process by adding helpful error messages.

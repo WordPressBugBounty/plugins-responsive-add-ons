@@ -4,6 +4,7 @@ jQuery( document ).ready(
 		$( document ).on( 'click' , '.rst-delete-auth' , _deleteAppAuth );
 		$( document ).on( 'click' , '.raddons-upgrade-the-plan' , _addonsUpgradePlan );
 		$( document ).on( 'click' , '.rst-sync-auth' , _syncAppAuth );
+		$( document ).on( 'change', '#responsive-addons-consent-toggle', handleConsentToggle );
 
 		$( '#responsive-theme-setting-wl-tab' ).on(
 			'click',
@@ -169,6 +170,8 @@ jQuery( document ).ready(
 		
 			let $_this = event.currentTarget;
 		
+			let site_name = $(this).closest('.responsive-ready-site-preview').data( 'demo-name' );
+			let site_builder = $(this).closest('.responsive-ready-site-preview').data('page-builder');
 			$( $_this ).addClass( 'disable' );
 			$( $_this ).find( '#loader' ).css( 'display', 'inline-block' );
 		
@@ -178,6 +181,8 @@ jQuery( document ).ready(
 				data : {
 					action      : 'cyberchimps_app_upgrade_user_plan',
 					_ajax_nonce : responsiveAddonsGettingStarted._ajax_nonce,
+					site_name   : site_name,
+					site_builder: site_builder,
 				},
 			})
 			.done(function (response) {
@@ -241,6 +246,26 @@ jQuery( document ).ready(
 					window.location.reload()
 				}
 			);
+		}
+
+		function handleConsentToggle() {
+			const isChecked = $('#responsive-addons-consent-toggle').is(':checked');
+			// Send AJAX request to update consent status
+			$.ajax({
+				url: responsiveAddonsGettingStarted.ajaxurl,
+				type: 'POST',
+				data: {
+					action: 'responsive-addons-update-user-consent',
+					_ajax_nonce: responsiveAddonsGettingStarted._ajax_nonce,
+					consent: isChecked ? 'yes' : 'no',
+				},
+				success: function(response) {
+					location.reload();
+				},
+				error: function () {
+					console.error('Error while updating consent.');
+				}
+			});
 		}
 
 	}

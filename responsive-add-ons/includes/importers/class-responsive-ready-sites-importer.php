@@ -83,6 +83,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 					add_filter( 'wp_import_post_meta', array( $this, 'on_wp_import_post_meta' ) );
 					add_filter( 'wxr_importer.pre_process.post_meta', array( $this, 'on_wxr_importer_pre_process_post_meta' ) );
 				}
+
+				add_action( 'wp_ajax_responsive-sites-log-import-time', array( $this, 'responsive_log_template_import_time' ) );
+				add_action( 'wp_ajax_responsive-ready-sites-log-demo-view', array( $this, 'responsive_log_template_view' ) );
 			}
 
 			add_action( 'responsive_ready_sites_import_complete', array( $this, 'clear_cache' ) );
@@ -216,6 +219,28 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 					wp_send_json_error( $demo_data->get_error_message() );
 				} else {
 					do_action( 'responsive_ready_sites_import_start', $demo_data, $demo_api_uri );
+				}
+
+				// Track Template Import event if user has given consent for tracking.
+				if( 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ) ) {
+					$event = array(
+						'event' => 'Template Import',
+						'properties' => array(
+							'token'         => 'f8fbbc680f8f9d9b80a50e8c030a3605',
+							'distinct_id'   => substr( hash( 'sha256', get_site_url() ), 0, 16 ),
+							'Template Name' => $demo_data['title'],
+							'Page Builder'  => $demo_data['page_builder'],
+							'User Site URL' => get_site_url(),
+						),
+					);
+	
+					$encoded_data = base64_encode( wp_json_encode( $event ) );
+	
+					$response = wp_remote_post( 'https://api.mixpanel.com/track?ip=1', [
+						'body' => [
+							'data' => $encoded_data,
+						]
+					]);
 				}
 
 				wp_send_json_success( $demo_data );
@@ -670,6 +695,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				'slug'                 => '',
 				'site_options_data'    => '',
 				'pages'                => '',
+				'page_builder'         => '',
 			);
 
 			$api_args = apply_filters(
@@ -739,6 +765,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				$remote_args['featured_image_url']   = $data['featured_image_url'];
 				$remote_args['title']                = $data['title']['rendered'];
 				$remote_args['success']              = true;
+				$remote_args['page_builder']         = $data['page_builder'];
 			}
 
 			// Merge remote demo and defaults.
@@ -979,6 +1006,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			$title   = isset( $_POST['data']['title']['rendered'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['title'] )['rendered'] ) : '';
 			$excerpt = isset( $_POST['data']['excerpt']['rendered'] ) ? wp_kses_post( wp_unslash( $_POST['data']['excerpt'] )['rendered'] ) : '';
 			$content = isset( $_POST['data']['original_content'] ) ? wp_kses_post( wp_unslash( $_POST['data']['original_content'] ) ) : ( isset( $_POST['data']['content']['rendered'] ) ? wp_kses_post( wp_unslash( $_POST['data']['content']['rendered'] ) ) : '' );
+			$template = isset( $_POST['current_site'] ) ? sanitize_text_field( wp_unslash( $_POST['current_site'] ) ) : '';
+			$page_builder = isset( $_POST['page_builder'] ) ? sanitize_text_field( wp_unslash( $_POST['page_builder'] ) ) : '';
 
 			$post_args = array(
 				'post_type'    => 'page',
@@ -1084,6 +1113,30 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 					update_metadata( 'post', $new_page_id, '_elementor_data', $datagivewp );
 				}
 			}
+
+			if( 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ) ) {
+				// Send data to Mixpanel.
+				$event = array(
+					'event' => 'Single Page Import',
+					'properties' => array(
+						'token'                => 'f8fbbc680f8f9d9b80a50e8c030a3605',
+						'distinct_id'          => substr( hash( 'sha256', get_site_url() ), 0, 16 ),
+						'Template Name'        => $template,
+						'Single Page Imported' => $title,
+						'Page Builder'         => $page_builder,
+						'User Site URL'        => get_site_url(),
+					),
+				);
+	
+				$encoded_data = base64_encode( wp_json_encode( $event ) );
+	
+				$response = wp_remote_post( 'https://api.mixpanel.com/track?ip=1', array(
+					'body' => array(
+						'data' => $encoded_data,
+					),
+				));
+			}
+
 			wp_send_json_success(
 				array(
 					'remove-page-id' => $page_id,
@@ -1178,6 +1231,94 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			}
 
 			return $post_meta;
+		}
+
+		/**
+		 * Log template import time to Mixpanel.
+		 *
+		 * @since 3.3.3
+		 */
+		public function responsive_log_template_import_time() {
+			// Verify Nonce.
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
+			if ( ! current_user_can( 'install_plugins' ) ) {
+				wp_send_json_error( __( 'User does not have permission!', 'responsive-addons' ) );
+			}
+	
+			$time_taken   = isset( $_POST['time_taken'] ) ? sanitize_text_field( wp_unslash( $_POST['time_taken'] ) ) : '';
+			$template     = isset( $_POST['current_site'] ) ? sanitize_text_field( wp_unslash( $_POST['current_site'] ) ) : '';
+			$page_builder = isset( $_POST['page_builder'] ) ? sanitize_text_field( wp_unslash( $_POST['page_builder'] ) ) : '';
+			$import_type  = isset( $_POST['import_type'] ) ? sanitize_text_field( wp_unslash( $_POST['import_type'] ) ) : '';
+			$title        = isset( $_POST['data']['title']['rendered'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['title'] )['rendered'] ) : '';
+
+			$properties = array(
+				'token'                => 'f8fbbc680f8f9d9b80a50e8c030a3605',
+				'distinct_id'          => substr( hash( 'sha256', get_site_url() ), 0, 16 ),
+				'Template Name'        => $template,
+				'Page Builder'         => $page_builder,
+				'User Site URL'        => get_site_url(),
+				'Import Time Taken(s)' => $time_taken,
+			);
+
+			$event = array(
+				'event'      => 'Single Page Import time',
+				'properties' => $properties,
+			);
+
+			if ( 'full_site' !== $import_type ) {
+				$event['properties']['Single Page Imported'] = $title;
+			}
+
+			if ( 'full_site' === $import_type ) {
+				$event['event'] = 'Template Import time';
+			}
+
+			$encoded_data = base64_encode( wp_json_encode( $event ) );
+
+			$response = wp_remote_post( 'https://api.mixpanel.com/track?ip=1', array(
+				'body' => array(
+					'data' => $encoded_data,
+				),
+			));
+			wp_send_json_success();
+		}
+
+		/**
+		 * Log template view to Mixpanel.
+		 *
+		 * @since 3.3.3
+		 */
+		public function responsive_log_template_view() {
+			// Verify Nonce.
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
+			if ( ! current_user_can( 'install_plugins' ) ) {
+				wp_send_json_error( __( 'User does not have permission!', 'responsive-addons' ) );
+			}
+
+			$template     = isset( $_POST['demo_name'] ) ? sanitize_text_field( wp_unslash( $_POST['demo_name'] ) ) : '';
+			$page_builder = isset( $_POST['page_builder'] ) ? sanitize_text_field( wp_unslash( $_POST['page_builder'] ) ) : '';
+
+			$event = array(
+				'event' => 'Viewed Premium template',
+				'properties' => array(
+					'token'         => 'f8fbbc680f8f9d9b80a50e8c030a3605',
+					'distinct_id'   => substr( hash( 'sha256', get_site_url() ), 0, 16 ),
+					'Template Name' => $template,
+					'Page Builder'  => $page_builder,
+					'User Site URL' => get_site_url(),
+				),
+			);
+
+			$encoded_data = base64_encode( wp_json_encode( $event ) );
+
+			$response = wp_remote_post( 'https://api.mixpanel.com/track?ip=1', array(
+				'body' => array(
+					'data' => $encoded_data,
+				),
+			));
+			wp_send_json_success();
 		}
 	}
 

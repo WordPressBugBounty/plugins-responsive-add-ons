@@ -1483,7 +1483,8 @@ responsive-ready-site-import-free.button.installing:before {
 	cursor: pointer;
 }
 .rst-my-favourite-tooltip .tooltip-text,
-.responsive-ready-sites-sync-templates-button .tooltip-text {
+.responsive-ready-sites-sync-templates-button .tooltip-text,
+.responsive-sites-analytics .tooltip-text {
 	position: absolute;
 	top: 100%;
 	transform: translateX(-30%);
@@ -1506,7 +1507,8 @@ responsive-ready-site-import-free.button.installing:before {
 }
 
 .rst-my-favourite-tooltip:hover .tooltip-text,
-.responsive-ready-sites-sync-templates-button:hover .tooltip-text {
+.responsive-ready-sites-sync-templates-button:hover .tooltip-text,
+.responsive-sites-analytics:hover .tooltip-text {
 	opacity: 1;
 }
 
@@ -2698,4 +2700,92 @@ input:checked + .ready-site-import-option-input-slider:before {
 	#responsive-sites-menu-page .nav-tab-wrapper {
 		width: 78% !important;
 	}
+}
+#responsive-addons-user-consent-message {
+	position: absolute;
+	right: 0;
+	top: 70px;
+	display: none;
+}
+.responsive-addons-consent-wrapper {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	background: #FFF;
+	border: 1px solid #D1D5DB;
+	border-radius: 4px;
+	padding: 12px 16px;
+	gap: 12px;
+}
+.responsive-addons-consent-text {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	max-width: 320px;
+}
+.responsive-addons-consent-text h3 {
+	margin: 0;
+	color: #374151;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 100%;
+}
+.responsive-addons-consent-text p {
+	margin: 0;
+	color: #6B7280;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 18px;
+}
+/* Toggle switch wrapper */
+.responsive-addons-consent-wrapper .switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 18px;
+}
+
+.responsive-addons-consent-wrapper .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.responsive-addons-consent-wrapper .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 18px;
+}
+
+.responsive-addons-consent-wrapper .slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.responsive-addons-consent-wrapper input:checked + .slider {
+  background-color: #007CBA;
+}
+
+.responsive-addons-consent-wrapper input:checked + .slider:before {
+  transform: translateX(18px);
+}
+#responsive-sites-analytics-wrap {
+	display: flex;
+	cursor: pointer;
+	position: relative;
 }

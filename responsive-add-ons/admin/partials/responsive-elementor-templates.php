@@ -32,9 +32,9 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 					<div class="elementor-template-library-filter-toolbar">
 						<div class="elementor-template-library-order">
 							<select class="elementor-template-library-order-input elementor-template-library-filter-select elementor-select2">
-								<option value=""><?php esc_html_e( 'All', 'responsive-addons' ); ?></option>
-								<option value="free"><?php esc_html_e( 'Free', 'responsive-addons' ); ?></option>
-								<option value="pro"><?php esc_html_e( 'Pro', 'responsive-addons' ); ?></option>
+								<option value=""><?php esc_html_e( 'All', 'responsive-add-ons' ); ?></option>
+								<option value="free"><?php esc_html_e( 'Free', 'responsive-add-ons' ); ?></option>
+								<option value="pro"><?php esc_html_e( 'Pro', 'responsive-add-ons' ); ?></option>
 							</select>
 						</div>
 						<?php
@@ -42,7 +42,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 							?>
 						<div class="responsive-blocks-category-inner-wrap">
 							<select id="elementor-template-library-filter" class="responsive-blocks-category elementor-template-library-filter-select elementor-select2">
-								<option value=""><?php esc_html_e( 'All', 'responsive-addons' ); ?></option>
+								<option value=""><?php esc_html_e( 'All', 'responsive-add-ons' ); ?></option>
 								<# for ( key in responsiveElementorSites.blockCategories ) { #>
 								<option value="{{responsiveElementorSites.blockCategories[key]}}">{{responsiveElementorSites.blockCategories[key]}}</option>
 								<# } #>
@@ -54,8 +54,8 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 						<div class="responsive-blocks-filter-inner-wrap"  id="elementor-template-block-color-filter" style="display: none;"></div>
 					</div>
 					<div class="rst-sites-template-library-filter-text-wrapper">
-						<label for="elementor-template-library-filter-text" class="elementor-screen-only"><?php esc_html_e( 'Search...', 'responsive-addons' ); ?></label>
-						<input id="wp-filter-search-input" autocomplete="off" placeholder="<?php esc_html_e( 'SEARCH', 'responsive-addons' ); ?>" class="">
+						<label for="elementor-template-library-filter-text" class="elementor-screen-only"><?php esc_html_e( 'Search...', 'responsive-add-ons' ); ?></label>
+						<input id="wp-filter-search-input" autocomplete="off" placeholder="<?php esc_html_e( 'SEARCH', 'responsive-add-ons' ); ?>" class="">
 						<i class="eicon-search"></i>
 					</div>
 				</div>
@@ -77,7 +77,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 </script>
 <script type="text/template" id="tmpl-rst-template-block-color-filters">
 	<select  class="responsive-blocks-filter elementor-template-library-filter-select elementor-select2">
-		<option value=""><?php esc_html_e( 'Filter by Color', 'responsive-addons' ); ?></option>
+		<option value=""><?php esc_html_e( 'Filter by Color', 'responsive-add-ons' ); ?></option>
 		<# for ( key in data ) { #>
 			<option value="{{data[key]}}">{{data[key]}}</option>
 		<# } #>
@@ -90,7 +90,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 				<div class="rst-sites-modal__header__logo">
 					<span class="rst-sites-modal__header__logo__icon-wrapper"></span>
 				</div>
-				<div class="back-to-layout" title="<?php esc_html_e( 'Back to Layout', 'responsive-addons' ); ?>" data-step="1"><i class="eicon-angle-left"></i></div>
+				<div class="back-to-layout" title="<?php esc_html_e( 'Back to Layout', 'responsive-add-ons' ); ?>" data-step="1"><i class="eicon-angle-left"></i></div>
 				<div id="rst-pro-template"></div>
 			</div>
 			<div class="elementor-templates-modal__header__menu-area responsive-sites-step-1-wrap rst-sites-modal__options">
@@ -98,8 +98,8 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 					<?php
 					if ( $is_pro_greater ) {
 						?>
-					<div class="elementor-template-library-menu-item elementor-active" data-template-source="remote" data-template-type="pages"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/file.svg' ); ?>" alt="file"></span><?php esc_html_e( 'Pages', 'responsive-addons' ); ?></div>
-					<div class="elementor-template-library-menu-item" data-template-source="remote" data-template-type="blocks"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/layers.svg' ); ?>" alt="file"></span><?php esc_html_e( 'Blocks', 'responsive-addons' ); ?></div>
+					<div class="elementor-template-library-menu-item elementor-active" data-template-source="remote" data-template-type="pages"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/file.svg' ); ?>" alt="file"></span><?php esc_html_e( 'Pages', 'responsive-add-ons' ); ?></div>
+					<div class="elementor-template-library-menu-item" data-template-source="remote" data-template-type="blocks"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/layers.svg' ); ?>" alt="file"></span><?php esc_html_e( 'Blocks', 'responsive-add-ons' ); ?></div>
 						<?php
 					}
 					?>
@@ -107,15 +107,15 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 			</div>
 			<div class="elementor-templates-modal__header__items-area">
 				<div class="rst-sites-modal__header__close rst-sites-modal__header__close--normal rst-sites-modal__header__item">
-					<i class="dashicons close dashicons-no-alt" aria-hidden="true" title="<?php esc_html_e( 'Close', 'responsive-addons' ); ?>"></i>
-					<span class="elementor-screen-only"><?php esc_html_e( 'Close', 'responsive-addons' ); ?></span>
+					<i class="dashicons close dashicons-no-alt" aria-hidden="true" title="<?php esc_html_e( 'Close', 'responsive-add-ons' ); ?>"></i>
+					<span class="elementor-screen-only"><?php esc_html_e( 'Close', 'responsive-add-ons' ); ?></span>
 				</div>
 				<?php
 				if ( $is_pro_greater ) {
 					?>
 				<div class="rst-sites-modal__header__sync rst-sites-modal__header__sync--normal rst-sites-modal__header__item">
-					<i class="dashicons dashicons-update" aria-hidden="true" title="<?php esc_html_e( 'Sync', 'responsive-addons' ); ?>"></i>
-					<span class="elementor-screen-only"><?php esc_html_e( 'Sync', 'responsive-addons' ); ?></span>
+					<i class="dashicons dashicons-update" aria-hidden="true" title="<?php esc_html_e( 'Sync', 'responsive-add-ons' ); ?>"></i>
+					<span class="elementor-screen-only"><?php esc_html_e( 'Sync', 'responsive-add-ons' ); ?></span>
 				</div>
 					<?php
 				}
@@ -123,10 +123,10 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 				<div class="responsive-addons-modal responsive-addons-app-connect-modal" style="display: none;">
 					<div class="responsive-addons-app-modal-content">
 						<span id="responsive-addons-app-modal-close"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/modal-close.svg' ); ?>"></span>
-						<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-addons' ); ?></h2>
-						<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-addons' ); ?></p>
-						<button type="button" class="rst-start-auth rst-start-auth-new"><?php esc_html_e( 'New? Create a free account', 'responsive-addons' ); ?><span id="loader"></span></button>
-						<p class=""><?php esc_html_e( 'Already have an account? ', 'responsive-addons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-addons' ); ?><span id="loader"></span></span></p>
+						<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-add-ons' ); ?></h2>
+						<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-add-ons' ); ?></p>
+						<button type="button" class="rst-start-auth rst-start-auth-new"><?php esc_html_e( 'New? Create a free account', 'responsive-add-ons' ); ?><span id="loader"></span></button>
+						<p class=""><?php esc_html_e( 'Already have an account? ', 'responsive-add-ons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-add-ons' ); ?><span id="loader"></span></span></p>
 					</div>
 				</div>
 
@@ -134,14 +134,14 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 				<div class="responsive-addons-modal responsive-addons-app-unlock-access-modal" style="display: none;">
 					<div class="responsive-addons-app-unlock-access-modal-content">
 						<div id="responsive-addons-app-unlock-template-header">
-							<p class="responsive-addons-app-unlock-template-heading"><?php esc_html_e( 'Premium template requires a Personal plan subscription or higher!', 'responsive-addons' ); ?></p>
+							<p class="responsive-addons-app-unlock-template-heading"><?php esc_html_e( 'Premium template requires a Personal plan subscription or higher!', 'responsive-add-ons' ); ?></p>
 							<span id="responsive-addons-app-unlock-template-modal-close"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/unlock-template-close-btn.svg' ); ?>"></span>
 						</div>
 						<div class="responsive-addons-app-unlock-access-modal-body">						
-							<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-addons' ); ?></h2>
-							<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-addons' ); ?></p>
-							<button type="button" class="raddons-upgrade-the-plan"><?php esc_html_e( 'Unlock Premium Template Access at just $1.97/month', 'responsive-addons' ); ?><span style="margin-left: 8px" class="dashicons dashicons-lock"></span><span id="loader"></span></button>
-							<p class=""><?php esc_html_e( 'Already have an account on app.cyberchimps.com? ', 'responsive-addons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-addons' ); ?><span id="loader"></span></span></p>
+							<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-add-ons' ); ?></h2>
+							<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-add-ons' ); ?></p>
+							<button type="button" class="raddons-upgrade-the-plan"><?php esc_html_e( 'Unlock Premium Template Access at just $1.97/month', 'responsive-add-ons' ); ?><span style="margin-left: 8px" class="dashicons dashicons-lock"></span><span id="loader"></span></button>
+							<p class=""><?php esc_html_e( 'Already have an account on app.cyberchimps.com? ', 'responsive-add-ons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-add-ons' ); ?><span id="loader"></span></span></p>
 						</div>
 					</div>
 				</div>
@@ -183,11 +183,11 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 				<div class="elementor-template-library-template-footer">
 					<a class="elementor-template-library-template-action elementor-template-library-template-insert rst-block-insert">
 						<i class="eicon-file-download" aria-hidden="true"></i>
-						<span class="elementor-button-title"><?php esc_html_e( 'INSERT', 'responsive-addons' ); ?></span>
+						<span class="elementor-button-title"><?php esc_html_e( 'INSERT', 'responsive-add-ons' ); ?></span>
 					</a>
 				</div>
 				<# if ( demo_type && 'free' !== demo_type ) { #>
-					<div class="agency-ribbons" title="<?php esc_attr_e( 'This pro template is accessible with Responsive Pro.', 'responsive-addons' ); ?>"> <?php esc_html_e( 'Pro', 'responsive-addons' ); ?></div>
+					<div class="agency-ribbons" title="<?php esc_attr_e( 'This pro template is accessible with Responsive Pro.', 'responsive-add-ons' ); ?>"> <?php esc_html_e( 'Pro', 'responsive-add-ons' ); ?></div>
 				<# } #>
 			</div>
 		</div>
@@ -197,10 +197,10 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 	#>
 		<div class="responsive-sites-no-sites">
 			<div class="inner">
-				<h3><?php esc_html_e( 'Sorry No Results Found.', 'responsive-addons' ); ?></h3>
+				<h3><?php esc_html_e( 'Sorry No Results Found.', 'responsive-add-ons' ); ?></h3>
 				<div class="content" style="text-align: center">
 					<div class="description">
-						<div class="back-to-layout-button"><span class="button responsive-sites-back"><?php esc_html_e( 'Back to Templates', 'responsive-addons' ); ?></span></div>
+						<div class="back-to-layout-button"><span class="button responsive-sites-back"><?php esc_html_e( 'Back to Templates', 'responsive-add-ons' ); ?></span></div>
 					</div>
 				</div>
 			</div>
@@ -258,7 +258,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 							<h3 class="theme-name">{{{site_title}}}</h3>
 						</div>
 						<# if ( data[ key ]['demo_type'] && 'free' !== data[ key ]['demo_type'] ) { #>
-							<div class="agency-ribbons" title="<?php esc_attr_e( 'This pro template is accessible with Responsive Pro.', 'responsive-addons' ); ?>"> <?php esc_html_e( 'Pro', 'responsive-addons' ); ?></div>
+							<div class="agency-ribbons" title="<?php esc_attr_e( 'This pro template is accessible with Responsive Pro.', 'responsive-add-ons' ); ?>"> <?php esc_html_e( 'Pro', 'responsive-add-ons' ); ?></div>
 						<# } #>
 					</div>
 				</div>
@@ -312,10 +312,10 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 	#>
 		<div class="responsive-sites-no-sites">
 			<div class="inner">
-				<h3><?php esc_html_e( 'Sorry No Results Found.', 'responsive-addons' ); ?></h3>
+				<h3><?php esc_html_e( 'Sorry No Results Found.', 'responsive-add-ons' ); ?></h3>
 				<div class="content">
 					<div class="description">
-						<div class="back-to-layout-button"><span class="button responsive-sites-back"><?php esc_html_e( 'Back to Templates', 'responsive-addons' ); ?></span></div>
+						<div class="back-to-layout-button"><span class="button responsive-sites-back"><?php esc_html_e( 'Back to Templates', 'responsive-add-ons' ); ?></span></div>
 					</div>
 				</div>
 			</div>
@@ -384,7 +384,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 				</div>
 				<# if ( site_type && 'free' !== site_type ) { #>
 					<?php /* translators: %1$s External Link */ ?>
-					<div class="agency-ribbons" title="<?php esc_attr_e( 'This pro template is accessible with Responsive Pro.', 'responsive-addons' ); ?>"><?php esc_html_e( 'Pro', 'responsive-addons' ); ?></div>
+					<div class="agency-ribbons" title="<?php esc_attr_e( 'This pro template is accessible with Responsive Pro.', 'responsive-add-ons' ); ?>"><?php esc_html_e( 'Pro', 'responsive-add-ons' ); ?></div>
 				<# } #>
 			</div>
 		</div>
@@ -395,7 +395,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 	#>
 		<div class="responsive-sites-no-sites">
 			<div class="inner">
-				<h3><?php esc_html_e( 'Sorry No Results Found.', 'responsive-addons' ); ?></h3>
+				<h3><?php esc_html_e( 'Sorry No Results Found.', 'responsive-add-ons' ); ?></h3>
 			</div>
 		</div>
 	<#
@@ -452,11 +452,11 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 									if ( responsiveElementorSites.license_status ) {
 										if ( responsiveElementorSites.isREAActivated ) {
 							#>
-											<div type="button" class="button button-hero button-primary rst-library-template-insert disabled"><?php esc_html_e( 'Import ', 'responsive-addons' ); ?>{{action_str}}</div>
+											<div type="button" class="button button-hero button-primary rst-library-template-insert disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
 							<#
 										} else {
 							#>
-											<p style="color: #FF0000; font-size: 12px; margin-right: 14px;"><span class="eicon-warning-full"></span><?php esc_html_e( 'This Pro Template requires REA plugin. ', 'responsive-addons' ); ?><a style="color: #FF0000; text-decoration: underline" href="{{responsiveElementorSites.getREAURL}}" target="_blank"><?php esc_html_e( 'Read More.', 'responsive-addons' ); ?></a></p>
+											<p style="color: #FF0000; font-size: 12px; margin-right: 14px;"><span class="eicon-warning-full"></span><?php esc_html_e( 'This Pro Template requires REA plugin. ', 'responsive-add-ons' ); ?><a style="color: #FF0000; text-decoration: underline" href="{{responsiveElementorSites.getREAURL}}" target="_blank"><?php esc_html_e( 'Read More.', 'responsive-add-ons' ); ?></a></p>
 							<#
 										}
 									} else {
@@ -466,7 +466,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 							<#
 										} else {
 							#>
-											<p style="color: #FF0000; font-size: 12px; margin-right: 14px;"><span class="eicon-warning-full"></span><?php esc_html_e( 'This Pro Template requires REA plugin. ', 'responsive-addons' ); ?><a style="color: #FF0000; text-decoration: underline" href="{{responsiveElementorSites.getREAURL}}" target="_blank"><?php esc_html_e( 'Read More.', 'responsive-addons' ); ?></a></p>
+											<p style="color: #FF0000; font-size: 12px; margin-right: 14px;"><span class="eicon-warning-full"></span><?php esc_html_e( 'This Pro Template requires REA plugin. ', 'responsive-add-ons' ); ?><a style="color: #FF0000; text-decoration: underline" href="{{responsiveElementorSites.getREAURL}}" target="_blank"><?php esc_html_e( 'Read More.', 'responsive-add-ons' ); ?></a></p>
 											<a class="button button-hero button-primary" href="{{responsiveElementorSites.getProURL}}" target="_blank">{{responsiveElementorSites.getProText}}<i class="dashicons dashicons-external"></i></a>
 							<#
 										}
@@ -477,33 +477,33 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 									if ( responsiveElementorSites.ccAppAuth) {
 										if ( 'free' === responsiveElementorSites.addonsPlan ) {
 											#>
-											<div type="button" class="button button-hero button-primary rst-library-template-unlock-preminum-templates raddons-upgrade-the-plan"><?php esc_html_e( 'Import ', 'responsive-addons' ); ?>{{action_str}}</div>
+											<div type="button" class="button button-hero button-primary rst-library-template-unlock-preminum-templates raddons-upgrade-the-plan"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
 											<#
 										} else {
 											if ( ! responsiveElementorSites.isREAActivated ) {
 												#>
-												<div type="button" class="button button-hero button-primary rst-library-template-install-rea disabled"><?php esc_html_e( 'Click to Install Required Plugins ', 'responsive-addons' ); ?><span id="rst-plugin-install-loader"></span></div>
+												<div type="button" class="button button-hero button-primary rst-library-template-install-rea disabled"><?php esc_html_e( 'Click to Install Required Plugins ', 'responsive-add-ons' ); ?><span id="rst-plugin-install-loader"></span></div>
 												<#
 											} else {
 												#>
-												<div type="button" class="button button-hero button-primary rst-library-template-insert disabled"><?php esc_html_e( 'Import ', 'responsive-addons' ); ?>{{action_str}}</div>
+												<div type="button" class="button button-hero button-primary rst-library-template-insert disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
 												<#
 											}
 										}
 									} else {
 										#>
-										<div type="button" class="button button-hero button-primary rst-library-template-no-auth-unlock-access disabled"><?php esc_html_e( 'Import ', 'responsive-addons' ); ?>{{action_str}}</div>
+										<div type="button" class="button button-hero button-primary rst-library-template-no-auth-unlock-access disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
 										<#
 									}
 								}
 							} else {
 								if ( responsiveElementorSites.proActivated || responsiveElementorSites.ccAppAuth) {
 									#>
-									<div type="button" class="button button-hero button-primary rst-library-template-insert disabled"><?php esc_html_e( 'Import ', 'responsive-addons' ); ?>{{action_str}}</div>
+									<div type="button" class="button button-hero button-primary rst-library-template-insert disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
 									<#
 								} else {
 						#>
-									<div type="button" class="button button-hero button-primary rst-library-template-no-auth disabled"><?php esc_html_e( 'Import ', 'responsive-addons' ); ?>{{action_str}}</div>
+									<div type="button" class="button button-hero button-primary rst-library-template-no-auth disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
 						<#
 								}
 							}
@@ -512,12 +512,12 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 								if ( responsiveElementorSites.license_status ) {
 									if ( responsiveElementorSites.isREAActivated ) {
 						#>
-										<div type="button" class="button button-hero button-primary rst-library-template-insert disabled"><?php esc_html_e( 'Import ', 'responsive-addons' ); ?>{{action_str}}</div>
-										<div type="button" class="button button-hero button-primary rst-import-elementor-template disabled"><?php esc_html_e( 'Save ', 'responsive-addons' ); ?>{{action_str}}</div>
+										<div type="button" class="button button-hero button-primary rst-library-template-insert disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
+										<div type="button" class="button button-hero button-primary rst-import-elementor-template disabled"><?php esc_html_e( 'Save ', 'responsive-add-ons' ); ?>{{action_str}}</div>
 						<#
 									} else {
 						#>
-										<p style="color: #FF0000; font-size: 12px; margin-right: 14px;"><span class="eicon-warning-full"></span><?php esc_html_e( 'This Pro Block requires REA plugin. ', 'responsive-addons' ); ?><a style="color: #FF0000; text-decoration: underline" href="{{responsiveElementorSites.getREAURL}}" target="_blank"><?php esc_html_e( 'Read More.', 'responsive-addons' ); ?></a></p>
+										<p style="color: #FF0000; font-size: 12px; margin-right: 14px;"><span class="eicon-warning-full"></span><?php esc_html_e( 'This Pro Block requires REA plugin. ', 'responsive-add-ons' ); ?><a style="color: #FF0000; text-decoration: underline" href="{{responsiveElementorSites.getREAURL}}" target="_blank"><?php esc_html_e( 'Read More.', 'responsive-add-ons' ); ?></a></p>
 						<#
 									}
 								} else {
@@ -527,7 +527,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 						<#
 									} else {
 						#>
-										<p style="color: #FF0000; font-size: 12px; margin-right: 14px;"><span class="eicon-warning-full"></span><?php esc_html_e( 'This Pro Block requires REA plugin. ', 'responsive-addons' ); ?><a style="color: #FF0000; text-decoration: underline" href="{{responsiveElementorSites.getREAURL}}" target="_blank"><?php esc_html_e( 'Read More.', 'responsive-addons' ); ?></a></p>
+										<p style="color: #FF0000; font-size: 12px; margin-right: 14px;"><span class="eicon-warning-full"></span><?php esc_html_e( 'This Pro Block requires REA plugin. ', 'responsive-add-ons' ); ?><a style="color: #FF0000; text-decoration: underline" href="{{responsiveElementorSites.getREAURL}}" target="_blank"><?php esc_html_e( 'Read More.', 'responsive-add-ons' ); ?></a></p>
 										<a class="button button-hero button-primary" href="{{responsiveElementorSites.getProURL}}" target="_blank">{{responsiveElementorSites.getProText}}<i class="dashicons dashicons-external"></i></a>
 						<#
 									}
@@ -535,13 +535,13 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 							} else {
 								if ( responsiveElementorSites.ccAppAuth) {
 								#>
-									<div type="button" class="button button-hero button-primary rst-library-template-insert rst-library-block-insert disabled"><?php esc_html_e( 'Import ', 'responsive-addons' ); ?>{{action_str}}</div>
-									<div type="button" class="button button-hero button-primary rst-import-elementor-template disabled"><?php esc_html_e( 'Save ', 'responsive-addons' ); ?>{{action_str}}</div>
+									<div type="button" class="button button-hero button-primary rst-library-template-insert rst-library-block-insert disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
+									<div type="button" class="button button-hero button-primary rst-import-elementor-template disabled"><?php esc_html_e( 'Save ', 'responsive-add-ons' ); ?>{{action_str}}</div>
 								<#
 								} else {
 								#>
-									<div type="button" class="button button-hero button-primary rst-library-template-no-auth disabled"><?php esc_html_e( 'Import ', 'responsive-addons' ); ?>{{action_str}}</div>
-									<div type="button" class="button button-hero button-primary rst-import-elementor-template-no-auth disabled"><?php esc_html_e( 'Save ', 'responsive-addons' ); ?>{{action_str}}</div>
+									<div type="button" class="button button-hero button-primary rst-library-template-no-auth disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
+									<div type="button" class="button button-hero button-primary rst-import-elementor-template-no-auth disabled"><?php esc_html_e( 'Save ', 'responsive-add-ons' ); ?>{{action_str}}</div>
 								<#
 								}
 							}

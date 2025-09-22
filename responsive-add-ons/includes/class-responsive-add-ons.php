@@ -154,6 +154,8 @@ class Responsive_Add_Ons {
 			add_action( 'wp_ajax_responsive-ready-sites-required-plugins', array( $this, 'required_plugin' ) );
 			add_action( 'wp_ajax_responsive-ready-sites-install-required-pro-plugins', array( $this, 'install_pro_plugin' ) );
 			add_action( 'wp_ajax_responsive-ready-sites-required-plugin-activate', array( $this, 'required_plugin_activate' ) );
+			add_action('wp_ajax_responsive-ready-sites-install-plugin',array($this,'responsive_ready_sites_handle_install_plugin') );
+
 			add_action( 'wp_ajax_responsive-ready-sites-remote-request', array( $this, 'remote_request' ) );
 			add_action( 'wp_ajax_responsive-ready-sites-elementor_page_import_process', array( $this, 'elementor_page_import_process' ) );
 			add_action( 'wp_ajax_responsive-ready-sites-set-reset-data', array( $this, 'set_reset_data' ) );
@@ -261,9 +263,38 @@ class Responsive_Add_Ons {
 		if ( $this->responsive_addons_is_theme_site_builder_compatible() && 'on' === get_option( 'rplus_site_builder_enable' ) ) {
 			require_once RESPONSIVE_ADDONS_DIR . 'admin/site-builder/class-responsive-add-ons-site-builder.php';
 		}
-
+		// Update user consent.
+		add_action( 'wp_ajax_responsive-addons-update-user-consent', array( $this, 'responsive_addons_update_user_consent' ) );
 	}
 
+	public function responsive_ready_sites_handle_install_plugin() {
+		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
+		if ( ! current_user_can( 'install_plugins' ) ) {
+			wp_send_json_error( [ 'message' => __( 'Permission denied.', 'responsive-addons' ) ] );
+		}
+		
+		$slug = sanitize_text_field( $_POST['slug'] );
+
+		include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+		include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+		include_once ABSPATH . 'wp-admin/includes/file.php';
+
+		$api = plugins_api( 'plugin_information', [ 'slug' => $slug, 'fields' => [ 'sections' => false ] ] );
+
+		if ( is_wp_error( $api ) ) {
+			wp_send_json_error( [ 'message' => $api->get_error_message() ] );
+		}
+
+		$upgrader = new Plugin_Upgrader( new WP_Ajax_Upgrader_Skin() );
+		$result   = $upgrader->install( $api->download_link );
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error( [ 'message' => $result->get_error_message() ] );
+		}
+
+		wp_send_json_success( [ 'message' => __( 'Plugin installed successfully.', 'responsive-addons' ) ] );
+	}
 
 	/**
 	 * Ask for Review.
@@ -692,7 +723,7 @@ class Responsive_Add_Ons {
 	 */
 	public function responsive_addons_translations() {
 		// Load the text domain for translations.
-		load_plugin_textdomain( 'responsive-addons', false, basename( __DIR__ ) . '/languages' );
+		load_plugin_textdomain( 'responsive-add-ons', false, basename( __DIR__ ) . '/languages' );
 	}
 
 	/**
@@ -895,6 +926,7 @@ class Responsive_Add_Ons {
 					'activated_first_time'            => get_option( 'ra_first_time_activation' ),
 					'hasAppAuth'                      => $this->cc_app_auth->has_auth(),
 					'isResponsiveProActive'           => $pro_plugin_active_status,
+					'userGivenConsent'                => 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ),
 				)
 			);
 
@@ -1494,6 +1526,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'activate_plugins' ) ) {
+
 			wp_send_json_error(
 				array(
 					'success' => false,
@@ -1503,6 +1536,7 @@ class Responsive_Add_Ons {
 		}
 
 		if ( ! isset( $_POST['init'] ) || empty( $_POST['init'] ) ) {
+
 			wp_send_json_error(
 				array(
 					'success' => false,
@@ -1511,16 +1545,13 @@ class Responsive_Add_Ons {
 			);
 		}
 
-		$data        = array();
 		$plugin_init = ( isset( $_POST['init'] ) ) ? wp_kses_post( wp_unslash( $_POST['init'] ) ) : '';
-		if ( strpos( $plugin_init, 'give' ) !== false ) {
-			$silent = false;
-		} else {
-			$silent = true;
-		}
+		$silent      = ( strpos( $plugin_init, 'give' ) !== false ) ? false : true;
+
 		$activate = activate_plugin( $plugin_init, '', false, $silent );
 
 		if ( is_wp_error( $activate ) ) {
+
 			wp_send_json_error(
 				array(
 					'success' => false,
@@ -1536,6 +1567,7 @@ class Responsive_Add_Ons {
 			)
 		);
 	}
+
 
 	/**
 	 * Check if Responsive Addons Pro is installed.
@@ -1696,6 +1728,13 @@ class Responsive_Add_Ons {
 				</div>
 				<div id="responsive-sites-filters" class="hide-on-mobile">
 					<?php $this->site_filters(); ?>
+					<div id="responsive-sites-analytics-wrap" class="responsive-sites-analytics">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C8.82996 20 6.09073 18.1561 4.7959 15.4824L11.4219 13.708C11.6085 13.658 11.8954 13.5841 12.1367 13.4834C12.4184 13.3658 12.8385 13.1343 13.1201 12.6465C13.4015 12.1587 13.3925 11.6796 13.3535 11.377C13.32 11.1176 13.2404 10.8321 13.1904 10.6455L11.415 4.02344C11.6083 4.00947 11.8032 4 12 4ZM10.1621 10.9385L4.02344 12.583C4.00956 12.3904 4 12.1961 4 12C4 8.83059 5.84279 6.09104 8.51562 4.7959L10.1621 10.9385Z" fill="#9CA3AF"/>
+						<path d="M9.92945 4.27259C9.67849 3.33602 9.55302 2.86773 9.12083 2.67286C8.68865 2.47799 8.30723 2.66782 7.54439 3.04748C6.97028 3.33321 6.42361 3.67419 5.91239 4.06647C4.87054 4.8659 3.99636 5.86272 3.33975 7C2.68314 8.13728 2.25696 9.39275 2.08555 10.6947C2.00144 11.3336 1.97948 11.9775 2.01909 12.6176C2.07171 13.4681 2.09803 13.8933 2.48288 14.1701C2.86773 14.447 3.33602 14.3215 4.27259 14.0706L10.0681 12.5176C10.9788 12.2736 11.4342 12.1516 11.6413 11.7929C11.8484 11.4342 11.7264 10.9788 11.4824 10.0681L9.92945 4.27259Z" fill="#9CA3AF"/>
+						</svg>
+						<span class="tooltip-text"><?php esc_html_e( 'Analytics', 'responsive-add-ons' ); ?></span>
+					</div>
 					<div class="rst-my-favourite">
 						<div id="rst-my-favorite-btn" class="rst-my-favourite-tooltip rst-nav-tab-wrapper-icon">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -3372,6 +3411,25 @@ class Responsive_Add_Ons {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Update user consent for Mix Panel track.
+	 *
+	 * @since 3.3.3
+	 */
+	public function responsive_addons_update_user_consent() {
+		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
+		}
+
+		$consent = isset( $_POST['consent'] ) ? sanitize_text_field( wp_unslash( $_POST['consent'] ) ) : 'no';
+
+		update_option( 'responsive_addons_contribution_consent', $consent );
+
+		wp_send_json_success();
 	}
 
 }

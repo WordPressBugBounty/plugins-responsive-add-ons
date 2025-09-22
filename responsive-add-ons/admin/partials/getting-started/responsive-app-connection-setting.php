@@ -29,13 +29,13 @@ $cc_app_auth = new Responsive_Add_Ons_App_Auth();
 					<div class="settings-success-content">
 						<h2 class="rst-success-connect-status">
 							<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/connect-success.svg' ); ?>">
-							<?php esc_html_e( 'Your website is connected to Cyberchimps Responsive', 'responsive-addons' ); ?>
+							<?php esc_html_e( 'Your website is connected to Cyberchimps Responsive', 'responsive-add-ons' ); ?>
 						</h2>
-						<p><?php esc_html_e( 'You can access all the plugin settings on the web and unlock new features.', 'responsive-addons' ); ?></p>
+						<p><?php esc_html_e( 'You can access all the plugin settings on the web and unlock new features.', 'responsive-add-ons' ); ?></p>
 						<div class="app-connect-info">
-							<p><strong><?php esc_html_e( 'Email: ', 'responsive-addons' ); ?></strong><?php echo esc_html( $settings->get_email() ); ?> </p>
-							<p><strong><?php esc_html_e( 'Site Key: ', 'responsive-addons' ); ?></strong><?php echo esc_html( $settings->get_website_key() ); ?> </p>
-							<p><strong><?php esc_html_e( 'Plan: ', 'responsive-addons' ); ?></strong><?php echo esc_html( $settings->get_plan() ); ?> </p>
+							<p><strong><?php esc_html_e( 'Email: ', 'responsive-add-ons' ); ?></strong><?php echo esc_html( $settings->get_email() ); ?> </p>
+							<p><strong><?php esc_html_e( 'Site Key: ', 'responsive-add-ons' ); ?></strong><?php echo esc_html( $settings->get_website_key() ); ?> </p>
+							<p><strong><?php esc_html_e( 'Plan: ', 'responsive-add-ons' ); ?></strong><?php echo esc_html( $settings->get_plan() ); ?> </p>
 						</div>
 					</div>
 					<?php
@@ -46,9 +46,9 @@ $cc_app_auth = new Responsive_Add_Ons_App_Auth();
 					?>
 					<div class="rst_app-after-connect-action-btns">
 							<a href="<?php echo esc_url( admin_url( 'admin.php?page=responsive_add_ons' ) ); ?>">
-								<button type="button" class="rst-go-to-templates"><?php esc_html_e( 'Start Importing Templates', 'responsive-addons' ); ?></button>
+								<button type="button" class="rst-go-to-templates"><?php esc_html_e( 'Start Importing Templates', 'responsive-add-ons' ); ?></button>
 							</a>
-							<button type="button" class="rst-delete-auth"><span id="loader"></span><?php esc_html_e( 'Disconnect', 'responsive-addons' ); ?></button>
+							<button type="button" class="rst-delete-auth"><span id="loader"></span><?php esc_html_e( 'Disconnect', 'responsive-add-ons' ); ?></button>
 							<button type="button" class="rst-sync-auth <?php echo $disabled ? 'sync-not-allowed' : ''; ?>" <?php echo $disabled ? 'disabled' : ''; ?> data-tooltip="Syncs after every 24 hours"><span id="loader"></span><span class="dashicons dashicons-update"></span></button>
 					</div>
 					<?php
@@ -70,20 +70,20 @@ $cc_app_auth = new Responsive_Add_Ons_App_Auth();
 					<div class="row">
 						<div class="content-container">
 							<div>
-								<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-addons' ); ?></h2>
-								<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive. After connecting, you can get access to all the Starter Templates and additional features for the Cyberchimps Responsive theme like:', 'responsive-addons' ); ?></p>
+								<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-add-ons' ); ?></h2>
+								<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive. After connecting, you can get access to all the Starter Templates and additional features for the Cyberchimps Responsive theme like:', 'responsive-add-ons' ); ?></p>
 								<ul>
-									<li><strong><?php esc_html_e( 'Mega Menu:', 'responsive-addons' ); ?></strong><?php esc_html_e( ' Adds menu options such as mega menus, highlight tags, icons, etc.', 'responsive-addons' ); ?></li>
-									<li><strong><?php esc_html_e( 'White Label:', 'responsive-addons' ); ?></strong><?php esc_html_e( ' White Label the theme name & settings with the Pro Plugin.' ); ?></li>
-									<li><strong><?php esc_html_e( 'Woocommerce:', 'responsive-addons' ); ?></strong><?php esc_html_e( ' Adds enhanced set of options in the WooCommerce store customizer.', 'responsive-addons' ); ?></li>
+									<li><strong><?php esc_html_e( 'Mega Menu:', 'responsive-add-ons' ); ?></strong><?php esc_html_e( ' Adds menu options such as mega menus, highlight tags, icons, etc.', 'responsive-add-ons' ); ?></li>
+									<li><strong><?php esc_html_e( 'White Label:', 'responsive-add-ons' ); ?></strong><?php esc_html_e( ' White Label the theme name & settings with the Pro Plugin.', 'responsive-add-ons' ); ?></li>
+									<li><strong><?php esc_html_e( 'Woocommerce:', 'responsive-add-ons' ); ?></strong><?php esc_html_e( ' Adds enhanced set of options in the WooCommerce store customizer.', 'responsive-add-ons' ); ?></li>
 								</ul>
-								<p><?php esc_html_e( 'You can continue using the plugin without connecting to the web app if you wish so. Please note that the standalone version of the plugin doesn’t provide some advanced features.', 'responsive-addons' ); ?></p>
+								<p><?php esc_html_e( 'You can continue using the plugin without connecting to the web app if you wish so. Please note that the standalone version of the plugin doesn’t provide some advanced features.', 'responsive-add-ons' ); ?></p>
 							</div>
 						</div>
 					</div>
 						<div class="rst_app-connect-action-btns">
-							<button type="button" class="rst-start-auth rst-start-auth-new"><?php esc_html_e( 'New? Create a free account', 'responsive-addons' ); ?><span id="loader"></span></button>
-							<button type="button" class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-addons' ); ?><span id="loader"></span></button>
+							<button type="button" class="rst-start-auth rst-start-auth-new"><?php esc_html_e( 'New? Create a free account', 'responsive-add-ons' ); ?><span id="loader"></span></button>
+							<button type="button" class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-add-ons' ); ?><span id="loader"></span></button>
 						</div>
 				</div>
 				<?php endif; ?>

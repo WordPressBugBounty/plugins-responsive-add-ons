@@ -16,7 +16,7 @@
 	<div class="responsive-theme-setting-list">
 		<div tabindex="0" class="responsive-theme-setting-item d-flex" id="responsive-setting-item-app-connection-tab" role="button">
 				<span class="responsive-theme-setting-item-icon dashicons dashicons-admin-users responsive-theme-setting-active-tab"></span>
-				<p class="responsive-theme-setting-item-title responsive-theme-setting-active-tab"><?php esc_html_e( 'Connect Account', 'responsive-addons' ); ?></p>
+				<p class="responsive-theme-setting-item-title responsive-theme-setting-active-tab"><?php esc_html_e( 'Connect Account', 'responsive-add-ons' ); ?></p>
 		</div>
 		<?php
 		if ( empty( $wl_settings ) || ( ! empty( $wl_settings ) && 'off' === $wl_settings['hide_wl_settings'] ) ) {

@@ -369,6 +369,8 @@ class Responsive_Add_Ons_App_Auth {
 			wp_send_json_error( esc_html__( 'You do not have permission.', 'responsive-addons' ) );
 		}
 
+		$template     = isset( $_POST['site_name'] ) ? sanitize_text_field( wp_unslash( $_POST['site_name'] ) ) : null;
+		$page_builder = isset( $_POST['site_builder'] ) ? sanitize_text_field( wp_unslash( $_POST['site_builder'] ) ) : null;
 		$site_address = rawurlencode( get_site_url() );
 		$rest_url     = rawurlencode( get_rest_url() );
 
@@ -383,6 +385,38 @@ class Responsive_Add_Ons_App_Auth {
 			),
 			$api_auth_url
 		);
+
+		if( 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ) ) {
+			$properties = array(
+				'token'         => 'f8fbbc680f8f9d9b80a50e8c030a3605',
+				'distinct_id'   => substr( hash( 'sha256', get_site_url() ), 0, 16 ),
+				'User Site URL' => get_site_url(),
+			);
+
+			if ( $template && $page_builder ) {
+				$properties = array_merge( $properties, 
+					array(
+						'Template Name' => $template,
+						'Page Builder'  => $page_builder,
+					)
+				);
+			}
+
+			// Send data to Mixpanel.
+			$event = array(
+				'event' => 'Unlock Premium Btn In Popup',
+				'properties' => $properties,
+			);
+			
+			$encoded_data = base64_encode( wp_json_encode( $event ) );
+
+			$response = wp_remote_post( 'https://api.mixpanel.com/track?ip=1', array(
+				'body' => array(
+					'data' => $encoded_data,
+				),
+			));
+		}
+
 		wp_send_json_success(
 			array(
 				'url' => $auth_url,

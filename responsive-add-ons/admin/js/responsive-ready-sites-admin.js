@@ -282,6 +282,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 		conditionCheckVariable : false,
 		import_progress_status_text : '',
 		import_progress_percent: 0,
+		active_site_name : '',
+		active_site_page_builder : '',
 
 		_debouncedSearch: null, // placeholder for the debounced search function
 
@@ -442,6 +444,22 @@ var ResponsiveSitesAjaxQueue = (function() {
 						return "Are you sure you want to cancel the site import process?";
 				}
 			});
+			const $toggleBtn = $("#responsive-sites-analytics-wrap");
+			const $messageBox = $("#responsive-addons-user-consent-message");
+
+			// Show on button click
+			$toggleBtn.on("click", function(e) {
+				e.stopPropagation(); // prevent immediate close
+				$messageBox.toggle();
+			});
+
+			// Hide on outside click
+			$(document).on("click", function(e) {
+				if (!$(e.target).closest($messageBox).length && !$(e.target).is($toggleBtn)) {
+					$messageBox.hide();
+				}
+			});
+
 			$(document).on( 'click' , '.auth-success-msg .notice-dismiss', function() {
 				$( '.responsive-templates-app-auth-sucess-msg' ).remove();
 				$('#responsive-sites-header').css('margin-top', '58px');
@@ -589,7 +607,9 @@ var ResponsiveSitesAjaxQueue = (function() {
 				demo_slug               = self.data( 'demo-slug' ) || '',
 				requiredPlugins         = self.data( 'required-plugins' ) || '',
 				responsiveSiteOptions   = self.find( '.responsive-site-options' ).val() || '',
-				hasAppAuth              = responsiveSitesAdmin.hasAppAuth;
+				hasAppAuth              = responsiveSitesAdmin.hasAppAuth,
+				page_builder            = self.data( 'page-builder' ) || '';
+
 
 				var rbeaPlugin = {
 					"name": "Responsive Block Editor Addons",
@@ -624,6 +644,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				pro_plugins_flag: ResponsiveSitesAdmin.pro_plugins_flag,
 				require_flexbox_container:ResponsiveSitesAdmin.hasFlexboxContainer,
 				has_app_auth: hasAppAuth,
+				page_builder: page_builder,
 			}];
 			$('body').removeClass('responsive-ready-site-preview-screen');
 			$('body').addClass('responsive-ready-site-import-options-screen');
@@ -966,6 +987,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				requireFlexboxContainer        = anchor.data( 'require-flex-box-container' ) || false,
 				isResponsiveAddonsProInstalled = ResponsiveSitesAdmin._checkResponsiveAddonsProInstalled(),
 				hasAppAuth                     = responsiveSitesAdmin.hasAppAuth;
+				page_builder				   = anchor.data( 'page-builder' ) || '';
 
 			if(requireFlexboxContainer){
 				ResponsiveSitesAdmin.hasFlexboxContainer = true;
@@ -994,7 +1016,23 @@ var ResponsiveSitesAjaxQueue = (function() {
 				pages: JSON.stringify( pages ),
 				require_flexbox_container: requireFlexboxContainer,
 				has_app_auth: hasAppAuth,
+				page_builder: page_builder,
 			}];
+
+			// Track Demo view if user has given consent for tracking and demo is pro.
+			if ( responsiveSitesAdmin.userGivenConsent && demo_type && demo_type === 'pro' ) {
+				$.ajax({
+					url: responsiveSitesAdmin.ajaxurl,
+					type: 'POST',
+					data: {
+						action: 'responsive-ready-sites-log-demo-view',
+						_ajax_nonce : responsiveSitesAdmin._ajax_nonce,
+						demo_name: demo_name,
+						page_builder: page_builder,
+					}
+				}).always(function() {
+				});
+			}
 
 			$('body').addClass('responsive-ready-site-preview-screen');
 			$( '#responsive-ready-site-preview' ).append( template( templateData[0] ) );
@@ -1062,6 +1100,11 @@ var ResponsiveSitesAjaxQueue = (function() {
 			ResponsiveSitesAdmin.import_progress_status_text = "Gathering pervious imported data...";
 			ResponsiveSitesAdmin._updateImportProcessStatusText(ResponsiveSitesAdmin.import_progress_status_text);
 			var site_id = $( '.responsive-ready-sites-advanced-options-wrap' ).find( '.demo_site_id' ).val();
+			var site_name = $( '.responsive-ready-sites-advanced-options-wrap' ).find( '.demo_site_name' ).val();
+			var site_builder = $( '.responsive-ready-sites-advanced-options-wrap' ).find( '.demo_page_builder' ).val();
+
+			ResponsiveSitesAdmin.active_site_name = site_name;
+			ResponsiveSitesAdmin.active_site_page_builder = site_builder;
 
 			var apiURL = responsiveSitesAdmin.ApiURL + 'cyberchimps-sites/' + site_id;
 
@@ -1243,26 +1286,61 @@ var ResponsiveSitesAjaxQueue = (function() {
 		 * Install All Plugins.
 		 */
 		_installAllPlugins: function( not_installed ) {
+			const installSinglePlugin = async ( plugin ) => {
+			
+			try {
+				const formData = new FormData();
+				formData.append('action', 'responsive-ready-sites-install-plugin');
+				formData.append('slug', plugin.slug);
+				formData.append('name', plugin.name);
+				formData.append('_ajax_nonce', responsiveSitesAdmin._ajax_nonce);
 
-			$.each(
-				not_installed,
-				function(index, single_plugin) {
-
-					// Add each plugin activate request in Ajax queue.
-					// @see wp-admin/js/updates.js.
-					wp.updates.queue.push(
-						{
-							action: 'install-plugin', // Required action.
-							data:   {
-								slug: single_plugin.slug
-							}
-						}
-					);
+				if (plugin.init) {
+					formData.append('init', plugin.init);
 				}
-			);
 
-			// Required to set queue.
-			wp.updates.queueChecker();
+				const fetchResponse = await fetch(responsiveSitesAdmin.ajaxurl, {
+					method: 'POST',
+					body: formData,
+				});
+
+				const responseText = await fetchResponse.text();
+				let response;
+
+				try {
+					response = JSON.parse(responseText);
+				} catch (err) {
+					// console.error(`Failed to parse response for ${plugin.name}`, responseText);
+					return false;
+				}
+
+
+				if (!response.success) {
+					return false;
+				}
+
+
+				ResponsiveSitesAdmin._pluginInstallSuccess(
+					jQuery.Event('plugin-install-success'),
+					{
+						success: true,
+						slug: plugin.slug,
+						name: plugin.name,
+						init: plugin.init || ''
+					}
+				);
+
+				return true;
+			} catch (error) {
+				return false;
+			}
+		};
+
+			(async () => {
+				for (const plugin of not_installed) {
+					await installSinglePlugin(plugin);
+				}
+			})();
 		},
 
 		/**
@@ -2033,6 +2111,24 @@ var ResponsiveSitesAjaxQueue = (function() {
 					ResponsiveSitesAdmin.import_end_time = performance.now();
 					// Calculate the total time taken lin seconds
 					ResponsiveSitesAdmin.import_total_time = Math.floor((ResponsiveSitesAdmin.import_end_time  - ResponsiveSitesAdmin.import_start_time ) / 1000); // Convert milliseconds to seconds
+
+					// Track import time if user has given consent
+					if( responsiveSitesAdmin.userGivenConsent ) {
+						$.ajax({
+							url: responsiveSitesAdmin.ajaxurl,
+							type: 'POST',
+							data: {
+								'action': 'responsive-sites-log-import-time',
+								'_ajax_nonce': responsiveSitesAdmin._ajax_nonce,
+								'data': data,
+								'import_type': 'full_site',
+								'current_site': ResponsiveSitesAdmin.active_site_name,
+								'page_builder': ResponsiveSitesAdmin.active_site_page_builder,
+								'time_taken': ResponsiveSitesAdmin.import_total_time,
+							},
+						}).always(function() {
+						});
+					}
 					setTimeout( function () {
 						ResponsiveSitesAdmin.import_progress_percent = 100;
 						ResponsiveSitesAdmin.import_progress_status_text = "Import Done";
@@ -2064,6 +2160,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				requiredProPlugins    = self.data( 'required-pro-plugins' ) || '',
 				pages                 = self.data( 'pages' ) || '',
 				responsiveSiteOptions = self.find( '.responsive-site-options' ).val() || '';
+				page_builder		  = self.data( 'page-builder' ) || '';
 
 			$('body').removeClass('responsive-ready-site-preview-screen');
 			$('body').addClass('responsive-ready-sites-import-page-preview-page-screen');
@@ -2080,6 +2177,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				responsive_site_options: responsiveSiteOptions,
 				pages:  pages,
 				screenshot: screenshot,
+				page_builder: page_builder,
 			}];
 
 			$( '#responsive-ready-site-pages-preview' ).append( template( templateData[0] ) )
@@ -2105,7 +2203,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 				screenshot            = self.data( 'screenshot' ) || '',
 				requiredPlugins       = self.data( 'required-plugins' ) || '',
 				pages                 = self.data( 'pages' ) || '',
-				responsiveSiteOptions = self.find( '.responsive-site-options' ).val() || '';
+				responsiveSiteOptions = self.find( '.responsive-site-options' ).val() || ''
+				page_builder		  = self.data( 'page-builder' ) || '';
 
 			var template = wp.template( 'responsive-ready-sites-import-single-page-progress-page' );
 
@@ -2119,6 +2218,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				pages:  pages,
 				screenshot: screenshot,
 				page_id: page_id,
+				page_builder: page_builder,
 			}];
 
 			$( '#responsive-ready-sites-page-import-progress' ).append( template( templateData[0] ) )
@@ -2185,6 +2285,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 				wpforms_path = self.data( 'wpforms-path' ) || '',
 				pages        = $('.responsive-ready-site-preview').data( 'pages' ) || '',
 				demo_type 	 = self.data( 'demo-type' ) || '',
+				demo_name 	 = self.data( 'demo-name' ) || '',
+				page_builder 	 = self.data( 'page-builder' ) || '',
 				isResponsiveAddonsProInstalled = ResponsiveSitesAdmin._checkResponsiveAddonsProInstalled();
 				
 				var page_id = ResponsiveSitesAdmin._get_id( $( '#single-pages' ).find( '.current_page' ).attr( 'data-page-id' ) ) || '';
@@ -2237,6 +2339,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 				demo_type: demo_type,
 				pro_plugins_flag: ResponsiveSitesAdmin.pro_plugins_flag,
 				is_responsive_addons_pro_installed: isResponsiveAddonsProInstalled,
+				name: demo_name,
+				page_builder: page_builder,
 			}];
 
 			$('body').removeClass('responsive-ready-site-preview-screen');
@@ -2369,6 +2473,9 @@ var ResponsiveSitesAjaxQueue = (function() {
 		 */
 		_importPage: function() {
 
+			let site_name = $( '.responsive-ready-sites-advanced-options-wrap' ).data( 'demo-name' );
+			let site_builder = $( '.responsive-ready-sites-advanced-options-wrap' ).data( 'page-builder' );
+
 			ResponsiveSitesAdmin.import_progress_percent = ResponsiveSitesAdmin.import_progress_percent < 75 ? 74 : ResponsiveSitesAdmin.import_progress_percent;
 			ResponsiveSitesAdmin.import_progress_status_text = "Importing Page...";
 			ResponsiveSitesAdmin._updateImportProcessStatusText(ResponsiveSitesAdmin.import_progress_status_text);
@@ -2396,6 +2503,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 										'_ajax_nonce': responsiveSitesAdmin._ajax_nonce,
 										'data': data,
 										'current_page_api': ResponsiveSitesAdmin.current_page_api,
+										'current_site': site_name,
+										'page_builder': site_builder,
 									},
 									success: function (response) {
 										if (response.success) {
@@ -2407,6 +2516,23 @@ var ResponsiveSitesAjaxQueue = (function() {
 											// Calculate the total time taken in seconds
 											ResponsiveSitesAdmin.import_total_time = Math.floor((ResponsiveSitesAdmin.import_page_end_time  - ResponsiveSitesAdmin.import_page_start_time ) / 1000); // Convert milliseconds to seconds
 											
+											// Track import time  if user has given consent
+											if( responsiveSitesAdmin.userGivenConsent ) {
+												$.ajax({
+													url: responsiveSitesAdmin.ajaxurl,
+													type: 'POST',
+													data: {
+														'action': 'responsive-sites-log-import-time',
+														'_ajax_nonce': responsiveSitesAdmin._ajax_nonce,
+														'data': data,
+														'import_type': 'single_page',
+														'current_site': site_name,
+														'page_builder': site_builder,
+														'time_taken': ResponsiveSitesAdmin.import_total_time,
+													},
+												}).always(function() {
+												});
+											}
 											ResponsiveSitesAdmin._updateImportProcessStatusText(ResponsiveSitesAdmin.import_progress_status_text);
 											$( "responsive-sites-imported-site-link" ).attr( "href", response.data['link'] );
 											ResponsiveSitesAdmin._importCompletionCongratsScreen(response.data['link']);

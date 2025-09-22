@@ -86,7 +86,7 @@ class Responsive_Ready_Sites_Widgets_Importer {
 		// If no data or could not decode.
 		if ( empty( $data ) || ! is_object( $data ) ) {
 			wp_die(
-				esc_html__( 'Import data could not be read. Please try a different file.', 'responsive-addons' ),
+				esc_html__( 'Import data could not be read. Please try a different file.', 'responsive-add-ons' ),
 				'',
 				array(
 					'back_link' => true,

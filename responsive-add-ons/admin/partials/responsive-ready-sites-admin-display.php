@@ -29,13 +29,26 @@ $responsive_sites_header_after_connection_success = false;
 		$responsive_sites_header_after_connection_success = true ?>
 		<div class="responsive-templates-app-auth-sucess-msg">
 			<p class="auth-success-msg"><span class="auth-success-msg">
-			<?php esc_html_e( 'Congratulations! Your website is now connected to Cyberchimps Responsive. You can start importing Templates.', 'responsive-addons' ); ?>
-			</span><button type="button" class="notice-dismiss"><span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'responsive-addons' ); ?></span></button></p>
+			<?php esc_html_e( 'Congratulations! Your website is now connected to Cyberchimps Responsive. You can start importing Templates.', 'responsive-add-ons' ); ?>
+			</span><button type="button" class="notice-dismiss"><span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'responsive-add-ons' ); ?></span></button></p>
 		</div>
 		<?php delete_transient( 'responsive_ready_sites_display_connect_success' ); ?>
 	<?php endif; ?>
 	<div class="<?php echo esc_attr( 'responsive-sites-header' . ( $responsive_sites_header_after_connection_success ? ' responsive-sites-header-after-connection-success' : '' ) ); ?>" id="responsive-sites-header">
-		<span class="ready-site-list-title"><?php esc_html_e( 'Responsive Starter Templates', 'responsive-addons' ); ?></span>
+		<span class="ready-site-list-title"><?php esc_html_e( 'Responsive Starter Templates', 'responsive-add-ons' ); ?></span>
+	</div>
+	<div id="responsive-addons-user-consent-message">
+		<div class="responsive-addons-consent-wrapper">
+			<!-- Consent Toggle -->
+			<label class="switch">
+				<input type="checkbox" id="responsive-addons-consent-toggle" <?php echo 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ) ? 'checked' : ''; ?>>
+				<span class="slider round"></span>
+			</label>
+			<div class="responsive-addons-consent-text">
+				<h3><?php esc_html_e( 'Contribute to Responsive Starter Templates', 'responsive-addons' ); ?></h3>
+				<p><?php esc_html_e( "Allow Responsive Starter Templates to collect non-sensitive data like templates used and website's PHP version to improve features and fix issues faster.", 'responsive-addons' ); ?></p>
+			</div>
+		</div>
 	</div>
 	<?php
 
@@ -387,12 +400,12 @@ $responsive_sites_header_after_connection_success = false;
 	);
 	?>
 	<div id="responsive-sites__category-filter" class="dropdown-check-list" tabindex="100">
-		<span class="responsive-sites__category-filter-anchor" data-slug="" style="display: none;"><?php esc_html_e( 'All', 'responsive-addons' ); ?></span>
+		<span class="responsive-sites__category-filter-anchor" data-slug="" style="display: none;"><?php esc_html_e( 'All', 'responsive-add-ons' ); ?></span>
 		<div id="rst-category-parent">
 			<div class="rst-business-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="business">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Business', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Business', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -408,7 +421,7 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="rst-health-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="health-wellness">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Health', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Health', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -424,7 +437,7 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="rst-health-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="fashion-style">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Fashion', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Fashion', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -440,7 +453,7 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="rst-restaurant-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="restaurants-food">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Restaurants', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Restaurants', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -456,7 +469,7 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="rst-travel-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="travel-tourism">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Travel', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Travel', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -472,7 +485,7 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="rst-services-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="services">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Services', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Services', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -488,7 +501,7 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="rst-creative-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="creative">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Creative', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Creative', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -504,7 +517,7 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="rst-community-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="community">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Community', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Community', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -520,7 +533,7 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="rst-ecommerce-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="ecommerce">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Ecommerce', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Ecommerce', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -536,7 +549,7 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="rst-blog-category-group rst-menu-parent-category-group">
 				<div class="rst-menu-parent-category responsive-sites_category" data-slug="blog">
 					<span class="rst-menu-parent-category-title">
-						<span><?php esc_html_e( 'Blog', 'responsive-addons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
+						<span><?php esc_html_e( 'Blog', 'responsive-add-ons' ); ?></span><?php echo wp_kses( $expand_more_svg, $svg_args ); ?>
 					</span>
 				</div>
 				<div class="rst-menu-child-category-group">
@@ -553,7 +566,7 @@ $responsive_sites_header_after_connection_success = false;
 		<div id="responsive-sites__type-filter" class="dropdown-check-list" tabindex="100">
 			<div id="responsive-sites__type-filter-selected">
 				<span class="responsive-sites__type-filter-anchor" data-slug="">
-					<?php esc_html_e( 'All', 'responsive-addons' ); ?>
+					<?php esc_html_e( 'All', 'responsive-add-ons' ); ?>
 				</span>
 				<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M11.06 5.72666L8 8.77999L4.94 5.72666L4 6.66666L8 10.6667L12 6.66666L11.06 5.72666Z" fill="#4B5563"/>
@@ -562,17 +575,17 @@ $responsive_sites_header_after_connection_success = false;
 			<ul class="responsive-sites__type-filter-items">
 				<li class="responsive-sites__filter-wrap-checkbox first-wrap" data-slug="all">
 					<label>
-						<input id="radio-all" type="radio" name="responsive-sites-radio" class="checkbox active" value="" checked /><?php esc_html_e( 'All', 'responsive-addons' ); ?>
+						<input id="radio-all" type="radio" name="responsive-sites-radio" class="checkbox active" value="" checked /><?php esc_html_e( 'All', 'responsive-add-ons' ); ?>
 					</label>
 				</li>
 				<li class="responsive-sites__filter-wrap-checkbox" data-slug="free">
 					<label>
-						<input id="radio-free" type="radio" name="responsive-sites-radio" class="checkbox" value="free" /><?php esc_html_e( 'Free', 'responsive-addons' ); ?>
+						<input id="radio-free" type="radio" name="responsive-sites-radio" class="checkbox" value="free" /><?php esc_html_e( 'Free', 'responsive-add-ons' ); ?>
 					</label>
 				</li>
 				<li class="responsive-sites__filter-wrap-checkbox" data-slug="premium">
 					<label>
-						<input id="radio-premium" type="radio" name="responsive-sites-radio" class="checkbox" value="premium" /><?php esc_html_e( 'Premium', 'responsive-addons' ); ?>
+						<input id="radio-premium" type="radio" name="responsive-sites-radio" class="checkbox" value="premium" /><?php esc_html_e( 'Premium', 'responsive-add-ons' ); ?>
 					</label>
 				</li>
 			</ul>
@@ -633,7 +646,8 @@ $responsive_sites_header_after_connection_success = false;
 			data-pages="{{ JSON.stringify(data[ key ]['pages'] )}}"
 			data-required-pro-plugins="{{ JSON.stringify(data[ key ]['required_pro_plugins']) }}"
 			data-require-flex-box-container="{{{data[key].container_template}}}"
-			data-favorite-status="{{{ data[ key ].favorite_status }}}">
+			data-favorite-status="{{{ data[ key ].favorite_status }}}"
+			data-page-builder="{{{ data[ key ].page_builder }}}">
 			<input type="hidden" class="site_options_data" value="{{ JSON.stringify(data[ key ][ 'site_options_data' ]) }}">
 		<div class="inner">
 					<span class="site-preview" data-href="{{ data[ key ]['responsive-site-url'] }}?TB_iframe=true&width=600&height=550" data-title="data title">
@@ -641,7 +655,7 @@ $responsive_sites_header_after_connection_success = false;
 					</span>
 			<span class="demo-type {{{ data[ key ].demo_type }}}">{{{ data[ key ].demo_type }}}</span>
 			<# if (data[ key ].slug === data.active_site ) { #>
-				<span class="current_active_site"><?php esc_html_e( 'Currently Active', 'responsive-addons' ); ?></span>
+				<span class="current_active_site"><?php esc_html_e( 'Currently Active', 'responsive-add-ons' ); ?></span>
 			<# } #>
 			<div class="theme-id-container">
 				<h3 class="theme-name" id="responsive-theme-name">{{{ data[ key ].title.rendered }}}</h3>
@@ -675,7 +689,7 @@ $responsive_sites_header_after_connection_success = false;
 <script type="text/template" id="tmpl-responsive-sites-suggestions">
 	<div class="responsive-sites-suggestions">
 		<div class="inner">
-			<h3><?php esc_html_e( 'Sorry No Results Found.', 'responsive-addons' ); ?></h3>
+			<h3><?php esc_html_e( 'Sorry No Results Found.', 'responsive-add-ons' ); ?></h3>
 			<div class="content">
 				<div class="description">
 					<p>
@@ -713,7 +727,8 @@ $responsive_sites_header_after_connection_success = false;
 		data-required-pro-plugins="{{data.required_pro_plugins}}"
 		data-require-flexbox-container="{{data.require_flexbox_container}}"
 		data-pages="{{data.pages}}"
-		data-app-auth="{{data.has_app_auth}}">
+		data-app-auth="{{data.has_app_auth}}"
+		data-page-builder="{{data.page_builder}}">
 		<input type="hidden" class="responsive-site-options" value="{{data.site_options_data}}" >
 		<div class="wp-full-overlay-header">
 			<div class="responsive-single-demo-preview">
@@ -725,14 +740,14 @@ $responsive_sites_header_after_connection_success = false;
 					<span class="responsive-site-demo-type responsive-site-demo-type-{{{data.demo_type}}}">{{data.demo_type}}</span>
 				</div>
 				<div class="responsive-addons-import-btns">
-					<button class="responsive-addons-go-back-btn responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-addons' ); ?></span></button>
+					<button class="responsive-addons-go-back-btn responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-add-ons' ); ?></span></button>
 					<# if ( data.is_responsive_addons_pro_installed && data.is_responsive_addons_pro_license_active  ) { #>
 
-						<button class="button button-primary responsive-addons responsive-demo-import-options-{{{data.demo_type}}}"><?php esc_html_e( 'Import Site', 'responsive-addons' ); ?></button>
+						<button class="button button-primary responsive-addons responsive-demo-import-options-{{{data.demo_type}}}"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
 
 						<# if ( data.allow_pages ) { #>
 
-						<button class="button button-primary responsive-addons responsive-page-import-options-{{{data.demo_type}}}"><?php esc_html_e( 'Import Template', 'responsive-addons' ); ?></button>
+						<button class="button button-primary responsive-addons responsive-page-import-options-{{{data.demo_type}}}"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
 
 						<# } #>
 					<# } else if ( data.has_app_auth ) {
@@ -740,16 +755,16 @@ $responsive_sites_header_after_connection_success = false;
 							if( 'free' === data.demo_type ){
 							#>
 
-							<button class="button button-primary responsive-addons responsive-addons-demo-import-options"><?php esc_html_e( 'Import Site', 'responsive-addons' ); ?></button>
+							<button class="button button-primary responsive-addons responsive-addons-demo-import-options"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
 
 								<# if ( data.allow_pages ) { #>
 
-								<button class="button button-primary responsive-addons responsive-addons-page-import-options"><?php esc_html_e( 'Import Template', 'responsive-addons' ); ?></button>
+								<button class="button button-primary responsive-addons responsive-addons-page-import-options"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
 
 							<# }} else{ #>
-									<button class="button button-primary responsive-addons responsive-demo-import-unlock-preminum-templates raddons-upgrade-the-plan"><?php esc_html_e( 'Import Site', 'responsive-addons' ); ?></button>
+									<button class="button button-primary responsive-addons responsive-demo-import-unlock-preminum-templates raddons-upgrade-the-plan"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
 								<# if ( data.allow_pages ) { #>
-									<button class="button button-primary responsive-addons  responsive-page-import-unlock-preminum-templates raddons-upgrade-the-plan"><?php esc_html_e( 'Import Template', 'responsive-addons' ); ?></button>
+									<button class="button button-primary responsive-addons  responsive-page-import-unlock-preminum-templates raddons-upgrade-the-plan"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
 								<#
 							}}
 						#>
@@ -759,11 +774,11 @@ $responsive_sites_header_after_connection_success = false;
 						else :
 							?>
 						#>
-						<button class="button button-primary responsive-addons responsive-addons-demo-import-options"><?php esc_html_e( 'Import Site', 'responsive-addons' ); ?></button>
+						<button class="button button-primary responsive-addons responsive-addons-demo-import-options"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
 
 								<# if ( data.allow_pages ) { #>
 
-									<button class="button button-primary responsive-addons responsive-addons-page-import-options"><?php esc_html_e( 'Import Template', 'responsive-addons' ); ?></button>
+									<button class="button button-primary responsive-addons responsive-addons-page-import-options"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
 
 								<# } #>
 					<# <?php endif; ?>
@@ -773,20 +788,20 @@ $responsive_sites_header_after_connection_success = false;
 						if( data.demo_type === 'free'){
 						#>
 
-							<button class="button button-primary responsive-addons responsive-demo-import-options-no-auth"><?php esc_html_e( 'Import Site', 'responsive-addons' ); ?></button>
+							<button class="button button-primary responsive-addons responsive-demo-import-options-no-auth"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
 
 							<# if ( data.allow_pages ) { #>
 
-							<button class="button button-primary responsive-addons responsive-page-import-options-no-auth"><?php esc_html_e( 'Import Template', 'responsive-addons' ); ?></button>
+							<button class="button button-primary responsive-addons responsive-page-import-options-no-auth"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
 
 							<# } #>
 						<# }
 						else { #>
-							<button class="button button-primary responsive-addons responsive-demo-import-options-no-auth-unlock-access responsive-demo-import-unlock-preminum-templates"><?php esc_html_e( 'Import Site', 'responsive-addons' ); ?></button>
+							<button class="button button-primary responsive-addons responsive-demo-import-options-no-auth-unlock-access responsive-demo-import-unlock-preminum-templates"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
 
 							<# if ( data.allow_pages ) { #>
 
-							<button class="button button-primary responsive-addons responsive-page-import-options-no-auth-unlock-access responsive-page-import-unlock-preminum-templates"><?php esc_html_e( 'Import Template', 'responsive-addons' ); ?></button>
+							<button class="button button-primary responsive-addons responsive-page-import-options-no-auth-unlock-access responsive-page-import-unlock-preminum-templates"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
 
 							<#
 						}}
@@ -799,10 +814,10 @@ $responsive_sites_header_after_connection_success = false;
 				<div class="responsive-addons-modal responsive-addons-app-connect-modal" style="display: none;">
 					<div class="responsive-addons-app-modal-content">
 						<span id="responsive-addons-app-modal-close"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/modal-close.svg' ); ?>"></span>
-						<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-addons' ); ?></h2>
-						<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-addons' ); ?></p>
-						<button type="button" class="rst-start-auth rst-start-auth-new"><?php esc_html_e( 'New? Create a free account', 'responsive-addons' ); ?><span id="loader"></span></button>
-						<p class=""><?php esc_html_e( 'Already have an account on CyberChimps Responsive? ', 'responsive-addons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-addons' ); ?><span id="loader"></span></span></p>
+						<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-add-ons' ); ?></h2>
+						<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-add-ons' ); ?></p>
+						<button type="button" class="rst-start-auth rst-start-auth-new"><?php esc_html_e( 'New? Create a free account', 'responsive-add-ons' ); ?><span id="loader"></span></button>
+						<p class=""><?php esc_html_e( 'Already have an account on CyberChimps Responsive? ', 'responsive-add-ons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-add-ons' ); ?><span id="loader"></span></span></p>
 					</div>
 				</div>
 
@@ -810,25 +825,25 @@ $responsive_sites_header_after_connection_success = false;
 				<div class="responsive-addons-modal responsive-addons-app-unlock-access-modal" style="display: none;">
 					<div class="responsive-addons-app-unlock-access-modal-content">
 						<div id="responsive-addons-app-unlock-template-header">
-							<p class="responsive-addons-app-unlock-template-heading"><?php esc_html_e( 'Premium template requires a Personal plan subscription or higher!', 'responsive-addons' ); ?></p>
+							<p class="responsive-addons-app-unlock-template-heading"><?php esc_html_e( 'Premium template requires a Personal plan subscription or higher!', 'responsive-add-ons' ); ?></p>
 							<span id="responsive-addons-app-unlock-template-modal-close"><img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/unlock-template-close-btn.svg' ); ?>"></span>
 						</div>
 						<div class="responsive-addons-app-unlock-access-modal-body">
-							<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-addons' ); ?></h2>
+							<h2><?php esc_html_e( 'Connect Your Website to Cyberchimps Responsive', 'responsive-add-ons' ); ?></h2>
 							<# if ( 'free' === data.demo_type ) { #>
-								<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-addons' ) ?></p>
+								<p><?php esc_html_e( 'Create a free account to connect with Cyberchimps Responsive.', 'responsive-add-ons' ) ?></p>
 							<# } else { #>
-								<p><?php esc_html_e( 'Create an account to connect with Cyberchimps Responsive.', 'responsive-addons' ) ?></p>
+								<p><?php esc_html_e( 'Create an account to connect with Cyberchimps Responsive.', 'responsive-add-ons' ) ?></p>
 							<# } #>
-							<button type="button" class="raddons-upgrade-the-plan"><?php esc_html_e( 'Unlock Premium Template Access at just $1.97/month', 'responsive-addons' ); ?><span style="margin-left: 8px" class="dashicons dashicons-lock"></span><span id="loader"></span></button>
-							<p style="color:#000000; padding-bottom: 15px;"class=""><?php esc_html_e( 'Already have an account on CyberChimps Responsive? ', 'responsive-addons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-addons' ); ?><span id="loader"></span></span></p>
+							<button type="button" class="raddons-upgrade-the-plan"><?php esc_html_e( 'Unlock Premium Template Access at just $1.97/month', 'responsive-add-ons' ); ?><span style="margin-left: 8px" class="dashicons dashicons-lock"></span><span id="loader"></span></button>
+							<p style="color:#000000; padding-bottom: 15px;"class=""><?php esc_html_e( 'Already have an account on CyberChimps Responsive? ', 'responsive-add-ons' ); ?><span class="rst-start-auth rst-start-auth-exist"><?php esc_html_e( 'Connect your existing account', 'responsive-add-ons' ); ?><span id="loader"></span></span></p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="wp-full-overlay-main">
-			<iframe src="{{{data.demo_url}}}" title="<?php esc_attr_e( 'Preview', 'responsive-addons' ); ?>"></iframe>
+			<iframe src="{{{data.demo_url}}}" title="<?php esc_attr_e( 'Preview', 'responsive-add-ons' ); ?>"></iframe>
 		</div>
 	</div>
 </script>
@@ -871,15 +886,15 @@ $responsive_sites_header_after_connection_success = false;
 				<div class="responsive-ready-sites-import-progress-container">
 					<div class="site-import-options">
 						<div class="responsive-ready-sites-advanced-options">
-						<h2 class="ready-sites-import-progress-title"><?php esc_html_e( 'We are Building your Website', 'responsive-addons' ); ?></h2>
+						<h2 class="ready-sites-import-progress-title"><?php esc_html_e( 'We are Building your Website', 'responsive-add-ons' ); ?></h2>
 							<div class="sites-import-process-errors" style="display: none">
 								<div class="import-process-error">
 									<div class="current-importing-status-error-title"></div>
 								</div>
 							</div>
 							<div class="ready-sites-import-progress-info">
-							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e( 'Pre-Checking and Starting Up Import Process', 'responsive-addons' ); ?></div>
-							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e( '0%', 'responsive-addons' ); ?></div>
+							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e( 'Pre-Checking and Starting Up Import Process', 'responsive-add-ons' ); ?></div>
+							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e( '0%', 'responsive-add-ons' ); ?></div>
 							</div>
 							<div class="ready-sites-import-progress-bar-wrap">
 								<div class="ready-sites-import-progress-bar-bg">
@@ -914,9 +929,12 @@ $responsive_sites_header_after_connection_success = false;
 			data-required-plugins="{{data.required_plugins}}"
 			data-pages="{{data.pages}}"
 			data-require-flexbox-container="{{data.require_flexbox_container}}"
-			data-required-pro-plugins="{{data.required_pro_plugins}}">
+			data-required-pro-plugins="{{data.required_pro_plugins}}"
+			data-demo-name="{{data.name}}">
 			<input type="hidden" class="responsive-site-options" value="{{data.site_options_data}}" >
 			<input type="hidden" class="demo_site_id" value="{{{ data.id }}}">
+			<input type="hidden" class="demo_page_builder" value="{{{ data.page_builder }}}">
+			<input type="hidden" class="demo_site_name" value="{{{ data.name }}}">
 			<div class="wp-full-overlay-header">
 				<div class="responsive-advanced-options-wrap">
 					<div class="responsive-sites-demo-details">
@@ -956,7 +974,7 @@ $responsive_sites_header_after_connection_success = false;
 								</div>
 								<div class="elementor-error-msg">
 									<span>
-										<?php esc_html_e( 'This starter template is built using Elementor flexbox containers. Please mark the Flexbox Container setting as \'active\' in Elementor Features settings.', 'responsive-addons' ); ?>
+										<?php esc_html_e( 'This starter template is built using Elementor flexbox containers. Please mark the Flexbox Container setting as \'active\' in Elementor Features settings.', 'responsive-add-ons' ); ?>
 									</span>
 									<a href="
 									<?php
@@ -964,7 +982,7 @@ $responsive_sites_header_after_connection_success = false;
 									echo esc_url( $elementor_settings_url );
 									?>
 										">
-										<?php esc_html_e( 'Go to settings', 'responsive-addons' ); ?>
+										<?php esc_html_e( 'Go to settings', 'responsive-add-ons' ); ?>
 									</a>
 								</div>
 							</div>
@@ -975,7 +993,7 @@ $responsive_sites_header_after_connection_success = false;
 						<div class="responsive-ready-sites-advanced-options">
 							<h2 class="responsive-import-ready-site-title">Import {{data.name}}</h2>
 							<# if ( data.slug === data.active_site ) { #>
-								<p><?php esc_html_e( 'This will delete previously imported site', 'responsive-addons' ); ?></p>
+								<p><?php esc_html_e( 'This will delete previously imported site', 'responsive-add-ons' ); ?></p>
 							<# } #>
 							<ul class="responsive-ready-site-contents">
 								<ul class="responsive-ready-sites-import-dependencies-wrapper">
@@ -988,7 +1006,7 @@ $responsive_sites_header_after_connection_success = false;
 											<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="reset" checked="checked" id="install_responsive_checkbox">
 											<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Install Responsive Theme', 'responsive-addons' ); ?></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Install Responsive Theme', 'responsive-add-ons' ); ?></span>
 								</li>
 									<?php
 								}
@@ -998,7 +1016,7 @@ $responsive_sites_header_after_connection_success = false;
 										<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="plugins" checked="checked" readonly>
 										<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Install Required Plugins', 'responsive-addons' ); ?></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Install Required Plugins', 'responsive-add-ons' ); ?></span>
 									<ul class="required-plugins-list" style="display: none;"></ul>
 								</li>
 								<li class="responsive-ready-sites-import-xml">
@@ -1006,14 +1024,14 @@ $responsive_sites_header_after_connection_success = false;
 										<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="content" checked="checked" class="checkbox">
 										<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Import Content', 'responsive-addons' ); ?></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Import Content', 'responsive-add-ons' ); ?></span>
 								</li>
 								<li class="responsive-ready-sites-import-customizer">
 									<label class="ready-site-single-import-option">
 										<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="customizer" checked="checked" class="checkbox">
 										<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Import Customizer Settings', 'responsive-addons' ); ?></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Import Customizer Settings', 'responsive-add-ons' ); ?></span>
 								</li>
 								</ul>
 								<li class="responsive-ready-sites-reset-data">
@@ -1021,37 +1039,37 @@ $responsive_sites_header_after_connection_success = false;
 										<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="reset" checked="checked" class="checkbox">
 										<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 									</label>
-									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Delete Previous Import', 'responsive-addons' ); ?></span>
+									<span class="ready-site-single-import-option-title"><?php esc_html_e( 'Delete Previous Import', 'responsive-add-ons' ); ?></span>
 								</li>
 								<p class="responsive-ready-sites-reset-data-message">
-									<?php esc_html_e( 'This option will remove the previous imported content and will perform a fresh and clean install.', 'responsive-addons' ); ?>
+									<?php esc_html_e( 'This option will remove the previous imported content and will perform a fresh and clean install.', 'responsive-add-ons' ); ?>
 								</p>
 							</ul>
 						</div>
 					</div>
 					<div class="ready-sites-import-subscription">
-						<h3 class="ready-sites-import-subscription-title"><?php esc_html_e( 'Subscribe and Import', 'responsive-addons' ); ?></h3>
+						<h3 class="ready-sites-import-subscription-title"><?php esc_html_e( 'Subscribe and Import', 'responsive-add-ons' ); ?></h3>
 						<input type="email" id="ready-sites-subscriber-email" name="subscriber_emmail" placeholder="Enter Your Email Address" value="<?php echo isset( $settings['account']['email'] ) ? esc_html( $settings['account']['email'] ) : ''; ?>">
 						<input type="hidden" id="ready-sites-importing-template-name" name="ready-sites-template-name" value="{{data.name}}">
 						<div class="ready-sites-subscription-user-consent">
 							<input type="checkbox" id="ready-sites-subscription-check" name="subscription_check">
-							<label for="ready-sites-subscription-check"><?php esc_html_e( 'Yes, count me in!', 'responsive-addons' ); ?></label>
+							<label for="ready-sites-subscription-check"><?php esc_html_e( 'Yes, count me in!', 'responsive-add-ons' ); ?></label>
 						</div>
 					</div>
 					<div class="responsive-ready-sites-import-button-wrap">
 						<?php if ( $cc_app_auth->has_auth() ) : ?>
 							<button class="button responsive-ready-site-import-without-sub responsive-addons-ready-site-import">
-								<?php esc_html_e( 'Skip Email', 'responsive-addons' ); ?>
+								<?php esc_html_e( 'Skip Email', 'responsive-add-ons' ); ?>
 							</button>
 							<button class="button responsive-ready-site-import-with-sub responsive-addons-ready-site-import">
-								<?php esc_html_e( 'Start Importing', 'responsive-addons' ); ?>
+								<?php esc_html_e( 'Start Importing', 'responsive-add-ons' ); ?>
 							</button>
 						<?php else : ?>
 							<button class="button responsive-ready-site-import-without-sub responsive-ready-site-import-{{{data.demo_type}}}">
-								<?php esc_html_e( 'Skip Email', 'responsive-addons' ); ?>
+								<?php esc_html_e( 'Skip Email', 'responsive-add-ons' ); ?>
 							</button>
 							<button class="button responsive-ready-site-import-with-sub responsive-ready-site-import-{{{data.demo_type}}}">
-								<?php esc_html_e( 'Start Importing', 'responsive-addons' ); ?>
+								<?php esc_html_e( 'Start Importing', 'responsive-add-ons' ); ?>
 							</button>
 						<?php endif; ?>
 					</div>
@@ -1061,7 +1079,7 @@ $responsive_sites_header_after_connection_success = false;
 			</div>
 			<div class="wp-full-overlay-footer">
 				<div class="responsive-ready-sites-advanced-options-wrap-footer-btn-wrapper">
-					<button class="responsive-addons-go-back-btn responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-addons' ); ?></span></button>
+					<button class="responsive-addons-go-back-btn responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-add-ons' ); ?></span></button>
 				</div>
 			<div>
 		</div>
@@ -1079,7 +1097,8 @@ $responsive_sites_header_after_connection_success = false;
 		data-demo-type="{{{data.demo_type}}}"
 		data-wpforms-path="{{{data.wpforms_path}}}"
 		data-required-plugins="{{data.required_plugins}}"
-		data-required-pro-plugins="{{data.required_pro_plugins}}">
+		data-required-pro-plugins="{{data.required_pro_plugins}}"
+		data-page-builder="{{data.page_builder}}">
 		<div class="wp-full-overlay-main">
 			<div class="sites-import-process-errors" style="display: none">
 				<div class="import-process-error">
@@ -1098,7 +1117,7 @@ $responsive_sites_header_after_connection_success = false;
 					</div>
 					<div class="single-site-pages-wrap">
 						<div class="responsive-pages-title-wrap">
-							<span class="responsive-pages-title"><?php esc_html_e( 'Page Templates', 'responsive-addons' ); ?></span>
+							<span class="responsive-pages-title"><?php esc_html_e( 'Page Templates', 'responsive-add-ons' ); ?></span>
 						</div>
 						<div class="single-site-pages">
 							<div id="single-pages">
@@ -1157,15 +1176,15 @@ $responsive_sites_header_after_connection_success = false;
 							<span class="responsive-site-demo-name">{{data.name}}</span>
 							<div class="site-action-buttons-right">
 								<# if ( ( data.demo_type == "pro" && data.is_responsive_addons_pro_installed && data.is_responsive_addons_pro_license_active ) ) { #>
-										<button class="responsive-addons-go-back-btn-pro responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-addons' ); ?></span></button>
+										<button class="responsive-addons-go-back-btn-pro responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-add-ons' ); ?></span></button>
 									<# } else { #>
-										<button class="responsive-addons-go-back-btn responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-addons' ); ?></span></button>
+										<button class="responsive-addons-go-back-btn responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-add-ons' ); ?></span></button>
 								<# } #>
 								<a href="{{{data.demo_api}}}" class="button button-hero site-preview-button" target="_blank">Preview "{{data.name}}" Site <i class="dashicons dashicons-external"></i></a>
 								<?php if ( $cc_app_auth->has_auth() ) : ?>
-									<div class="button button-hero button-primary single-page-import-button disabled"><?php esc_html_e( 'Select Template', 'responsive-addons' ); ?></div>
+									<div class="button button-hero button-primary single-page-import-button disabled"><?php esc_html_e( 'Select Template', 'responsive-add-ons' ); ?></div>
 								<?php else : ?>
-									<div class="button button-hero button-primary single-page-import-button-{{{ data.demo_type }}} disabled"><?php esc_html_e( 'Select Template', 'responsive-addons' ); ?></div>
+									<div class="button button-hero button-primary single-page-import-button-{{{ data.demo_type }}} disabled"><?php esc_html_e( 'Select Template', 'responsive-add-ons' ); ?></div>
 								<?php endif; ?>
 							</div>
 						</div>
@@ -1193,7 +1212,9 @@ $responsive_sites_header_after_connection_success = false;
 		data-wpforms-path="{{{data.wpforms_path}}}"
 		data-required-plugins="{{ JSON.stringify( data.required_plugins )}}"
 		data-require-flexbox-container="{{data.require_flexbox_container}}"
-		data-required-pro-plugins="{{ JSON.stringify( data.required_pro_plugins )}}">
+		data-required-pro-plugins="{{ JSON.stringify( data.required_pro_plugins )}}"
+		data-demo-name="{{ JSON.stringify( data.name )}}"
+		data-page-builder="{{ JSON.stringify( data.page_builder )}}">
 		<div class="wp-full-overlay-header">
 			<div class="responsive-advanced-options-wrap">
 					<div class="responsive-sites-demo-details">
@@ -1237,7 +1258,7 @@ $responsive_sites_header_after_connection_success = false;
 							</div>
 							<div class="elementor-error-msg">
 								<span>
-									<?php esc_html_e( 'This starter template is built using Elementor flexbox containers. Please mark the Flexbox Container setting as \'active\' in Elementor Features settings.', 'responsive-addons' ); ?>
+									<?php esc_html_e( 'This starter template is built using Elementor flexbox containers. Please mark the Flexbox Container setting as \'active\' in Elementor Features settings.', 'responsive-add-ons' ); ?>
 								</span>
 								<a href="
 								<?php
@@ -1245,7 +1266,7 @@ $responsive_sites_header_after_connection_success = false;
 								echo esc_url( $elementor_settings_url );
 								?>
 									">
-									<?php esc_html_e( 'Go to settings', 'responsive-addons' ); ?>
+									<?php esc_html_e( 'Go to settings', 'responsive-add-ons' ); ?>
 								</a>
 							</div>
 						</div>
@@ -1261,7 +1282,7 @@ $responsive_sites_header_after_connection_success = false;
 									<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="plugins" checked="checked" readonly>
 									<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 								</label>
-								<span class="ready-site-single-import-option-title"><strong><?php esc_html_e( 'Install Required Plugins', 'responsive-addons' ); ?></strong></span>
+								<span class="ready-site-single-import-option-title"><strong><?php esc_html_e( 'Install Required Plugins', 'responsive-add-ons' ); ?></strong></span>
 								<ul class="required-plugins-list" style="display: none;"></ul>
 							</li>
 							<li class="responsive-ready-sites-import-xml">
@@ -1269,34 +1290,34 @@ $responsive_sites_header_after_connection_success = false;
 									<input class="ready-site-import-option-input-checkbox checkbox" type="checkbox" name="content" checked="checked" class="checkbox">
 									<span class="ready-site-import-option-input-slider ready-site-import-option-input-round"></span>
 								</label>
-								<span class="ready-site-single-import-option-title"><strong><?php esc_html_e( 'Import Content', 'responsive-addons' ); ?></strong></span>
+								<span class="ready-site-single-import-option-title"><strong><?php esc_html_e( 'Import Content', 'responsive-add-ons' ); ?></strong></span>
 							</li>
 						</ul>
 					</div>
 				</div>
 				<div class="ready-sites-import-subscription">
-					<h3 class="ready-sites-import-subscription-title"><?php esc_html_e( 'Subscribe and Import', 'responsive-addons' ); ?></h3>
+					<h3 class="ready-sites-import-subscription-title"><?php esc_html_e( 'Subscribe and Import', 'responsive-add-ons' ); ?></h3>
 					<input type="email" id="ready-sites-subscriber-email" name="subscriber_emmail" placeholder="Enter Your Email Address" value="<?php echo isset( $settings['account']['email'] ) ? esc_html( $settings['account']['email'] ) : ''; ?>">
 					<input type="hidden" id="ready-sites-importing-template-name" name="ready-sites-template-name" value="{{data.name}}">
 					<div class="ready-sites-subscription-user-consent">
 						<input type="checkbox" id="ready-sites-subscription-check" name="subscription_check">
-						<label for="ready-sites-subscription-check"><?php esc_html_e( 'Yes, count me in!', 'responsive-addons' ); ?></label>
+						<label for="ready-sites-subscription-check"><?php esc_html_e( 'Yes, count me in!', 'responsive-add-ons' ); ?></label>
 					</div>
 				</div>
 				<div class="responsive-ready-sites-import-button-wrap">
 					<?php if ( $cc_app_auth->has_auth() ) : ?>
 						<button class="button responsive-ready-site-import-without-sub import-page responsive-ready-page-import">
-							<?php esc_html_e( 'Skip Email', 'responsive-addons' ); ?>
+							<?php esc_html_e( 'Skip Email', 'responsive-add-ons' ); ?>
 						</button>
 						<button class="button responsive-ready-site-import-with-sub import-page responsive-ready-page-import">
-							<?php esc_html_e( 'Start Importing', 'responsive-addons' ); ?>
+							<?php esc_html_e( 'Start Importing', 'responsive-add-ons' ); ?>
 						</button>
 					<?php else : ?>
 						<button class="button responsive-ready-site-import-without-sub import-page responsive-ready-page-import-{{{data.demo_type}}}">
-							<?php esc_html_e( 'Skip Email', 'responsive-addons' ); ?>
+							<?php esc_html_e( 'Skip Email', 'responsive-add-ons' ); ?>
 						</button>
 						<button class="button responsive-ready-site-import-with-sub import-page responsive-ready-page-import-{{{data.demo_type}}}">
-							<?php esc_html_e( 'Start Importing', 'responsive-addons' ); ?>
+							<?php esc_html_e( 'Start Importing', 'responsive-add-ons' ); ?>
 						</button>
 					<?php endif; ?>
 				</div>
@@ -1306,7 +1327,7 @@ $responsive_sites_header_after_connection_success = false;
 		</div>
 		<div class="wp-full-overlay-footer">
 			<div class="responsive-ready-sites-advanced-options-wrap-footer-btn-wrapper">
-				<button class="responsive-addons-go-back-btn responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-addons' ); ?></span></button>
+				<button class="responsive-addons-go-back-btn responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-add-ons' ); ?></span></button>
 			</div>
 			<div></div>
 		</div>
@@ -1338,15 +1359,15 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="responsive-ready-sites-import-progress-container">
 				<div class="site-import-options">
 					<div class="responsive-ready-sites-advanced-options">
-						<h2 class="ready-sites-import-progress-title"><?php esc_html_e( 'We are Building your Website', 'responsive-addons' ); ?></h2>
+						<h2 class="ready-sites-import-progress-title"><?php esc_html_e( 'We are Building your Website', 'responsive-add-ons' ); ?></h2>
 						<div class="sites-import-process-errors" style="display: none">
 							<div class="import-process-error">
 								<div class="current-importing-status-error-title"></div>
 							</div>
 						</div>
 							<div class="ready-sites-import-progress-info">
-							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e( 'Pre-Checking and Starting Up Import Process', 'responsive-addons' ); ?></div>
-							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e( '0%', 'responsive-addons' ); ?></div>
+							<div class="ready-sites-import-progress-info-text"><?php echo esc_html_e( 'Pre-Checking and Starting Up Import Process', 'responsive-add-ons' ); ?></div>
+							<div class="ready-sites-import-progress-info-percent"><?php echo esc_html_e( '0%', 'responsive-add-ons' ); ?></div>
 							</div>
 							<div class="ready-sites-import-progress-bar-wrap">
 								<div class="ready-sites-import-progress-bar-bg">
@@ -1387,7 +1408,7 @@ $responsive_sites_header_after_connection_success = false;
 				<div class="site-import-options">
 					<div class="responsive-ready-sites-advanced-options">
 						<div class="responsive-ready-sites-import-done-congrats-title-wrap">
-							<h2 class="ready-sites-import-done-congrats-title"><?php esc_html_e( 'Congratulations', 'responsive-addons' ); ?></h2>
+							<h2 class="ready-sites-import-done-congrats-title"><?php esc_html_e( 'Congratulations', 'responsive-add-ons' ); ?></h2>
 							<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M1.97894 32.7436C2.58191 33.397 5.0655 32.2575 7.02581 31.3437C8.49472 30.6611 14.373 28.2492 17.2949 26.9981C18.0838 26.6608 19.2313 26.2198 20.0574 25.1334C20.7905 24.1666 22.7349 20.06 18.8196 15.9003C14.8458 11.6769 10.7525 12.843 9.22253 13.9267C8.32206 14.5642 7.58894 16.0012 7.25956 16.7317C5.86769 19.8183 3.88347 25.4734 3.07597 27.6967C2.48362 29.3356 1.38128 32.0955 1.97894 32.7436Z" fill="#FFC107"/>
 								<path d="M6.86647 17.6614C6.90365 18.1236 6.99662 18.8753 7.31537 20.323C7.53318 21.3164 7.88912 22.3577 8.17865 23.0456C9.04725 25.1148 10.2665 25.9489 11.5016 26.6183C13.6001 27.7552 15.0265 27.9677 15.0265 27.9677L13.3158 28.6663C13.3158 28.6663 12.2799 28.4511 10.8668 27.7552C9.52006 27.0911 8.11756 25.9675 7.09225 23.7681C6.64865 22.8145 6.391 21.8902 6.24225 21.157C6.05897 20.2486 6.02975 19.7333 6.02975 19.7333L6.86647 17.6614ZM4.76537 23.0483C4.76537 23.0483 4.97787 24.7722 6.40162 26.9477C8.06975 29.4923 10.3993 29.9094 10.3993 29.9094L8.85068 30.5469C8.85068 30.5469 7.12147 30.0183 5.47725 27.7738C4.45193 26.3739 4.16506 24.7005 4.16506 24.7005L4.76537 23.0483ZM3.29115 27.1336C3.29115 27.1336 3.67896 28.6211 4.52896 29.7314C5.541 31.0569 6.82928 31.442 6.82928 31.442L5.64193 31.968C5.64193 31.968 4.74147 31.7794 3.756 30.5309C3.00693 29.5827 2.79443 28.4936 2.79443 28.4936L3.29115 27.1336Z" fill="#FF8F00"/>
@@ -1416,7 +1437,7 @@ $responsive_sites_header_after_connection_success = false;
 							</svg>
 						</div>
 						<div class="ready-sites-import-progress-info">
-							<div class="ready-sites-import-progress-info-text"><?php esc_html_e( 'Your Website is ready and it took just ', 'responsive-addons' ); ?><span class="responsive-ready-sites-import-time-taken">60</span><?php esc_html_e( ' seconds to build.', 'responsive-addons' ); ?></div>
+							<div class="ready-sites-import-progress-info-text"><?php esc_html_e( 'Your Website is ready and it took just ', 'responsive-add-ons' ); ?><span class="responsive-ready-sites-import-time-taken">60</span><?php esc_html_e( ' seconds to build.', 'responsive-add-ons' ); ?></div>
 						</div>
 						<div class="ready-sites-import-progress-bar-wrap">
 							<div class="ready-sites-import-progress-bar-bg">
@@ -1427,12 +1448,12 @@ $responsive_sites_header_after_connection_success = false;
 						<div class="responsive-sites-import-done-success-section">
 							<div class="responsive-sites-import-done-success">
 								<p class="responsive-sites-after-import-rate-text">
-									<?php esc_html_e( 'Every feedback inspires us to keep adding features and improving. If you\'re enjoying the plugin, we\'d really appreciate a 5-star rating.', 'responsive-addons' ); ?>
+									<?php esc_html_e( 'Every feedback inspires us to keep adding features and improving. If you\'re enjoying the plugin, we\'d really appreciate a 5-star rating.', 'responsive-add-ons' ); ?>
 								</p>
 							</div>
 							<div class="responsive-sites-after-import-rate-plugin-btn-wrap" >
 								<a href="https://wordpress.org/support/plugin/responsive-add-ons/reviews/#new-post" target="_blank" id="responsive-sites-after-import-rate-plugin-link">
-									<p class="rate-btn"><?php esc_html_e( 'Rate the plugin', 'responsive-addons' ); ?></p>
+									<p class="rate-btn"><?php esc_html_e( 'Rate the plugin', 'responsive-add-ons' ); ?></p>
 									<?php for( $i=0; $i < 5; $i++ ) : ?>
 									<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<g clip-path="url(#clip0_150_107)">
@@ -1449,8 +1470,8 @@ $responsive_sites_header_after_connection_success = false;
 							</div>
 						</div>
 						<div class="responsive-sites-after-import-site-btn-wrap">
-							<a href="<?php echo esc_url( admin_url() ); ?>" class="btn responsive-sites-imported-site-dashboard-link" id="responsive-sites-imported-dashboard-site-link" target="_self"><?php esc_html_e( 'Exit to Dashboard', 'responsive-addons' ); ?></a>
-							<a href="#" class="btn responsive-sites-imported-site-link" id="responsive-sites-imported-site-link" target="_blank"><?php esc_html_e( 'View Website', 'responsive-addons' ); ?></a>
+							<a href="<?php echo esc_url( admin_url() ); ?>" class="btn responsive-sites-imported-site-dashboard-link" id="responsive-sites-imported-dashboard-site-link" target="_self"><?php esc_html_e( 'Exit to Dashboard', 'responsive-add-ons' ); ?></a>
+							<a href="#" class="btn responsive-sites-imported-site-link" id="responsive-sites-imported-site-link" target="_blank"><?php esc_html_e( 'View Website', 'responsive-add-ons' ); ?></a>
 						</div>
 					</div>
 					</div>
@@ -1483,29 +1504,29 @@ $responsive_sites_header_after_connection_success = false;
 			<div class="responsive-ready-sites-import-progress-container">
 				<div class="site-import-options">
 					<div class="responsive-ready-sites-advanced-options">
-						<h2 class="ready-sites-import-progress-title"><?php esc_html_e( 'We are Building your Website', 'responsive-addons' ); ?></h2>
+						<h2 class="ready-sites-import-progress-title"><?php esc_html_e( 'We are Building your Website', 'responsive-add-ons' ); ?></h2>
 						<div class="sites-import-process-errors-container">
 							<div class="import-process-error">
 								<h4 class="current-importing-status-error-title">
-									<?php esc_html_e( 'Sorry, something went wrong.', 'responsive-addons' ); ?>
+									<?php esc_html_e( 'Sorry, something went wrong.', 'responsive-add-ons' ); ?>
 								</h4>
 								<div class="current-importing-status-error-wrap">
 									<h5 class="current-importing-status-error-sub-title">
-										<?php esc_html_e( 'What went wrong?', 'responsive-addons' ); ?>
+										<?php esc_html_e( 'What went wrong?', 'responsive-add-ons' ); ?>
 									</h5>
 									<# if( data.error_code ) { #>
-									<p class="current-importing-status-error-code error-status"><span><?php esc_html_e( 'Code:', 'responsive-addons' ); ?></span><span>{{{data.error_code}}}</span></p>
+									<p class="current-importing-status-error-code error-status"><span><?php esc_html_e( 'Code:', 'responsive-add-ons' ); ?></span><span>{{{data.error_code}}}</span></p>
 									<# } #>
 									<# if( data.message ) { #>
-									<p class="current-importing-status-error-text error-status"><span><?php esc_html_e( 'Error:', 'responsive-addons' ); ?></span><span>"{{{data.message}}}"</span></p>
+									<p class="current-importing-status-error-text error-status"><span><?php esc_html_e( 'Error:', 'responsive-add-ons' ); ?></span><span>"{{{data.message}}}"</span></p>
 									<# } #>
 									<# if( ! data.message && ! data.error_code ) { #>
-									<p class="current-importing-status-error-text error-status"><span><?php esc_html_e( 'Error:', 'responsive-addons' ); ?></span><span>"{{{data}}}"</span></p>
+									<p class="current-importing-status-error-text error-status"><span><?php esc_html_e( 'Error:', 'responsive-add-ons' ); ?></span><span>"{{{data}}}"</span></p>
 									<# } #>
 								</div>
 								<div class="current-importing-status-error-btns">
-									<button class="ready-sites-import-process-error-retry" onclick="location.reload()"><?php esc_html_e( "Click here to try again", 'responsive-addons' ); ?></button>
-									<a class="ready-sites-import-process-error-support" href="https://cyberchimps.com/open-a-ticket/" target="_blank"><?php esc_html_e( 'or, get in touch', 'responsive-addons' ); ?></a>
+									<button class="ready-sites-import-process-error-retry" onclick="location.reload()"><?php esc_html_e( "Click here to try again", 'responsive-add-ons' ); ?></button>
+									<a class="ready-sites-import-process-error-support" href="https://cyberchimps.com/open-a-ticket/" target="_blank"><?php esc_html_e( 'or, get in touch', 'responsive-add-ons' ); ?></a>
 								</div>
 							</div>
 						</div>
