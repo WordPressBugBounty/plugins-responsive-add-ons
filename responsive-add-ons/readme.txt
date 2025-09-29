@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 3.3.3
+Stable tag: 3.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -242,6 +242,9 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 8. Responsive Plus advanced features.
 
 == Changelog ==
+
+= 3.3.4 - 29th September 2025 =
+* Improvement - Added support for Responsive Blocks (Gutenberg) to work seamlessly with the Site Builder.
 
 = 3.3.3 - 22nd September 2025 =
 * Improvement - Added user consent for event tracking for improving plugin performance.

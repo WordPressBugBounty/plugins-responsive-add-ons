@@ -45,9 +45,27 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 			add_filter( 'single_template', array( $this, 'get_custom_post_type_template' ) );
 			add_action( 'responsive_site_builder_template', array( $this, 'template_empty_content' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_responsive_block_editor_addons_blocks_assets' ) );
-
 			add_action( 'template_include', array( $this, 'override_template_include' ), 999 );
+			$this->responsive_addons_load_rbea_assets();
         }
+
+		public function responsive_addons_load_rbea_assets() {
+			if ( ! function_exists( 'is_plugin_active' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+
+			$rbea_path = 'responsive-block-editor-addons/responsive-block-editor-addons.php';
+
+			if ( is_plugin_active( $rbea_path ) ) {
+				$plugin_data    = get_plugin_data( WP_PLUGIN_DIR . '/' . $rbea_path );
+				$plugin_version = $plugin_data['Version'];
+				if ( version_compare( $plugin_version, '2.1.2', '>=' ) ) {
+					add_action( 'rbea-frontend-site-builder-styles', array( $this, 'load_responsive_block_editor_addons_blocks_assets' ) );
+				} else {
+					add_action( 'wp_enqueue_scripts', array( $this, 'load_responsive_block_editor_addons_blocks_assets' ) );
+				}
+			}
+		}
 
 		public function enqueue_frontend_scripts() {
 			wp_enqueue_script( 'responsive-site-builder-sticky', RESPONSIVE_ADDONS_SITE_BUILDER_URI . 'assets/js/sticky-layout.js', array(), RESPONSIVE_ADDONS_VER, true );

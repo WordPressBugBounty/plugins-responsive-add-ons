@@ -55,16 +55,23 @@ if( ! class_exists( 'Responsive_Add_Ons_SB_Gutenberg_Compatibility' ) ) {
 
             if( defined( 'RESPONSIVE_BLOCK_EDITOR_ADDONS_VER' ) ) {
                 $post_css                = '';
-                $current_post            = get_post( $post_id, OBJECT );
+
+                $current_post = get_post( $post_id, OBJECT );
+                $layout       = get_post_meta( $post_id, 'responsive-site-builder-layout', true );
+
                 $active_gutenberg_blocks = parse_blocks( $current_post->post_content );
 
                 if( class_exists( 'Responsive_Block_Editor_Addons_Frontend_Styles_Helper' ) ) {
                     $rba_frontend_styles_helper = Responsive_Block_Editor_Addons_Frontend_Styles_Helper::get_instance();
                     $post_css .= $rba_frontend_styles_helper->get_styles( $active_gutenberg_blocks );
+                    if ( function_exists( 'responsive_block_editor_addons_fetch_google_fonts' ) ) {
+                        responsive_block_editor_addons_fetch_google_fonts( $active_gutenberg_blocks, $layout );
+                    }
+                    do_action( 'responsive_block_editor_addons_enqueue_scripts', $post_id );
                 }
 
                 if ( ! empty( $post_css ) ) {
-                    echo "<style id='responsive-addons-rba_blocks-frontend-styles'>$post_css</style>"; //phpcs:ignore
+                    echo "<style id='responsive-addons-rbea-blocks-frontend-styles-" . $layout . "'>$post_css</style>"; //phpcs:ignore
                 }
             }
         }        
