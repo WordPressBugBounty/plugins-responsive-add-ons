@@ -77,13 +77,14 @@ if ( ! function_exists( 'required_font_color_value' ) ) {
 }
 
 if ( ! function_exists( 'responsive_addons_menu_search_icon' ) ) {
+	/**
+	 * Check if the menu's last item is set to display a search icon.
+	 *
+	 * @return bool True if search is the last menu item, false otherwise.
+	 */
 	function responsive_addons_menu_search_icon() {
 		$menu_last_item = get_theme_mod( 'responsive_menu_last_item', 'none' );
-		if ( 'search' === $menu_last_item ) {
-			return true;
-		} else {
-			return false;
-		}
+		return 'search' === $menu_last_item;
 	}
 }
 
@@ -99,19 +100,21 @@ function enable_native_cart_popup_check() {
 
 if ( ! function_exists( 'responsive_addons_checkbox_control' ) ) {
 	/**
-	 * [responsive_addons_checkbox_control description]
+	 * Register a custom checkbox control in the WordPress Customizer.
 	 *
-	 * @param  [type] $wp_customize [description].
-	 * @param  [type] $element      [description].
-	 * @param  [type] $label        [description].
-	 * @param  [type] $section      [description].
-	 * @param  [type] $priority     [description].
-	 * @param  [type] $default      [description].
-	 * @param  [type] $active_call  [description].
-	 * @return void               [description].
+	 * @param WP_Customize_Manager $wp_customize Customizer manager instance.
+	 * @param string               $element      The setting key name.
+	 * @param string               $label        The label displayed for the control.
+	 * @param string               $section      The section to which this control belongs.
+	 * @param int                  $priority     The priority/order of the control.
+	 * @param mixed                $default      The default value for the setting.
+	 * @param callable|null        $active_call  Callback function to determine active state.
+	 * @param string               $transport    Transport method ('refresh' or 'postMessage').
+	 * @param string               $desc         Optional description shown under the control.
+	 *
+	 * @return void
 	 */
 	function responsive_addons_checkbox_control( $wp_customize, $element, $label, $section, $priority, $default, $active_call = null, $transport = 'refresh', $desc = '' ) {
-
 		$wp_customize->add_setting(
 			'responsive_' . $element,
 			array(
@@ -121,7 +124,7 @@ if ( ! function_exists( 'responsive_addons_checkbox_control' ) ) {
 			)
 		);
 		$wp_customize->add_control(
-			new Responsive_Customizer_Checkbox_Control(
+			new Responsive_Customizer_Responsive_Checkbox_Control(
 				$wp_customize,
 				'responsive_' . $element,
 				array(
@@ -139,23 +142,24 @@ if ( ! function_exists( 'responsive_addons_checkbox_control' ) ) {
 
 if ( ! function_exists( 'responsive_addons_radio_button_control' ) ) {
 	/**
-	 * [responsive_radio_button_control description].
+	 * Register a radio button control in the WordPress Customizer.
 	 *
-	 * @param  [type] $wp_customize [description].
-	 * @param  [type] $element      [description].
-	 * @param  [type] $label        [description].
-	 * @param  [type] $section      [description].
-	 * @param  [type] $priority     [description].
-	 * @param  [type] $default      [description].
-	 * @param  [type] $choices      [description].
-	 * @return void               [description].
+	 * @param WP_Customize_Manager $wp_customize Customizer manager instance.
+	 * @param string               $element      The setting key name.
+	 * @param string               $label        The label displayed for the control.
+	 * @param string               $section      The section to which this control belongs.
+	 * @param int                  $priority     The priority/order of the control.
+	 * @param mixed                $default_val  The default value for the setting.
+	 * @param array                $choices      Array of key => label choices.
+	 * @param string               $transport    Transport method ('refresh' or 'postMessage').
+	 *
+	 * @return void
 	 */
-	function responsive_addons_radio_button_control( $wp_customize, $element, $label, $section, $priority, $default, $choices = '', $transport = 'refresh' ) {
-
+	function responsive_addons_radio_button_control( $wp_customize, $element, $label, $section, $priority, $default_val, $choices = '', $transport = 'refresh' ) {
 		$wp_customize->add_setting(
 			'responsive_' . $element,
 			array(
-				'default'   => $default,
+				'default'   => $default_val,
 				'transport' => $transport,
 			)
 		);
@@ -216,7 +220,7 @@ if ( ! function_exists( 'responsive_addons_separator_control' ) ) {
 
 if ( ! function_exists( 'responsive_addons_padding_control' ) ) {
 	/**
-	 * responsive_addons_padding_control.
+	 * Responsive_addons_padding_control.
 	 *
 	 * @param  object  $wp_customize  [description].
 	 * @param  integer $element  [description].
@@ -226,6 +230,7 @@ if ( ! function_exists( 'responsive_addons_padding_control' ) ) {
 	 * @param  integer $default_values_x [description].
 	 * @param  bool    $active_call [description].
 	 * @param  string  $label [description].
+	 * @param  integer $max [100 by default].
 	 * @return void
 	 */
 	function responsive_addons_padding_control( $wp_customize, $element, $section, $priority, $default_values_y = '', $default_values_x = '', $active_call = null, $label = 'Padding (px)', $max = 100 ) {
@@ -366,24 +371,27 @@ if ( ! function_exists( 'responsive_addons_padding_control' ) ) {
 
 if ( ! function_exists( 'responsive_addons_rst_text_control' ) ) {
 	/**
-	 * [responsive_addons_rst_text_control description]
+	 * Adds a text-based control to the WordPress Customizer.
 	 *
-	 * @param  [type] $wp_customize [description].
-	 * @param  [type] $element      [description].
-	 * @param  [type] $label        [description].
-	 * @param  [type] $section      [description].
-	 * @param  [type] $priority     [description].
-	 * @param  [type] $default      [description].
-	 * @param  [type] $active_call      [description].
-	 * @return void               [description].
+	 * @param WP_Customize_Manager $wp_customize      The Customizer manager instance.
+	 * @param string               $element           The setting key suffix (appended to 'responsive_').
+	 * @param string               $label             The label text for the control.
+	 * @param string               $section           The Customizer section where this control will appear.
+	 * @param int                  $priority          The priority/order of this control in the section.
+	 * @param mixed                $default_val       The default value for the setting.
+	 * @param callable|null        $active_call       Optional callback to determine if control is active.
+	 * @param callable|string      $sanitize_function Optional sanitization callback (default: 'sanitize_text_field').
+	 * @param string               $type              The input type (default: 'text').
+	 * @param string               $transport         Transport method for preview updates ('refresh' or 'postMessage').
+	 *
+	 * @return void
 	 */
-	function responsive_addons_rst_text_control( $wp_customize, $element, $label, $section, $priority, $default, $active_call = null, $sanitize_function = 'sanitize_text_field', $type = 'text', $transport = 'refresh' ) {
+	function responsive_addons_rst_text_control( $wp_customize, $element, $label, $section, $priority, $default_val, $active_call = null, $sanitize_function = 'sanitize_text_field', $type = 'text', $transport = 'refresh' ) {
 
-		// Add Twitter Setting.
 		$wp_customize->add_setting(
 			'responsive_' . $element,
 			array(
-				'default'           => $default,
+				'default'           => $default_val,
 				'sanitize_callback' => $sanitize_function,
 				'transport'         => $transport,
 			)
@@ -404,6 +412,7 @@ if ( ! function_exists( 'responsive_addons_rst_text_control' ) ) {
 		);
 	}
 }
+
 
 if ( ! function_exists( 'responsive_border_css' ) ) {
 	/**
@@ -557,7 +566,14 @@ if ( ! function_exists( 'responsive_addons_woo_cart_total_function' ) ) {
  */
 if ( ! function_exists( 'woo_free_shipping_left' ) ) {
 	/**
-	 * Check free shipping left
+	 * Returns a message indicating how much is left to spend for free shipping,
+	 * or a message indicating free shipping has been reached.
+	 *
+	 * @param string $content         The message to show when free shipping is not reached. Can contain '%left_to_free%' placeholder.
+	 * @param string $content_reached The message to show when free shipping threshold is reached.
+	 * @param float  $multiply_by     Multiplier for prices (default 1).
+	 *
+	 * @return string|void The message with prices replaced, or void if WooCommerce is not active or conditions fail.
 	 */
 	function woo_free_shipping_left( $content, $content_reached, $multiply_by = 1 ) {
 
@@ -582,22 +598,27 @@ if ( ! function_exists( 'woo_free_shipping_left' ) ) {
 
 		$free_shipping = new WC_Shipping_Legacy_Free_Shipping();
 		if ( 'yes' === $free_shipping->enabled ) {
-			if ( in_array( $lfree_shipping->requires, array( 'min_amount', 'either', 'both' ) ) ) {
+			// Fix: strict in_array with true for strict checking.
+			if ( in_array( $free_shipping->requires, array( 'min_amount', 'either', 'both' ), true ) ) {
 				$min_free_shipping_amount = $free_shipping->min_amount;
 			}
 		}
 		if ( 0 === $min_free_shipping_amount ) {
-			if ( function_exists( 'WC' ) && ( $wc_shipping = WC()->shipping ) && ( $wc_cart = WC()->cart ) ) {
-				if ( $wc_shipping->enabled ) {
-					$packages = $wc_cart->get_shipping_packages();
-					if ( $packages ) {
-						$methods = $wc_shipping->load_shipping_methods( $packages[0] );
-						foreach ( $methods as $method ) {
-							if ( 'yes' === $method->enabled && 0 != $method->instance_id ) {
-								if ( 'WC_Shipping_Free_Shipping' === get_class( $method ) ) {
-									if ( in_array( $method->requires, array( 'min_amount', 'either', 'both' ) ) ) {
-										$min_free_shipping_amount = $method->min_amount;
-										break;
+			if ( function_exists( 'WC' ) ) {
+				$wc_shipping = WC()->shipping;
+				$wc_cart     = WC()->cart;
+				if ( $wc_shipping && $wc_cart ) {
+					if ( $wc_shipping->enabled ) {
+						$packages = $wc_cart->get_shipping_packages();
+						if ( $packages ) {
+							$methods = $wc_shipping->load_shipping_methods( $packages[0] );
+							foreach ( $methods as $method ) {
+								if ( 'yes' === $method->enabled && 0 !== $method->instance_id ) {
+									if ( 'WC_Shipping_Free_Shipping' === get_class( $method ) ) {
+										if ( in_array( $method->requires, array( 'min_amount', 'either', 'both' ), true ) ) {
+											$min_free_shipping_amount = $method->min_amount;
+											break;
+										}
 									}
 								}
 							}
@@ -614,7 +635,7 @@ if ( ! function_exists( 'woo_free_shipping_left' ) ) {
 					return do_shortcode( $content_reached );
 				} else {
 					$content = str_replace( '%left_to_free%', '<span class="responsive-woo-left-to-free">' . wc_price( ( $min_free_shipping_amount - $total ) * $multiply_by ) . '</span>', $content );
-					$content = str_replace( '%free_shipping_min_amount%', '<span class="responsive-woo-left-to-free">' . wc_price( ( $min_free_shipping_amount ) * $multiply_by ) . '</span>', $content );
+					$content = str_replace( '%free_shipping_min_amount%', '<span class="responsive-woo-left-to-free">' . wc_price( $min_free_shipping_amount * $multiply_by ) . '</span>', $content );
 					return $content;
 				}
 			}
@@ -622,23 +643,27 @@ if ( ! function_exists( 'woo_free_shipping_left' ) ) {
 	}
 }
 
+
 if ( ! function_exists( 'woo_free_shipping_shortcode' ) ) {
 	/**
-	 * Free shipping shortcode
+	 * Shortcode to display free shipping progress message.
+	 *
+	 * @param array  $atts    Shortcode attributes.
+	 * @param string $content Content inside shortcode (not used).
+	 *
+	 * @return string|void HTML content for free shipping progress.
 	 */
 	function woo_free_shipping_shortcode( $atts, $content ) {
 
-		// Return if WooCommerce is not enabled.
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			return;
 		}
 
-		// Call the script.
 		wp_enqueue_script( 'responsive-woo-popup' );
 
-		// Initiation data on data attr on span.
 		$content_data    = '';
 		$content_reached = '';
+
 		if ( ! empty( $atts ) ) {
 			if ( isset( $atts['content'] ) ) {
 				$content_data = $atts['content'];
@@ -650,7 +675,6 @@ if ( ! function_exists( 'woo_free_shipping_shortcode' ) ) {
 
 		$x = str_replace( '%', '+', $content_data );
 
-		// Set default values for attributes.
 		$atts = shortcode_atts(
 			array(
 				'content'         => esc_html__( 'Buy for %left_to_free% more and get free shipping', 'responsive_addons_pro' ),
@@ -660,7 +684,6 @@ if ( ! function_exists( 'woo_free_shipping_shortcode' ) ) {
 			$atts
 		);
 
-		// Assign variables explicitly.
 		$content         = $atts['content'];
 		$content_reached = $atts['content_reached'];
 		$multiply_by     = $atts['multiply_by'];
@@ -670,35 +693,37 @@ if ( ! function_exists( 'woo_free_shipping_shortcode' ) ) {
 }
 
 
+
 if ( ! function_exists( 'update_responsive_woo_free_shipping_left_shortcode' ) ) {
 	/**
-	 * Ajax replay the refresh fragemnt
+	 * AJAX handler to refresh the free shipping shortcode fragment.
 	 *
 	 * @return void
 	 */
 	function update_responsive_woo_free_shipping_left_shortcode() {
 		$atts = array();
-		// The nonce is not provided by the WooCommerce for this context, hence suppressing the warning
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		if ( ( isset( $_POST['content'] )
-			&& ( '' !== sanitize_text_field( wp_unslash( $_POST['content'] ) ) ) )
-				|| ( isset( $_POST['content_rech_data'] )
-					&& ( '' !== sanitize_text_field( wp_unslash( $_POST['content_rech_data'] ) ) ) ) ) {
-
-			$atts['content_reached'] = sanitize_text_field( wp_unslash( $_POST['content_rech_data'] ) );
-			$content                 = str_replace( '+', '%', sanitize_text_field( wp_unslash( $_POST['content_rech_data'] ) ) );
-			$atts['content']         = $content;
-			$return_shortcode_value  = woo_free_shipping_shortcode( $atts, '' );
-			wp_send_json( $return_shortcode_value );
-		// phpcs:enable
-		} else {
-
+		
+		// Don't accept POST data from users 
+		$default_bottom_text = esc_html__( '[responsive_woo_free_shipping_left]', 'responsive-addons-pro' );
+		$custom_text = get_theme_mod( 'responsive_popup_bottom_text', $default_bottom_text );
+		
+		// Parse shortcode attributes from the stored value
+		if ( ! empty( $custom_text ) && preg_match( '/\[responsive_woo_free_shipping_left(.*?)\]/', $custom_text, $matches ) ) {
+			// Extract attributes like content_reached="Custom message"
+			if ( ! empty( $matches[1] ) ) {
+				$shortcode_attrs = shortcode_parse_atts( $matches[1] );
+				if ( ! empty( $shortcode_attrs ) && is_array( $shortcode_attrs ) ) {
+					$atts = $shortcode_attrs;
+				}
+			}
+		}
+		
+		// Recalculate from cart state using trusted database values
 			$return_shortcode_value = woo_free_shipping_shortcode( $atts, '' );
 			wp_send_json( $return_shortcode_value );
-
-		}
 	}
 }
+
 
 add_action( 'wp_ajax_update_responsive_woo_free_shipping_left_shortcode', 'update_responsive_woo_free_shipping_left_shortcode' );
 add_action( 'wp_ajax_nopriv_update_responsive_woo_free_shipping_left_shortcode', 'update_responsive_woo_free_shipping_left_shortcode' );

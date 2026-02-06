@@ -20,6 +20,14 @@ if ( ! function_exists( 'responsive_addons_pagination_callbacks' ) ) {
 }
 
 if ( ! function_exists( 'responsive_addons_pagination_trigger' ) ) {
+	/**
+	 * Determines if infinite scroll pagination is enabled for the shop.
+	 *
+	 * Retrieves the 'shop_pagination' theme setting and returns true if it is set to 'infinite',
+	 * otherwise returns false.
+	 *
+	 * @return bool True if infinite scroll pagination is enabled, false otherwise.
+	 */
 	function responsive_addons_pagination_trigger() {
 		$shop_scroll_style = get_theme_mod( 'shop_pagination', 'default' );
 		if ( 'infinite' === $shop_scroll_style ) {
@@ -31,6 +39,14 @@ if ( ! function_exists( 'responsive_addons_pagination_trigger' ) ) {
 }
 
 if ( ! function_exists( 'responsive_addons_load_more_callback' ) ) {
+	/**
+	 * Callback to determine if "Load More" should be enabled based on theme settings.
+	 *
+	 * This function checks the theme modifications to determine if the shop uses
+	 * infinite scroll with a "click" event for loading more products.
+	 *
+	 * @return bool True if infinite scroll is enabled with click event, false otherwise.
+	 */
 	function responsive_addons_load_more_callback() {
 		$shop_infinite_loading = get_theme_mod( 'shop-infinite-scroll-event', 'scroll' );
 		$shop_scroll_style     = get_theme_mod( 'shop_pagination', 'default' );

@@ -31,6 +31,19 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 		 * @since 2.0.0
 		 */
 		if ( ! function_exists( 'rst_responsive_addons_register_options' ) ) {
+			/**
+			 * Registers custom control types for the Responsive Addons Customizer.
+			 *
+			 * This function loads all the required custom control classes used in the
+			 * WordPress Customizer and registers them with the Customizer manager instance.
+			 *
+			 * It ensures the controls like color pickers, sliders, typography, and layout tools
+			 * are available for use in the customizer interface of the Responsive theme.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param WP_Customize_Manager $wp_customize The WordPress Customizer manager object.
+			 */
 			function rst_responsive_addons_register_options( $wp_customize ) {
 
 				// Responsvie Theme Controls Path.
@@ -62,8 +75,8 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 				$wp_customize->register_control_type( 'Responsive_Customizer_Typography_Group_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Dimensions_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Heading_Control' );
-				$wp_customize->register_control_type( 'Responsive_Customizer_Select_Control' );
-				$wp_customize->register_control_type( 'Responsive_Customizer_Checkbox_Control' );
+				$wp_customize->register_control_type( 'Responsive_Customizer_Responsive_Select_Control' );
+				$wp_customize->register_control_type( 'Responsive_Customizer_Responsive_Checkbox_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Select_Button_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Toggle_Control' );
 				$wp_customize->register_control_type( 'Responsive_Customizer_Horizontal_Separator' );
@@ -71,6 +84,16 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 		}
 
 		if ( ! function_exists( 'rst_responsive_addons_customize_preview_js' ) ) {
+			/**
+			 * Enqueues customizer preview JavaScript for Responsive Addons.
+			 *
+			 * This function loads JavaScript files used in the WordPress Customizer live preview,
+			 * including scripts for handling padding controls and other responsive preview interactions.
+			 * It also localizes a JavaScript variable with version comparison flags to indicate
+			 * whether the theme or pro plugin versions are above the required thresholds.
+			 *
+			 * @since 1.0.0
+			 */
 			function rst_responsive_addons_customize_preview_js() {
 				wp_enqueue_script( 'responsive-padding-control', RESPONSIVE_ADDONS_URI . 'includes/customizer/assets/js/customize-preview-padding-control.js', array( 'customize-preview' ), RESPONSIVE_ADDONS_VER, true );
 				wp_enqueue_script( 'responsive-plus-customize-preview', RESPONSIVE_ADDONS_URI . 'includes/customizer/assets/js/customize-preview.js', array( 'customize-preview' ), RESPONSIVE_ADDONS_VER, true );
@@ -84,6 +107,20 @@ if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
 		}
 
 		if ( ! function_exists( 'rplus_fn_is_version_greater' ) ) {
+			/**
+			 * Compares the current theme or plugin version with a required version.
+			 *
+			 * Returns true if the current version of the specified product (either the Responsive theme
+			 * or Responsive Pro plugin) is greater than the specified baseline version.
+			 *
+			 * - For the 'responsive' theme: compares against version 4.9.6
+			 * - For the 'responsive-pro' plugin: compares against version 2.6.3
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param string $product The product to check ('responsive' or 'responsive-pro').
+			 * @return bool True if the product version is greater than the required version, false otherwise.
+			 */
 			function rplus_fn_is_version_greater( $product = 'responsive' ) {
 				if ( 'responsive' === $product ) {
 					$theme                    = wp_get_theme();

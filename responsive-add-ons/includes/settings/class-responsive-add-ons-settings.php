@@ -157,7 +157,11 @@ class Responsive_Add_Ons_Settings {
 	}
 
 	/**
-	 * Update the value of the setting
+	 * Update the value of the setting.
+	 *
+	 * @param string|int $key     The main key in the settings array.
+	 * @param string     $sub_key The sub-key within the main key to update.
+	 * @param mixed      $value   The new value to set.
 	 *
 	 * @return void
 	 */

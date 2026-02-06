@@ -46,6 +46,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 			add_action( 'responsive_site_builder_template', array( $this, 'template_empty_content' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_responsive_block_editor_addons_blocks_assets' ) );
 			add_action( 'template_include', array( $this, 'override_template_include' ), 999 );
+			add_filter( 'wp_should_output_buffer_template_for_enhancement', array( $this, 'responsive_addons_enable_buffering_if_header_active' ), 999 ); // Enable template buffering if site builder header is active
 			$this->responsive_addons_load_rbea_assets();
         }
 
@@ -95,17 +96,35 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 
 					if ( isset( $layout[0] ) && 'header' === $layout[0] && 0 == $header_counter ) {
 
-						$hide_classes = explode( ' ', $this->get_display_device( $post_id, false ) );
-
 						if ( ! static::get_time_duration_eligibility( $post_id ) ) {
 							continue;
 						}
 
+						// Get display devices for this header layout.
+						$display_device = get_post_meta( $post_id, 'responsive-site-builder-layout-display-device', true );
+						$devices        = array( 'desktop', 'tablet', 'mobile' );
+
+						// Managing backward compatibility - if empty, show on all devices.
+						if ( '' === $display_device ) {
+							$display_device = $devices;
+						}
+
+						if ( ! is_array( $display_device ) ) {
+							$display_device = array();
+						}
+
+						// Get hide classes for theme header (devices where site builder header should NOT show).
+						$hide_classes = explode( ' ', $this->get_display_device( $post_id, true ) );
+
 						// If SB Layout is displayed on desktop, tablet & mobile then do not render theme's layout.
-						if ( 3 === count( $hide_classes ) ) {
+						if ( 3 === count( $display_device ) ) {
 							$layout_status = get_post_meta( $post_id, 'responsive-site-builder-layout-status', true );
 							if ( 'disabled' !== $layout_status ) {
 								remove_action( 'responsive_header', 'header_markup' );
+								// Also remove mobile header action if it exists.
+								if ( function_exists( 'mobile_header_markup' ) && has_action( 'responsive_mobile_header', 'mobile_header_markup' ) ) {
+									remove_action( 'responsive_mobile_header', 'mobile_header_markup' );
+								}
 							}
 						}
 
@@ -114,7 +133,9 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 							'responsive_header_class',
 							static function( $classes ) use ( $hide_classes ) {
 								foreach( $hide_classes as $hide_class ) {
-									$classes[] = $hide_class;
+									if ( ! empty( $hide_class ) ) {
+										$classes[] = $hide_class;
+									}
 								}
 								return $classes;
 						});
@@ -153,19 +174,35 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 							add_filter( 'responsive_site_builder_header_sticky_device', fn() => $device_type );
 						}
 
-						$action = 'responsive_site_builder_header';
-						if ( ! has_action( 'responsive_site_builder_header' ) ) {
-							$action = 'responsive_header';
+						// Hook into desktop header if desktop is in display devices.
+						if ( in_array( 'desktop', $display_device, true ) ) {
+							$action = 'responsive_site_builder_header';
+							if ( ! has_action( 'responsive_site_builder_header' ) ) {
+								$action = 'responsive_header';
+							}
+							add_action(
+								$action,
+								static function() use ( $post_id, $sticky_class ) {
+									echo '<header class="responsive-site-builder-header ' . esc_attr( $sticky_class ) . '" itemscope="itemscope" itemtype="https://schema.org/WPHeader">';
+										Responsive_Add_Ons_Site_Builder_Markup::get_instance()->get_action_content( $post_id );
+									echo '</header>';
+								},
+								10
+							);
 						}
-						add_action(
-							$action,
-							static function() use ( $post_id, $sticky_class ) {
-								echo '<header class="responsive-site-builder-header ' . esc_attr( $sticky_class ) . '" itemscope="itemscope" itemtype="https://schema.org/WPHeader">';
-									Responsive_Add_Ons_Site_Builder_Markup::get_instance()->get_action_content( $post_id );
-								echo '</header>';
-							},
-							10
-						);
+
+						// Hook into mobile/tablet header if tablet or mobile is in display devices.
+						if ( in_array( 'tablet', $display_device, true ) || in_array( 'mobile', $display_device, true ) ) {
+							add_action(
+								'responsive_mobile_header',
+								static function() use ( $post_id, $sticky_class ) {
+									echo '<header class="responsive-site-builder-header responsive-site-builder-mobile-header ' . esc_attr( $sticky_class ) . '" itemscope="itemscope" itemtype="https://schema.org/WPHeader">';
+										Responsive_Add_Ons_Site_Builder_Markup::get_instance()->get_action_content( $post_id );
+									echo '</header>';
+								},
+								10
+							);
+						}
 
 						$header_counter++;
 					} elseif ( isset( $layout[0] ) && 'footer' === $layout[0] && 0 == $footer_counter ) {
@@ -469,6 +506,10 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 				if ( 'header' === $layout ) {
 
 					remove_action( 'responsive_header', 'header_markup' );
+					// Also remove mobile header action if it exists.
+					if ( function_exists( 'mobile_header_markup' ) && has_action( 'responsive_mobile_header', 'mobile_header_markup' ) ) {
+						remove_action( 'responsive_mobile_header', 'mobile_header_markup' );
+					}
 
 					$action = 'responsive_site_builder_header';
 					if ( ! has_action( 'responsive_site_builder_header' ) ) {
@@ -478,6 +519,16 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 						$action,
 						static function() {
 							echo '<header class="responsive-site-builder-header" itemscope="itemscope" itemtype="https://schema.org/WPHeader">';
+								Responsive_Add_Ons_Site_Builder_Markup::get_instance()->get_the_hook_content();
+							echo '</header>';
+						},
+						10
+					);
+					// Also add to mobile header for preview.
+					add_action(
+						'responsive_mobile_header',
+						static function() {
+							echo '<header class="responsive-site-builder-header responsive-site-builder-mobile-header" itemscope="itemscope" itemtype="https://schema.org/WPHeader">';
 								Responsive_Add_Ons_Site_Builder_Markup::get_instance()->get_the_hook_content();
 							echo '</header>';
 						},
@@ -680,6 +731,32 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 			</div><!-- #wrapper -->
 			<?php
 			get_footer();
+		}
+
+		public function responsive_addons_enable_buffering_if_header_active( $value ) {
+			// Only run on frontend
+			if ( is_admin() ) {
+				return $value;
+			}
+
+			// Check if we have an active header layout
+			$option = array(
+				'location'  => 'responsive-site-builder-layout-location',
+				'exclusion' => 'responsive-site-builder-layout-exclusion',
+				'users'     => 'responsive-site-builder-layout-users',
+				'enabled'   => 'responsive-site-builder-layout-status',
+			);
+
+			$result = Responsive_Add_Ons_Site_Builder_Display_Rules::get_instance()->get_posts_by_conditions( RESPONSIVE_BUILDER_POST_TYPE, $option );
+
+			foreach ( $result as $post_id => $post_data ) {
+				$layout = get_post_meta( $post_id, 'responsive-site-builder-layout', false );
+				if ( isset( $layout[0] ) && 'header' === $layout[0] ) {
+					return true; // Enable buffering
+				}
+			}
+
+			return $value; // Preserve original setting
 		}
     }
 }

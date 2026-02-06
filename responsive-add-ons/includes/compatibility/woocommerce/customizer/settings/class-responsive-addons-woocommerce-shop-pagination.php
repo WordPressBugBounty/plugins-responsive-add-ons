@@ -44,7 +44,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 					)
 				);
 				$wp_customize->add_control(
-					new Responsive_Customizer_Select_Control(
+					new Responsive_Customizer_Responsive_Select_Control(
 						$wp_customize,
 						'shop_pagination',
 						array(
@@ -74,7 +74,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 					)
 				);
 				$wp_customize->add_control(
-					new Responsive_Customizer_Select_Control(
+					new Responsive_Customizer_Responsive_Select_Control(
 						$wp_customize,
 						'shop_pagination_quick_view',
 						array(
@@ -106,7 +106,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 					)
 				);
 				$wp_customize->add_control(
-					new Responsive_Customizer_Select_Control(
+					new Responsive_Customizer_Responsive_Select_Control(
 						$wp_customize,
 						'shop_pagination_style',
 						array(
@@ -132,7 +132,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 					)
 				);
 				$wp_customize->add_control(
-					new Responsive_Customizer_Select_Control(
+					new Responsive_Customizer_Responsive_Select_Control(
 						$wp_customize,
 						'shop-infinite-scroll-event',
 						array(
@@ -169,7 +169,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 						'partial'         => array(
 							'selector'            => '.responsive-shop-pagination-infinite .responsive-load-more',
 							'container_inclusive' => false,
-							'render_callback'     => array( 'Responsive_Customizer_Ext_WooCommerce_Partials', '_render_shop_load_more' ),
+							'render_callback'     => array( 'Responsive_Addons_Customizer_Ext_WooCommerce_Partials', '_render_shop_load_more' ),
 						),
 					)
 				);

@@ -172,6 +172,13 @@ class Responsive_Ready_Sites_Widgets_Importer {
 				// Do before identical check because changes may make it identical to end result (such as URL replacements).
 				$widget = apply_filters( 'wie_widget_settings_array', $widget );
 
+				// Update WPForms IDs.
+				$ids_mapping = get_option( 'responsive_sites_wpforms_ids_mapping', array() );
+				if ( ! empty( $ids_mapping ) ) {
+					$this->update_wpforms_ids( $widget, $ids_mapping );
+				}
+
+
 				// Does widget with identical settings already exist in same sidebar?
 				if ( ! $fail && isset( $widget_instances[ $id_base ] ) ) {
 
@@ -266,7 +273,7 @@ class Responsive_Ready_Sites_Widgets_Importer {
 
 				// Result for widget instance.
 				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['name']         = isset( $available_widgets[ $id_base ]['name'] ) ? $available_widgets[ $id_base ]['name'] : $id_base; // widget name or ID if name not available (not supported by site).
-				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['title']        = ! empty( $widget['title'] ) ? $widget['title'] : esc_html__( 'No Title', 'responsive-addons' ); // show "No Title" if widget instance is untitled.
+				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['title']        = ! empty( $widget['title'] ) && ! is_array( $widget['title'] ) ? $widget['title'] : esc_html__( 'No Title', 'responsive-add-ons' ); // show "No Title" if widget instance is untitled.
 				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['message_type'] = $widget_message_type;
 				$results[ $sidebar_id ]['widgets'][ $widget_instance_id ]['message']      = $widget_message;
 
@@ -274,9 +281,28 @@ class Responsive_Ready_Sites_Widgets_Importer {
 		}
 
 		// Hook after import.
-		do_action( 'wie_after_import' );
 
 		// Return results.
 		return apply_filters( 'wie_import_results', $results );
+	}
+
+	/**
+	 * Update WPForms IDs.
+	 *
+	 * @param array $widgets Widget Data.
+	 * @param array $ids_mapping IDs Mapping.
+	 * @return void
+	 */
+	public function update_wpforms_ids( &$widgets, $ids_mapping ) {
+		foreach ( $widgets as $key => &$value ) {
+			if ( is_array( $value ) ) {
+				$this->update_wpforms_ids( $value, $ids_mapping );
+			} elseif ( is_string( $value ) && false !== strpos( $value, '[wpforms' ) ) {
+				foreach ( $ids_mapping as $old_id => $new_id ) {
+					$value = str_replace( '[wpforms id="' . $old_id . '"', '[wpforms id="' . $new_id . '"', $value );
+					$value = str_replace( '[wpforms id=\"' . $old_id . '\"', '[wpforms id=\"' . $new_id . '\"', $value );
+				}
+			}
+		}
 	}
 }

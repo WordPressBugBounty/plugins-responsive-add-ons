@@ -111,7 +111,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		 * @since 1.1.0
 		 * @return void
 		 */
-		function common_actions() {
+		public function common_actions() {
 			// Quick View.
 			$this->init_quick_view();
 			$this->shop_pagination();
@@ -150,7 +150,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		 * @since 1.0
 		 * @return void
 		 */
-		function qv_js_localize() {
+		public function qv_js_localize() {
 			global $wp_query;
 
 			$suffix    = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
@@ -284,14 +284,14 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		/**
 		 * Footer markup.
 		 */
-		function qv_product_images_markup() {
+		public function qv_product_images_markup() {
 			load_template( __DIR__ . '/template-parts/quick-view-product-image.php' );
 		}
 
 		/**
 		 * Quick view button
 		 */
-		function add_quick_view_button() {
+		public function add_quick_view_button() {
 			global $product;
 			$allowed_html = wp_kses_allowed_html( 'post' );
 
@@ -310,7 +310,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		/**
 		 * Quick view on image
 		 */
-		function add_quick_view_on_img() {
+		public function add_quick_view_on_img() {
 
 			global $product;
 			$allowed_html = wp_kses_allowed_html( 'post' );
@@ -329,7 +329,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		/**
 		 * Quick view on image
 		 */
-		function add_quick_view_on_img_click() {
+		public function add_quick_view_on_img_click() {
 
 			global $product;
 			$allowed_html = wp_kses_allowed_html( 'post' );
@@ -345,7 +345,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		/**
 		 * Quick view html
 		 */
-		function quick_view_html() {
+		public function quick_view_html() {
 			$this->quick_view_dependent_data();
 			load_template( __DIR__ . '/template-parts/quick-view-modal.php' );
 		}
@@ -357,7 +357,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		 *
 		 * @return void.
 		 */
-		function enqueue_frontend_scripts() {
+		public function enqueue_frontend_scripts() {
 
 			/* Directory and Extension */
 			$file_prefix = '.min';
@@ -394,7 +394,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 		/**
 		 * Quick view dependent data
 		 */
-		function quick_view_dependent_data() {
+		public function quick_view_dependent_data() {
 			wp_enqueue_script( 'wc-add-to-cart-variation' );
 			wp_enqueue_script( 'flexslider' );
 		}

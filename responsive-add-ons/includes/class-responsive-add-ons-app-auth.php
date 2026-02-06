@@ -53,6 +53,11 @@ class Responsive_Add_Ons_App_Auth {
 	 * @var int
 	 */
 	private $timeout = 120;
+	/**
+	 * Plugin settings array or object
+	 *
+	 * @var mixed
+	 */
 
 	private $settings;
 
@@ -71,6 +76,8 @@ class Responsive_Add_Ons_App_Auth {
 			require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
 			$this->settings = new Responsive_Add_Ons_Settings();
 			register_deactivation_hook( __FILE__, array( $this, 'responsive_addons_deactivate_connection' ) );
+			// Check user connection status.
+			add_action( 'wp_ajax_responsive-ready-sites-fetch_user_connected_status', array( $this, 'check_user_saas_connection_status' ) );
 		}
 	}
 
@@ -95,10 +102,10 @@ class Responsive_Add_Ons_App_Auth {
 
 		$auth_url = add_query_arg(
 			array(
-				'platform' => 'wordpress',
-				'source'   => 'connect',
-				'site'     => $site_address,
-				'rest_url' => $rest_url,
+				'platform'    => 'wordpress',
+				'source'      => 'connect',
+				'site'        => $site_address,
+				'rest_url'    => $rest_url,
 				'rplus_nonce' => wp_create_nonce( 'wp_rest' ),
 			),
 			$api_auth_url
@@ -170,6 +177,7 @@ class Responsive_Add_Ons_App_Auth {
 	/**
 	 * Recursively sanitize the response fields from $_POST.
 	 *
+	 * @param array|string $array Input data to sanitize, can be array or string.
 	 * @return mixed
 	 */
 	public function recursive_sanitize_text_field( $array ) {
@@ -196,8 +204,8 @@ class Responsive_Add_Ons_App_Auth {
 			wp_send_json_error( esc_html__( 'You do not have permissions to disconnect Responsive Addons to Cyberchimps Responsive Domain.', 'responsive-addons' ) );
 		}
 
-		$options  = $this->settings->get_defaults();
-		$id       = $this->settings->get_user_id();
+		$options = $this->settings->get_defaults();
+		$id      = $this->settings->get_user_id();
 		$headers = array(
 			'Authorization' => 'Bearer ' . $this->get_auth_key(),
 			'Content-Type'  => 'application/json',
@@ -210,7 +218,7 @@ class Responsive_Add_Ons_App_Auth {
 		$args = array(
 			'api_key' => ( is_array( $wcam_lib_responsive_addons->data ) && isset( $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] ) ) ? $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] : '',
 		);
-		
+
 		if ( 'Activated' === $activation_status && '' !== $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] ) {
 			// deactivates API Key activation.
 			$deactivate_results= json_decode(
@@ -386,7 +394,7 @@ class Responsive_Add_Ons_App_Auth {
 			$api_auth_url
 		);
 
-		if( 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ) ) {
+		if( 'yes' === get_option( 'responsive_addons_contribution_consent', 'yes' ) ) {
 			$properties = array(
 				'token'         => 'f8fbbc680f8f9d9b80a50e8c030a3605',
 				'distinct_id'   => substr( hash( 'sha256', get_site_url() ), 0, 16 ),
@@ -498,18 +506,43 @@ class Responsive_Add_Ons_App_Auth {
 		set_transient( 'resp_app_last_sync', 'yes', DAY_IN_SECONDS );
 		wp_send_json_error( $message );
 	}
-
+	/**
+	 * Deactivates the plugin's connection to the external API.
+	 *
+	 * Sends a deactivation request using the current user's ID and API key.
+	 *
+	 * @return void
+	 */
 	public function responsive_addons_deactivate_connection() {
 
 		global $wcam_lib_responsive_addons;
-		$id = $this->settings->get_user_id();
+		$id      = $this->settings->get_user_id();
 		$headers = array(
 			'Authorization' => 'Bearer ' . $this->get_auth_key(),
 			'Content-Type'  => 'application/json',
 		);
-		$args = array(
+		$args    = array(
 			'api_key' => ( is_array( $wcam_lib_responsive_addons->data ) && isset( $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] ) ) ? $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] : '',
 		);
-		$wcam_lib_responsive_addons->deactivate( $args, $this->get_api_path('plugin/disconnect'), $headers, $id );
+		$wcam_lib_responsive_addons->deactivate( $args, $this->get_api_path( 'plugin/disconnect' ), $headers, $id );
+	}
+
+	public function check_user_saas_connection_status() {
+
+		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( esc_html__( 'You do not have permissions to check connection status.', 'responsive-addons' ) );
+		}
+
+		$is_connected = $this->has_auth() ? true : false;
+
+		wp_send_json_success(
+			array(
+				'connected' => $is_connected,
+				'plan'      => $is_connected ? Responsive_Add_Ons_Settings::get_instance()->get_plan() : 'free',
+				'email'     => $is_connected ? Responsive_Add_Ons_Settings::get_instance()->get_email() : '',
+			)
+		);
 	}
 }

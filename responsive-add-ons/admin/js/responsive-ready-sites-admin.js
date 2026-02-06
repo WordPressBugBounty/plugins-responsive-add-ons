@@ -284,6 +284,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 		import_progress_percent: 0,
 		active_site_name : '',
 		active_site_page_builder : '',
+		lastClickedImportType : null,
 
 		_debouncedSearch: null, // placeholder for the debounced search function
 
@@ -300,7 +301,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 		_show_default_page_builder_sites: async function() {
 
 			if (Object.keys(responsiveSitesAdmin.default_page_builder_sites).length) {
-				var template = wp.template('responsive-sites-list');
+
 				var data = null;
 				$('#responsive-sites').empty();
 				$('#responsive-sites-loading').addClass('responsive-sites-loading-visible');
@@ -318,6 +319,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 				}
 			} else {
 
+				$('#responsive-sites-sync-overlay').addClass('responsive-sites-sync-overlay-visible');
 				var temp = [];
 				for (var i = 0; i < 8; i++) {
 					temp['id-' + i] = {
@@ -327,7 +329,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 					};
 				}
 
-				ResponsiveSitesAdmin.add_sites(temp);
 				$('#respnonsive-sites').addClass('temp');
 
 				ResponsiveSitesAdmin._sync_templates_library_with_ajax( true );
@@ -378,11 +379,10 @@ var ResponsiveSitesAjaxQueue = (function() {
 			});
 
 			// Site Import events.
-			$( document ).on( 'click'                     , '.import-demo-data, .responsive-ready-site-import-free, .responsive-addons-ready-site-import', ResponsiveSitesAdmin._allProcessRun );
+			$( document ).on( 'click'                     , '.import-demo-data, .responsive-ready-site-import-free, .responsive-ready-site-import-pro, .responsive-addons-ready-site-import', ResponsiveSitesAdmin._allProcessRun );
 			$( document ).on( 'click'                     , '.theme-browser .inactive.ra-site-single .theme-screenshot, .theme-browser .inactive.ra-site-single .more-details, .theme-browser .inactive.ra-site-single .install-theme-preview', ResponsiveSitesAdmin._preview );
 			$( document ).on( 'click'                     , '.theme-browser .active.ra-site-single .theme-screenshot, .theme-browser .active.ra-site-single .more-details, .theme-browser .active.ra-site-single .install-theme-preview', ResponsiveSitesAdmin._doNothing );
 			$( document ).on( 'click'                     , '.responsive-addons-go-back-btn', ResponsiveSitesAdmin._closeFullOverlay );
-			$( document ).on( 'click', '.responsive-demo-import-options-free, .responsive-addons-demo-import-options', ResponsiveSitesAdmin._importSiteOptionsScreen );
 			$( document ).on( 'click', '.responsive-ready-site-import-with-sub, .responsive-ready-site-import-without-sub', ResponsiveSitesAdmin._importSiteProgressScreen );
 			$( document ).on( 'responsive-theme-install-activate' , ResponsiveSitesAdmin._getResponsiveTheme );
 			$( document ).on( 'responsive-ready-sites-import-set-site-data-done'   		, ResponsiveSitesAdmin._installRequiredPlugins );
@@ -405,7 +405,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 			$( document ).on( 'click', '.responsive-ready-site-import-with-sub.import-page, .responsive-ready-site-import-without-sub.import-page', ResponsiveSitesAdmin._importPageProgressScreen );
 			$( document ).on( 'click'                     , '.single-page-import-button-free, .single-page-import-button', ResponsiveSitesAdmin._importSinglePageOptions );
 			$( document ).on( 'click'                     , '.responsive-ready-page-import-free, .responsive-ready-page-import', ResponsiveSitesAdmin._importSinglePage );
-			$( document ).on( 'click', '.responsive-page-import-options-free, .responsive-addons-page-import-options', ResponsiveSitesAdmin._importPagePreviewScreen );
 			$( document ).on( 'click'                     , '#single-pages .site-single', ResponsiveSitesAdmin._change_site_preview_screenshot );
 			$( document ).on( 'responsive-ready-page-install-and-activate-required-plugins-done' , ResponsiveSitesAdmin._importPage );
 			$( document ).on( 'responsive-ready-sites-import-page-free-start'   		, ResponsiveSitesAdmin._installRequiredPlugins );
@@ -484,6 +483,13 @@ var ResponsiveSitesAjaxQueue = (function() {
 					);
 				}
 			});
+
+			$( document ).on( 'click', '.responsive-addons-demo-import-options',
+				ResponsiveSitesAdmin._newImportSiteOptionsScreen
+			);
+			$( document ).on( 'click', '.responsive-addons-page-import-options',
+				ResponsiveSitesAdmin._beforeImportPagePreviewScreen
+			);
 
 		},
 
@@ -584,16 +590,72 @@ var ResponsiveSitesAjaxQueue = (function() {
 			}
 		},
 
+		fetchUserConnectedStatus: function() {
+			const data = {
+				action: 'responsive-ready-sites-fetch_user_connected_status',
+				_ajax_nonce: responsiveSitesAdmin._ajax_nonce,
+			};
+
+			return fetch(responsiveSitesAdmin.ajaxurl, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+				},
+				body: new URLSearchParams(data)
+			})
+			.then(response => {
+				if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+				return response.json();
+			})
+			.catch(error => {
+				console.error('Error logging demo view:', error);
+				return null;
+			});
+		},
+
+
+		_newImportSiteOptionsScreen: function(event) {
+			event.preventDefault();
+			let self     = $( this ).parents( '.responsive-ready-site-preview' );
+			let demoType = self.data( 'demo-type' ) || '';
+			ResponsiveSitesAdmin.lastClickedImportType = event.currentTarget;
+			ResponsiveSitesAdmin.fetchUserConnectedStatus().then(statusData => {
+				if (statusData.success) {
+					if ( statusData.data.is_connected ) {
+						if( statusData.data.plan === 'free' ) {
+							if ( demoType === 'free' ) {
+								// User is connected and has a free plan, and demo is free
+								ResponsiveSitesAdmin._importSiteOptionsScreen(this);
+							} else {
+								// User is connected and has a free plan, but demo is pro
+								ResponsiveSitesAdmin._displayUnlockTemplatesModal();
+								return; // Exit the function if not connected
+							}
+						} else {
+							// User is connected and has a pro plan
+							ResponsiveSitesAdmin._importSiteOptionsScreen(this);
+						}
+					} else {
+						// Show modal
+						demoType == 'pro' ? ResponsiveSitesAdmin._displayUnlockTemplatesModal() : ResponsiveSitesAdmin._displayAppConnectModal();
+						// ResponsiveSitesAdmin._displayUnlockTemplatesModal
+						return; // Exit the function if not connected
+					}
+				} else {
+					console.warn('Could not fetch connection status.');
+				}
+			});
+		},
+
 		/**
 		 * Import Site progress Screen
 		 */
-		_importSiteOptionsScreen: function(event) {
-			event.preventDefault();
-
+		_importSiteOptionsScreen: function(clickedElement) {
+			ResponsiveSitesAdmin.lastClickedImportType = null;
 			$( '#responsive-ready-site-preview' ).hide();
 			$( '#responsive-ready-sites-import-options' ).show();
 
-			var self = $( this ).parents( '.responsive-ready-site-preview' );
+			var self = $( clickedElement ).parents( '.responsive-ready-site-preview' );
 
 			var demoId                  = self.data( 'demo-id' ) || '',
 				apiURL                  = self.data( 'demo-api' ) || '',
@@ -961,7 +1023,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 			self.addClass( 'theme-preview-on' );
 
 			$( 'html' ).addClass( 'responsive-site-preview-on' );
-
 			ResponsiveSitesAdmin._renderDemoPreview( self );
 		},
 
@@ -969,7 +1030,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 		 * Render Demo Preview
 		 */
 		_renderDemoPreview: function(anchor) {
-
+			
 			var demoId                         = anchor.data( 'demo-id' ) || '',
 				demoURL                        = anchor.data( 'demo-url' ) || '',
 				screenshot                     = anchor.data( 'screenshot' ) || '',
@@ -2139,13 +2200,46 @@ var ResponsiveSitesAjaxQueue = (function() {
 			);
 		},
 
+		_beforeImportPagePreviewScreen: function(event) {
+			event.preventDefault();
+			let self     = $( this ).parents( '.responsive-ready-site-preview' );
+			let demoType = self.data( 'demo-type' ) || '';
+			ResponsiveSitesAdmin.lastClickedImportType = event.currentTarget;
+
+			ResponsiveSitesAdmin.fetchUserConnectedStatus().then(statusData => {
+				if (statusData.success) {
+					if ( statusData.data.is_connected ) {
+						if( statusData.data.plan === 'free' ) {
+							if ( demoType === 'free' ) {
+								// User is connected and has a free plan, and demo is free
+								ResponsiveSitesAdmin._importPagePreviewScreen(this);
+							} else {
+								// User is connected and has a free plan, but demo is pro
+								ResponsiveSitesAdmin._displayUnlockTemplatesModal();
+								return; // Exit the function if not connected
+							}
+						} else {
+							// User is connected and has a pro plan
+							ResponsiveSitesAdmin._importPagePreviewScreen(this);
+						}
+					} else {
+						// Show modal
+						demoType == 'pro' ? ResponsiveSitesAdmin._displayUnlockTemplatesModal() : ResponsiveSitesAdmin._displayAppConnectModal();
+						// ResponsiveSitesAdmin._displayUnlockTemplatesModal
+						return; // Exit the function if not connected
+					}
+				} else {
+					console.warn('Could not fetch connection status.');
+				}
+			});
+		},
+
 		/**
 		 * Import Single Page Preview Screen
 		 */
-		_importPagePreviewScreen: function(event) {
-			event.preventDefault();
-
-			var self = $( this ).parents( '.responsive-ready-site-preview' );
+		_importPagePreviewScreen: function(clickedElement) {
+			ResponsiveSitesAdmin.lastClickedImportType = null;
+			var self = $( clickedElement ).parents( '.responsive-ready-site-preview' );
 
 			$( '#responsive-ready-site-preview' ).hide();
 
@@ -2623,6 +2717,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 										} else {
 											$('#responsive-sites').append(template(data));
 										}
+										$('#responsive-sites-sync-overlay').removeClass('responsive-sites-sync-overlay-visible');
 
 										responsiveSitesAdmin.default_page_builder_sites = $.extend({}, responsiveSitesAdmin.default_page_builder_sites, result.data);
 									}
@@ -2631,13 +2726,6 @@ var ResponsiveSitesAjaxQueue = (function() {
 
 								if (i === total && responsiveSitesAdmin.strings.syncCompleteMessage) {
 									$('#wpbody-content').find('.responsive-sites-sync-templates-library-message').remove();
-									var noticeContent = wp.updates.adminNotice({
-										className: 'notice responsive-ready-sites-notice notice-success is-dismissible responsive-ready-sites-sync-templates-library-message',
-										message: '<span>' + responsiveSitesAdmin.strings.syncCompleteMessage + '</span>' + ' <button type="button" class="notice-dismiss"><span class="screen-reader-text">' + responsiveSitesAdmin.dismiss + '</span></button>',
-									});
-									$('#responsive-sites-header').css('margin-top', '0px');
-									$('#responsive-sites-header').before(noticeContent);
-
 									$('.responsive-ready-sites-sync-templates-button .dashicons').removeClass('updating-message');
 								}
 							}
@@ -2664,15 +2752,8 @@ var ResponsiveSitesAjaxQueue = (function() {
 
 		_sync_library : function (event) {
 			event.preventDefault();
+			$('#responsive-sites-sync-overlay').addClass('responsive-sites-sync-overlay-visible');
 			const button = $(this);
-			if (button.hasClass('updating-message')
-		) {
-				return;
-			}
-			button.addClass('updating-message');
-			toastr.info(responsiveSitesAdmin.syncTemplatesLibraryStart, 'Syncing', {
-				timeOut: 3000,
-			});
 		
 			$.ajax({
 				url: responsiveSitesAdmin.ajaxurl,
@@ -2683,10 +2764,15 @@ var ResponsiveSitesAjaxQueue = (function() {
 				},
 			})
 				.done(function (response) {
-					if (response.success) {
-						toastr.success(responsiveSitesAdmin.strings.syncCompleteMessage, 'Success', {
-							timeOut: 3000,
-						});
+					if( response.success ) {
+						if( 'updated' === response.data ) {
+							toastr.success(responsiveSitesAdmin.strings.syncCompleteMessage, 'Success', {
+								timeOut: 3000,
+							});
+						} else {
+							ResponsiveSitesAdmin._sync_templates_library_with_ajax( true );
+						}
+
 					} else {
 						toastr.error('An error occurred while syncing.', 'Error', {
 							timeOut: 3000,
@@ -2699,7 +2785,7 @@ var ResponsiveSitesAjaxQueue = (function() {
 					});
 				})
 				.always(function () {
-					button.removeClass('updating-message');
+					$('#responsive-sites-sync-overlay').removeClass('responsive-sites-sync-overlay-visible');
 				});
 		},		
 

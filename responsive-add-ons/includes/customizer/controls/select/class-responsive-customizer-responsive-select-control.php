@@ -12,11 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'Responsive_Customizer_Select_Control' ) ) :
+if ( ! class_exists( 'Responsive_Customizer_Responsive_Select_Control' ) ) :
 	/**
 	 * Select control
 	 */
-	class Responsive_Customizer_Select_Control extends WP_Customize_Control {
+	class Responsive_Customizer_Responsive_Select_Control extends WP_Customize_Control {
 
 		/**
 		 * The control type.

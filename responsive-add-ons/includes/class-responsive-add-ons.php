@@ -70,7 +70,11 @@ class Responsive_Add_Ons {
 	 * @var string $font_css
 	 */
 	protected $font_css = '';
-
+	/**
+	 * Indicates whether the Responsive Add-Ons plugin has been activated.
+	 *
+	 * @var bool
+	 */
 	private $responsive_activated = false;
 	/**
 	 * Constructor.
@@ -101,7 +105,7 @@ class Responsive_Add_Ons {
 		}
 
 		// Display Custom Fonts only when Responsive theme is active.
-		$theme = wp_get_theme();
+		$theme                      = wp_get_theme();
 		$this->responsive_activated = 'Responsive' === $theme->get( 'Name' ) ? true : false;
 
 		// Responsive Ready Site Importer Menu.
@@ -158,7 +162,6 @@ class Responsive_Add_Ons {
 
 			add_action( 'wp_ajax_responsive-ready-sites-remote-request', array( $this, 'remote_request' ) );
 			add_action( 'wp_ajax_responsive-ready-sites-elementor_page_import_process', array( $this, 'elementor_page_import_process' ) );
-			add_action( 'wp_ajax_responsive-ready-sites-set-reset-data', array( $this, 'set_reset_data' ) );
 			add_action( 'wp_ajax_responsive-ready-sites-backup-settings', array( $this, 'backup_settings' ) );
 			add_action( 'wp_ajax_responsive-is-theme-active', array( $this, 'check_responsive_theme_active' ) );
 			add_action( 'wp_ajax_get-responsive', array( $this, 'get_responsive_theme' ) );
@@ -224,8 +227,8 @@ class Responsive_Add_Ons {
 
 		add_action( 'responsive_addons_importer_page', array( $this, 'menu_callback' ) );
 
-		// Add rating links to plugin's description in plugins table
-		add_filter('plugin_row_meta', array($this, 'responsive_addons_rate_plugin_link'), 10, 2);
+		// Add rating links to plugin's description in plugins table.
+		add_filter( 'plugin_row_meta', array( $this, 'responsive_addons_rate_plugin_link' ), 10, 2 );
 
 		// Add rating links to the Responsive Addons Admin Page.
 		add_filter( 'admin_footer_text', array( $this, 'responsive_addons_admin_rate_us' ) );
@@ -251,7 +254,7 @@ class Responsive_Add_Ons {
 			add_action( 'after_setup_theme', array( $this, 'load_woocommerce' ) );
 		}
 
-		// Ask for review notice
+		// Ask for review notice.
 		add_action( 'admin_notices', array( $this, 'responsive_addons_ask_for_review_notice' ) );
 		add_action( 'admin_init', array( $this, 'responsive_addons_notice_dismissed' ) );
 		add_action( 'admin_init', array( $this, 'responsive_addons_notice_change_timeout' ) );
@@ -265,6 +268,8 @@ class Responsive_Add_Ons {
 		}
 		// Update user consent.
 		add_action( 'wp_ajax_responsive-addons-update-user-consent', array( $this, 'responsive_addons_update_user_consent' ) );
+
+		add_action( 'admin_body_class', array( $this, 'admin_body_class' ) );
 	}
 
 	public function responsive_ready_sites_handle_install_plugin() {
@@ -280,10 +285,18 @@ class Responsive_Add_Ons {
 		include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 		include_once ABSPATH . 'wp-admin/includes/file.php';
 
+		if ( file_exists( WP_PLUGIN_DIR . '/' . $slug ) ) {
+			wp_send_json_success( [ 'message' => __( 'Plugin already installed.', 'responsive-addons' ) ] );
+		}
+
 		$api = plugins_api( 'plugin_information', [ 'slug' => $slug, 'fields' => [ 'sections' => false ] ] );
 
 		if ( is_wp_error( $api ) ) {
 			wp_send_json_error( [ 'message' => $api->get_error_message() ] );
+		}
+
+		if ( empty( $api->download_link ) ) {
+			wp_send_json_error( [ 'message' => __( 'No download link found for this plugin.', 'responsive-addons' ) ] );
 		}
 
 		$upgrader = new Plugin_Upgrader( new WP_Ajax_Upgrader_Skin() );
@@ -401,7 +414,7 @@ class Responsive_Add_Ons {
 
 		$theme = wp_get_theme();
 
-		if ( 'on' === get_option( 'rpro_woocommerce_enable' ) && 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
+		if ( 'on' === get_option( 'rpro_woocommerce_enable' ) && ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) ) {
 			/**
 			 * The class responsible for loading the Woocommerce Typography options
 			 */
@@ -744,14 +757,13 @@ class Responsive_Add_Ons {
 	 */
 	public static function is_responsive() {
 		$theme = wp_get_theme();
-
-		if ( 'Responsive' === $theme->Name || 'responsive' === $theme->Template || 'Responsive Pro' === $theme->Name || 'responsivepro' === $theme->Template ) {
+		$name     = $theme->get( 'Name' );
+		$template = $theme->get( 'Template' );
+		if ( 'Responsive' === $name || 'responsive' === $template || 'Responsive Pro' === $name || 'responsivepro' === $template ) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
-
 	/**
 	 * Add to wp head
 	 */
@@ -869,20 +881,6 @@ class Responsive_Add_Ons {
 	 */
 	public function responsive_ready_sites_admin_enqueue_scripts( $hook = '' ) {
 
-		wp_enqueue_script( 'install-responsive-theme', RESPONSIVE_ADDONS_URI . 'admin/js/install-responsive-theme.js', array( 'jquery', 'updates' ), RESPONSIVE_ADDONS_VER, true );
-		wp_enqueue_style( 'install-responsive-theme', RESPONSIVE_ADDONS_URI . 'admin/css/install-responsive-theme.css', null, RESPONSIVE_ADDONS_VER, 'all' );
-		$data = apply_filters(
-			'responsive_sites_install_theme_localize_vars',
-			array(
-				'installed'   => __( 'Installed! Activating..', 'responsive-addons' ),
-				'activating'  => __( 'Activating..', 'responsive-addons' ),
-				'activated'   => __( 'Activated! Reloading..', 'responsive-addons' ),
-				'installing'  => __( 'Installing..', 'responsive-addons' ),
-				'ajaxurl'     => esc_url( admin_url( 'admin-ajax.php' ) ),
-				'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
-			)
-		);
-		wp_localize_script( 'install-responsive-theme', 'ResponsiveInstallThemeVars', $data );
 		$settings   = get_option( 'rpro_elementor_settings' );
 		$theme_name = ! empty( $settings['theme_name'] ) ? mb_strtolower( $settings['theme_name'], 'UTF-8' ) : 'responsive';
 		$theme_name = str_replace( [ ' ', '/' ], '-', $theme_name );
@@ -898,8 +896,7 @@ class Responsive_Add_Ons {
 		$decoded_theme_name = urldecode($encoded_part);
 
 		if ( ( 'toplevel_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons' === $hook  || $theme_name . '_page_responsive_add_ons' === $decoded_theme_name . '_page_responsive_add_ons') && empty( $_GET['action'] ) ) {
-			wp_enqueue_script( 'responsive-ready-sites-admin-js', RESPONSIVE_ADDONS_URI . 'admin/js/responsive-ready-sites-admin.js', array( 'jquery', 'wp-util', 'updates', 'jquery-ui-autocomplete', 'canvas-confetti' ), RESPONSIVE_ADDONS_VER, true );
-			wp_enqueue_script( 'canvas-confetti', 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js', array(), RESPONSIVE_ADDONS_VER, true );
+			wp_enqueue_script( 'responsive-ready-sites-admin-import-react-js', RESPONSIVE_ADDONS_URI . 'admin/template-import/react/build/index.js', array( 'react', 'react-dom', 'updates' ), RESPONSIVE_ADDONS_VER, true );
 			wp_enqueue_style( 'toastr-css', RESPONSIVE_ADDONS_URI .'/admin/css/toastr.min.css', array(), RESPONSIVE_ADDONS_VER );
 			wp_enqueue_script( 'toastr-js', RESPONSIVE_ADDONS_URI . '/admin/js/toastr.min.js', array( 'jquery' ), RESPONSIVE_ADDONS_VER, true );
 
@@ -926,30 +923,41 @@ class Responsive_Add_Ons {
 					'activated_first_time'            => get_option( 'ra_first_time_activation' ),
 					'hasAppAuth'                      => $this->cc_app_auth->has_auth(),
 					'isResponsiveProActive'           => $pro_plugin_active_status,
-					'userGivenConsent'                => 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ),
+					'userGivenConsent'                => 'yes' === get_option( 'responsive_addons_contribution_consent', 'yes' ),
+					'pluginVersion'                   => RESPONSIVE_ADDONS_VER,
+					'admin_url'                       => admin_url(),
+					'res_dash_url'                    => admin_url().'admin.php?page=responsive',
+					'cc_app_url' 					  => CC_APP_URL,
+					'_nonce'                          => wp_create_nonce( 'wp_rest' ),
+					'site_url'                        => rawurlencode( get_site_url() ),
+					'cookies'                         => $_COOKIE,
+					'imageDir'                        => esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/' ),
+					'pageBuilders'                    => $this->get_default_page_builders(),
+					'favoriteSites'                   => get_option( 'responsive-sites-favorites', array() ),
+					'elementorContainerSetting'       => get_option( 'elementor_experiment-container' ),
+					'elementorActive'                 => is_plugin_active('elementor/elementor.php'),
+					'elementorSettingsURL'            => esc_url( admin_url( 'admin.php?page=elementor-settings#tab-experiments' ) ),
+					'themeStatus'                     => $this->get_theme_status(),
+					// 'responsiveTemplatesURL'          => esc_url( admin_url( 'admin.php?page=responsive_add_ons' ) ),
 				)
 			);
 
-			wp_localize_script( 'responsive-ready-sites-admin-js', 'responsiveSitesAdmin', $data );
-
-			wp_enqueue_script(
-				'responsive-add-ons-getting-started-jsfile',
-				RESPONSIVE_ADDONS_URI . 'admin/js/responsive-add-ons-getting-started.js',
-				array( 'jquery' ),
-				RESPONSIVE_ADDONS_VER,
-				true
+			wp_localize_script( 'responsive-ready-sites-admin-import-react-js', 'responsiveSitesAdmin', $data );
+		} else {
+			wp_enqueue_script( 'install-responsive-theme', RESPONSIVE_ADDONS_URI . 'admin/js/install-responsive-theme.js', array( 'jquery', 'updates' ), RESPONSIVE_ADDONS_VER, true );
+			wp_enqueue_style( 'install-responsive-theme', RESPONSIVE_ADDONS_URI . 'admin/css/install-responsive-theme.css', null, RESPONSIVE_ADDONS_VER, 'all' );
+			$data = apply_filters(
+				'responsive_sites_install_theme_localize_vars',
+				array(
+					'installed'   => __( 'Installed! Activating..', 'responsive-addons' ),
+					'activating'  => __( 'Activating..', 'responsive-addons' ),
+					'activated'   => __( 'Activated! Reloading..', 'responsive-addons' ),
+					'installing'  => __( 'Installing..', 'responsive-addons' ),
+					'ajaxurl'     => esc_url( admin_url( 'admin-ajax.php' ) ),
+					'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
+				)
 			);
-
-			$data = array(
-				'ajaxurl'     => admin_url( 'admin-ajax.php' ),
-				'ccAppURL'    => CC_APP_URL,
-				'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
-				'_nonce'      => wp_create_nonce( 'wp_rest' ),
-				'site_url '   => rawurlencode( get_site_url() ),
-				'cookies'     => $_COOKIE,
-			);
-
-			wp_localize_script( 'responsive-add-ons-getting-started-jsfile', 'responsiveAddonsGettingStarted', $data );
+			wp_localize_script( 'install-responsive-theme', 'ResponsiveInstallThemeVars', $data );
 		}
 	}
 
@@ -990,7 +998,7 @@ class Responsive_Add_Ons {
 
 		if ( 'toplevel_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons_go_pro' === $hook || $theme_name . '_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons' === $decoded_theme_name . '_page_responsive_add_ons') {
 			// Responsive Ready Sites admin styles.
-			wp_register_style( 'responsive-ready-sites-admin', RESPONSIVE_ADDONS_URI . 'admin/css/responsive-ready-sites-admin.css', false, RESPONSIVE_ADDONS_VER );
+			wp_enqueue_style( 'responsive-addons-import-css', RESPONSIVE_ADDONS_URI . 'admin/template-import/react/build/output.css', false, RESPONSIVE_ADDONS_VER );
 			wp_enqueue_style( 'responsive-ready-sites-admin' );
 		}
 	}
@@ -1077,7 +1085,7 @@ class Responsive_Add_Ons {
 			'ccAppURL'    => CC_APP_URL,
 			'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
 			'_nonce'      => wp_create_nonce( 'wp_rest' ),
-			'site_url '   => rawurlencode( get_site_url() ),
+			'site_url'    => rawurlencode( get_site_url() ),
 			'cookies'     => $_COOKIE,
 		);
 
@@ -1336,29 +1344,6 @@ class Responsive_Add_Ons {
 		return $current_active_site;
 	}
 
-	/**
-	 * Set reset data
-	 */
-	public function set_reset_data() {
-		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
-		if ( ! current_user_can( 'install_plugins' ) ) {
-			return;
-		}
-
-		global $wpdb;
-
-		$post_ids = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_responsive_ready_sites_imported_post'" );
-		$form_ids = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_responsive_ready_sites_imported_wp_forms'" );
-		$term_ids = $wpdb->get_col( "SELECT term_id FROM {$wpdb->termmeta} WHERE meta_key='_responsive_ready_sites_imported_term'" );
-
-		wp_send_json_success(
-			array(
-				'reset_posts'    => $post_ids,
-				'reset_wp_forms' => $form_ids,
-				'reset_terms'    => $term_ids,
-			)
-		);
-	}
 
 	/**
 	 * Required Plugin
@@ -1385,7 +1370,7 @@ class Responsive_Add_Ons {
 		$required_plugins_count = ( isset( $_POST['required_plugins'] ) ) ? count( $_POST['required_plugins'] ) : array();
 		$required_pro_plugins   = array();
 		if ( isset( $_POST['required_pro_plugins'] ) && is_array( $_POST['required_pro_plugins'] ) ) {
-			// Recursively sanitize all values in the array
+			// Recursively sanitize all values in the array.
 			$required_pro_plugins = map_deep( $required_pro_plugins, 'sanitize_text_field' );
 		}
 
@@ -1448,7 +1433,7 @@ class Responsive_Add_Ons {
 		}
 		$pro_plugins = array();
 		if ( isset( $_POST['pro_plugin'] ) && is_array( $_POST['pro_plugin'] ) ) {
-			// Recursively sanitize all values in the array
+			// Recursively sanitize all values in the array.
 			$pro_plugins = map_deep( $pro_plugins, 'sanitize_text_field' );
 		}
 
@@ -1675,12 +1660,13 @@ class Responsive_Add_Ons {
 			exit();
 		}
 		?>
-			<div class="wrap">
+			<!-- <div class="wrap"> -->
+				<div id="responsive-ready-sites-menu-page"></div>
 					<?php
-						$this->init_nav_menu( 'general' );
-						do_action( 'responsive_addons_importer_page' );
+						// $this->init_nav_menu( 'general' );
+						// do_action( 'responsive_addons_importer_page' );
 					?>
-			</div>
+			<!-- </div> -->
 
 			<?php
 	}
@@ -1723,7 +1709,10 @@ class Responsive_Add_Ons {
 				<div class="logo">
 					<div class="responsive-sites-logo-wrap">
 							<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/responsive-plus-logo.svg' ); ?>">
-							<div class="responsive-sites-version"><?php esc_html_e( RESPONSIVE_ADDONS_VER, 'responsive-add-ons' ); ?></div>
+							<div class="responsive-sites-version">
+								<?php echo esc_html( RESPONSIVE_ADDONS_VER ); ?>
+							</div>
+
 					</div>
 				</div>
 				<div id="responsive-sites-filters" class="hide-on-mobile">
@@ -1738,7 +1727,7 @@ class Responsive_Add_Ons {
 					<div class="rst-my-favourite">
 						<div id="rst-my-favorite-btn" class="rst-my-favourite-tooltip rst-nav-tab-wrapper-icon">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-  								<path d="M7.49395 3.006C5.96995 2.925 4.44145 3.435 3.31645 4.56C1.06495 6.816 1.30045 10.602 3.70945 13.014L4.47895 13.7835L11.4719 20.7825C11.6125 20.9226 11.8029 21.0013 12.0014 21.0013C12.2 21.0013 12.3904 20.9226 12.5309 20.7825L19.5209 13.7835L20.2904 13.014C22.6994 10.602 22.9334 6.816 20.6804 4.5615C18.4289 2.307 14.6504 2.547 12.2429 4.9575L11.9999 5.2005L11.7569 4.9575C10.5524 3.75 9.01945 3.087 7.49395 3.006Z" fill="#9CA3AF"/>
+									<path d="M7.49395 3.006C5.96995 2.925 4.44145 3.435 3.31645 4.56C1.06495 6.816 1.30045 10.602 3.70945 13.014L4.47895 13.7835L11.4719 20.7825C11.6125 20.9226 11.8029 21.0013 12.0014 21.0013C12.2 21.0013 12.3904 20.9226 12.5309 20.7825L19.5209 13.7835L20.2904 13.014C22.6994 10.602 22.9334 6.816 20.6804 4.5615C18.4289 2.307 14.6504 2.547 12.2429 4.9575L11.9999 5.2005L11.7569 4.9575C10.5524 3.75 9.01945 3.087 7.49395 3.006Z" fill="#9CA3AF"/>
 							</svg>
 							<span class="tooltip-text"><?php esc_html_e( 'Favourites', 'responsive-add-ons' ); ?></span>
 						</div>
@@ -1748,14 +1737,14 @@ class Responsive_Add_Ons {
 							<a href="#" class="responsive-ready-sites-sync-templates-button">
 								<span class="dashicons">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-								  <g clip-path="url(#clip0_28_460)">
-								    <path d="M19 8L15 12H18C18 15.315 15.315 18 12 18C10.985 18 10.035 17.745 9.195 17.305L7.735 18.765C8.975 19.54 10.43 20 12 20C16.42 20 20 16.42 20 12H23L19 8ZM6 12C6 8.685 8.685 6 12 6C13.015 6 13.965 6.255 14.805 6.695L16.265 5.235C15.025 4.46 13.57 4 12 4C7.58 4 4 7.58 4 12H1L5 16L9 12H6Z" fill="#9CA3AF"/>
-								  </g>
-								  <defs>
-								    <clipPath id="clip0_28_460">
-								      <rect width="24" height="24" fill="white"/>
-								    </clipPath>
-								  </defs>
+									<g clip-path="url(#clip0_28_460)">
+									<path d="M19 8L15 12H18C18 15.315 15.315 18 12 18C10.985 18 10.035 17.745 9.195 17.305L7.735 18.765C8.975 19.54 10.43 20 12 20C16.42 20 20 16.42 20 12H23L19 8ZM6 12C6 8.685 8.685 6 12 6C13.015 6 13.965 6.255 14.805 6.695L16.265 5.235C15.025 4.46 13.57 4 12 4C7.58 4 4 7.58 4 12H1L5 16L9 12H6Z" fill="#9CA3AF"/>
+									</g>
+									<defs>
+									<clipPath id="clip0_28_460">
+										<rect width="24" height="24" fill="white"/>
+									</clipPath>
+									</defs>
 								</svg>
 								</span>
 								<span class="tooltip-text"><?php esc_html_e( 'Sync Library', 'responsive-add-ons' ); ?></span>
@@ -1777,7 +1766,7 @@ class Responsive_Add_Ons {
 								</div>
 								<span class="dashicons">
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="24" viewBox="0 0 16 24" fill="none">
-  										<path d="M14.59 8.59L10 13.17L5.41 8.59L4 10L10 16L16 10L14.59 8.59Z" fill="#4B5563"/>
+											<path d="M14.59 8.59L10 13.17L5.41 8.59L4 10L10 16L16 10L14.59 8.59Z" fill="#4B5563"/>
 									</svg>
 								</span>
 							<?php } ?>
@@ -1853,24 +1842,24 @@ class Responsive_Add_Ons {
 						</div>
 					</div>
 					<div class="search-container">
-					    <!-- Search Icon -->
-					    <div class="search-icon">
-					        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-					            <path d="M2.41599 10C3.33915 10.9245 4.5685 11.4794 5.87246 11.5603C7.17641 11.6413 8.46495 11.2426 9.49532 10.4393L13.0407 13.9847C13.1664 14.1061 13.3348 14.1733 13.5096 14.1718C13.6844 14.1703 13.8516 14.1001 13.9752 13.9765C14.0988 13.8529 14.1689 13.6857 14.1704 13.5109C14.172 13.3361 14.1048 13.1677 13.9833 13.042L10.438 9.49666C11.2769 8.42011 11.6735 7.06409 11.5469 5.70518C11.4204 4.34626 10.7802 3.08679 9.75698 2.18364C8.73376 1.28048 7.40455 0.801672 6.04043 0.844849C4.67632 0.888026 3.38005 1.44994 2.41599 2.416C1.91785 2.91388 1.5227 3.50503 1.25309 4.15567C0.983492 4.80632 0.844727 5.50371 0.844727 6.208C0.844727 6.91229 0.983492 7.60968 1.25309 8.26032C1.5227 8.91096 1.91785 9.50212 2.41599 10ZM3.35866 3.36C4.01771 2.70096 4.88487 2.29082 5.81241 2.19946C6.73994 2.1081 7.67047 2.34116 8.44543 2.85895C9.2204 3.37673 9.79186 4.14719 10.0625 5.03907C10.3331 5.93095 10.286 6.88907 9.92943 7.75017C9.57282 8.61127 8.92868 9.32209 8.10674 9.76152C7.28481 10.2009 6.33594 10.3418 5.4218 10.1601C4.50767 9.97834 3.68482 9.48528 3.09345 8.76489C2.50209 8.0445 2.1788 7.14136 2.17866 6.20933C2.17683 5.67971 2.28019 5.155 2.48275 4.66565C2.68532 4.1763 2.98304 3.73204 3.35866 3.35866V3.36Z" fill="#9CA3AF"/>
-					        </svg>
-					    </div>
+						<!-- Search Icon -->
+						<div class="search-icon">
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M2.41599 10C3.33915 10.9245 4.5685 11.4794 5.87246 11.5603C7.17641 11.6413 8.46495 11.2426 9.49532 10.4393L13.0407 13.9847C13.1664 14.1061 13.3348 14.1733 13.5096 14.1718C13.6844 14.1703 13.8516 14.1001 13.9752 13.9765C14.0988 13.8529 14.1689 13.6857 14.1704 13.5109C14.172 13.3361 14.1048 13.1677 13.9833 13.042L10.438 9.49666C11.2769 8.42011 11.6735 7.06409 11.5469 5.70518C11.4204 4.34626 10.7802 3.08679 9.75698 2.18364C8.73376 1.28048 7.40455 0.801672 6.04043 0.844849C4.67632 0.888026 3.38005 1.44994 2.41599 2.416C1.91785 2.91388 1.5227 3.50503 1.25309 4.15567C0.983492 4.80632 0.844727 5.50371 0.844727 6.208C0.844727 6.91229 0.983492 7.60968 1.25309 8.26032C1.5227 8.91096 1.91785 9.50212 2.41599 10ZM3.35866 3.36C4.01771 2.70096 4.88487 2.29082 5.81241 2.19946C6.73994 2.1081 7.67047 2.34116 8.44543 2.85895C9.2204 3.37673 9.79186 4.14719 10.0625 5.03907C10.3331 5.93095 10.286 6.88907 9.92943 7.75017C9.57282 8.61127 8.92868 9.32209 8.10674 9.76152C7.28481 10.2009 6.33594 10.3418 5.4218 10.1601C4.50767 9.97834 3.68482 9.48528 3.09345 8.76489C2.50209 8.0445 2.1788 7.14136 2.17866 6.20933C2.17683 5.67971 2.28019 5.155 2.48275 4.66565C2.68532 4.1763 2.98304 3.73204 3.35866 3.35866V3.36Z" fill="#9CA3AF"/>
+							</svg>
+						</div>
 
-					    <!-- Search Input -->
-					    <input autocomplete="off" placeholder="<?php esc_html_e( 'Search', 'responsive-addons' ); ?>" 
-					           type="textarea" aria-describedby="live-search-desc" 
-					           id="wp-filter-search-input" class="wp-filter-search">
+						<!-- Search Input -->
+						<input autocomplete="off" placeholder="<?php esc_html_e( 'Search', 'responsive-addons' ); ?>" 
+								type="textarea" aria-describedby="live-search-desc" 
+								id="wp-filter-search-input" class="wp-filter-search">
 
-					    <!-- Clear Button -->
-					    <div class="clear-button" id="clear-search">
-					        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-					            <path d="M3.39752 2.11867L7.00018 5.72134L10.5842 2.13734C10.6634 2.05307 10.7587 1.98566 10.8646 1.93915C10.9704 1.89264 11.0846 1.86799 11.2002 1.86667C11.4477 1.86667 11.6851 1.965 11.8602 2.14004C12.0352 2.31507 12.1335 2.55247 12.1335 2.8C12.1357 2.91443 12.1145 3.0281 12.0711 3.13402C12.0278 3.23995 11.9633 3.33591 11.8815 3.416L8.25085 7L11.8815 10.6307C12.0353 10.7812 12.1255 10.985 12.1335 11.2C12.1335 11.4475 12.0352 11.6849 11.8602 11.86C11.6851 12.035 11.4477 12.1333 11.2002 12.1333C11.0812 12.1383 10.9626 12.1184 10.8517 12.075C10.7408 12.0317 10.6402 11.9657 10.5562 11.8813L7.00018 8.27867L3.40685 11.872C3.32799 11.9535 3.23378 12.0185 3.12965 12.0633C3.02553 12.1082 2.91355 12.132 2.80018 12.1333C2.55265 12.1333 2.31525 12.035 2.14022 11.86C1.96518 11.6849 1.86685 11.4475 1.86685 11.2C1.86468 11.0856 1.88591 10.9719 1.92924 10.866C1.97257 10.7601 2.0371 10.6641 2.11885 10.584L5.74952 7L2.11885 3.36934C1.96502 3.21884 1.87482 3.01505 1.86685 2.8C1.86685 2.55247 1.96518 2.31507 2.14022 2.14004C2.31525 1.965 2.55265 1.86667 2.80018 1.86667C3.02418 1.86947 3.23885 1.96 3.39752 2.11867Z" fill="#A6A6A7"/>
-					        </svg>
-					    </div>
+						<!-- Clear Button -->
+						<div class="clear-button" id="clear-search">
+							<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M3.39752 2.11867L7.00018 5.72134L10.5842 2.13734C10.6634 2.05307 10.7587 1.98566 10.8646 1.93915C10.9704 1.89264 11.0846 1.86799 11.2002 1.86667C11.4477 1.86667 11.6851 1.965 11.8602 2.14004C12.0352 2.31507 12.1335 2.55247 12.1335 2.8C12.1357 2.91443 12.1145 3.0281 12.0711 3.13402C12.0278 3.23995 11.9633 3.33591 11.8815 3.416L8.25085 7L11.8815 10.6307C12.0353 10.7812 12.1255 10.985 12.1335 11.2C12.1335 11.4475 12.0352 11.6849 11.8602 11.86C11.6851 12.035 11.4477 12.1333 11.2002 12.1333C11.0812 12.1383 10.9626 12.1184 10.8517 12.075C10.7408 12.0317 10.6402 11.9657 10.5562 11.8813L7.00018 8.27867L3.40685 11.872C3.32799 11.9535 3.23378 12.0185 3.12965 12.0633C3.02553 12.1082 2.91355 12.132 2.80018 12.1333C2.55265 12.1333 2.31525 12.035 2.14022 11.86C1.96518 11.6849 1.86685 11.4475 1.86685 11.2C1.86468 11.0856 1.88591 10.9719 1.92924 10.866C1.97257 10.7601 2.0371 10.6641 2.11885 10.584L5.74952 7L2.11885 3.36934C1.96502 3.21884 1.87482 3.01505 1.86685 2.8C1.86685 2.55247 1.96518 2.31507 2.14022 2.14004C2.31525 1.965 2.55265 1.86667 2.80018 1.86667C3.02418 1.86947 3.23885 1.96 3.39752 2.11867Z" fill="#A6A6A7"/>
+							</svg>
+						</div>
 					</div>
 
 					<div class="responsive-sites-autocomplete-result"></div>
@@ -1890,19 +1879,22 @@ class Responsive_Add_Ons {
 	public function get_default_page_builders() {
 		return array(
 			array(
-				'id'   => 1,
-				'slug' => 'all',
-				'name' => 'All',
+				'id'    => 1,
+				'value' => '',
+				'label' => 'All',
+				'icon'  => esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/all.svg' ),
 			),
 			array(
-				'id'   => 2,
-				'slug' => 'elementor',
-				'name' => 'Elementor',
+				'id'    => 2,
+				'value' => 'elementor',
+				'label' => 'Elementor',
+				'icon'  => esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/elementor.svg' ),
 			),
 			array(
-				'id'   => 3,
-				'slug' => 'gutenberg',
-				'name' => 'WP Editor',
+				'id'    => 3,
+				'value' => 'gutenberg',
+				'label' => 'WP Editor',
+				'icon'  => esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/gutenberg.svg' ),
 			),
 		);
 	}
@@ -1924,22 +1916,20 @@ class Responsive_Add_Ons {
 	}
 
 	/**
-     * Add links to plugin's description in plugins table
-     *
-     * @param array  $links  Initial list of links.
-     * @param string $file   Basename of current plugin.
-     *
-     * @return array
-     */
-    function responsive_addons_rate_plugin_link( $links, $file ) {
-		if ( $file !== plugin_basename( RESPONSIVE_ADDONS_FILE ) ) {
+	 * Add links to plugin's description in plugins table.
+	 *
+	 * @param array  $links Initial list of links.
+	 * @param string $file  Basename of current plugin.
+	 *
+	 * @return array
+	 */
+	public function responsive_addons_rate_plugin_link( $links, $file ) {
+		if ( plugin_basename( RESPONSIVE_ADDONS_FILE ) !== $file ) {
 			return $links;
 		}
-		
-		$rate_url = 'https://wordpress.org/support/plugin/responsive-add-ons/reviews/#new-post';
+		$rate_url  = 'https://wordpress.org/support/plugin/responsive-add-ons/reviews/#new-post';
 		$rate_link = '<a target="_blank" href="' . esc_url( $rate_url ) . '" title="' . esc_attr__( 'Rate the plugin', 'responsive-addons' ) . '">' . esc_html__( 'Rate the plugin ★★★★★', 'responsive-addons' ) . '</a>';
-		$links[] = $rate_link;
-
+		$links[]   = $rate_link;
 		return $links;
 	}
 
@@ -2207,6 +2197,66 @@ class Responsive_Add_Ons {
 	 */
 	public function responsive_add_ons_on_admin_init() {
 
+		// Check if we should redirect after activation.
+		if ( get_transient( 'responsive_add_ons_activation_redirect' ) ) {
+			delete_transient( 'responsive_add_ons_activation_redirect' );
+			
+			// Don't redirect if we're already on the templates page or doing AJAX.
+			if ( ! wp_doing_ajax() && ( empty( $_GET['page'] ) || 'responsive_add_ons' !== $_GET['page'] ) ) {
+				
+				// Ensure templates are loaded from JSON files before redirect
+				$sites = $this->get_sites_by_page_builder();
+				$total_requests = (int) get_site_option( 'responsive-ready-sites-requests', 0 );
+				
+				// If templates aren't loaded yet, load them from JSON files now
+				if ( empty( $sites ) && 0 === $total_requests ) {
+					$dir = RESPONSIVE_ADDONS_DIR . 'includes/json/';
+					
+					// Load sites from JSON (same logic as process_batch())
+					if ( file_exists( $dir . 'responsive-sites-request.json' ) ) {
+						$responsive_sites_request = (int) trim( file_get_contents( $dir . 'responsive-sites-request.json' ) );
+						
+						// Same validation as process_batch() - only load if <= 16 pages
+						if ( $responsive_sites_request && $responsive_sites_request <= 16 ) {
+							update_site_option( 'responsive-ready-sites-requests', $responsive_sites_request );
+							
+							for ( $page = 1; $page <= $responsive_sites_request; $page++ ) {
+								$json_file = $dir . 'responsive-ready-sites-and-pages-page-' . $page . '.json';
+								if ( file_exists( $json_file ) ) {
+									$file_contents   = file_get_contents( $json_file );
+									$sites_and_pages = json_decode( $file_contents, true );
+									if ( ! empty( $sites_and_pages ) ) {
+										update_site_option( 'responsive-ready-sites-and-pages-page-' . $page, $sites_and_pages );
+									}
+								}
+							}
+						}
+					}
+					
+					// Also load blocks if they exist (for completeness)
+					if ( file_exists( $dir . 'rst-blocks-requests.json' ) ) {
+						$responsive_blocks_request = (int) trim( file_get_contents( $dir . 'rst-blocks-requests.json' ) );
+						if ( $responsive_blocks_request ) {
+							update_site_option( 'rst-blocks-requests', $responsive_blocks_request );
+							for ( $page = 1; $page <= $responsive_blocks_request; $page++ ) {
+								$json_file = $dir . 'rst-blocks-page-' . $page . '.json';
+								if ( file_exists( $json_file ) ) {
+									$file_contents = file_get_contents( $json_file );
+									$blocks_pages  = json_decode( $file_contents, true );
+									if ( ! empty( $blocks_pages ) ) {
+										update_site_option( 'rst-blocks-page-' . $page, $blocks_pages );
+									}
+								}
+							}
+						}
+					}
+				}
+				
+				wp_safe_redirect( admin_url( 'admin.php?page=responsive_add_ons' ) );
+				exit;
+			}
+		}
+
 		$this->responsive_add_ons_remove_all_admin_notices();
 	}
 
@@ -2248,13 +2298,17 @@ class Responsive_Add_Ons {
 			if ( ! empty( $current_page_data ) ) {
 				foreach ( $current_page_data as $page_id => $page_data ) {
 					if ( in_array( $page_data['id'], $favorite_settings ) ) {
-						// If it exists in the favorites array, add favorite status
-						$page_data['favorite_status'] = 'active';
+						// If it exists in the favorites array, add favorite status.
+						$page_data['favorite_status'] = true;
+					} else {
+						$page_data['favorite_status'] = false;
 					}
+					$page_data['site_file_location'] = 'responsive-ready-sites-and-pages-page-' . $page;
 					$sites_and_pages[] = $page_data;
 				}
 			}
 		}
+
 		return $sites_and_pages;
 	}
 
@@ -2299,6 +2353,14 @@ class Responsive_Add_Ons {
 		return $current_page_builder_sites;
 	}
 
+	/**
+	 * Retrieves details of favorite template sites.
+	 *
+	 * Gets the current favorite site IDs from options, checks them against the
+	 * available page builder sites, and returns the matching ones.
+	 *
+	 * @return void Sends a JSON success response with the favorite site details.
+	 */
 	public function get_favorite_template_site_details() {
 
 		// Verify Nonce.
@@ -2313,7 +2375,7 @@ class Responsive_Add_Ons {
 		if ( ! empty( $favorite_settings ) && ! empty( $current_page_builder_sites ) ) {
 			foreach ( $current_page_builder_sites as $site ) {
 				if ( in_array( $site['id'], $favorite_settings ) ) {
-					// If it exists in the favorites array, add favorite status
+					// If it exists in the favorites array, add favorite status.
 					$favorite_sites[] = $site;
 				}
 			}
@@ -2374,6 +2436,14 @@ class Responsive_Add_Ons {
 		return $links;
 	}
 
+	/**
+	 * Displays the admin overlay for the Responsive Sites plugin.
+	 *
+	 * This overlay includes sections for Go Pro promotion, rating prompt,
+	 * help center, and video guides. It is hidden by default and displayed via JS.
+	 *
+	 * @return void
+	 */
 	public function responsive_sites_admin_overlay() {
 		?>
 			<div style="display: none;" class="responsive-sites-overlay-reveal">
@@ -2405,7 +2475,7 @@ class Responsive_Add_Ons {
 					<div class="responsive-sites-help-center">
 						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Help Center', 'responsive-addons' ); ?></h3>
 						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Read the documentation to find answers to your questions.', 'responsive-addons' ); ?></p>
-						<a href="https://cyberchimps.com/docs/responsive-plus/responsive-starter-templates-plugin/" target="_blank" class="responsive-sites-help-center-btn"><?php esc_html_e( 'Docs', 'responsive-addons' ); ?></a>
+						<a href="https://cyberchimps.com/docs/responsive-starter-templates/" target="_blank" class="responsive-sites-help-center-btn"><?php esc_html_e( 'Docs', 'responsive-addons' ); ?></a>
 						<?php esc_html_e( 'or', 'responsive-addons' ); ?>
 						<a href="https://www.facebook.com/groups/responsive.theme/" target="_blank" class="responsive-sites-community-support-btn"><?php esc_html_e( 'Visit Facebook Group', 'responsive-addons' ); ?></a>
 					</div>
@@ -2414,6 +2484,8 @@ class Responsive_Add_Ons {
 						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Browse through these video tutorials to learn more about how the plugin functions.', 'responsive-addons' ); ?></p>
 						<a href="https://www.youtube.com/playlist?list=PLXTwxw3ZJwPSpE3RYanAdYgnDptbSvjXl" target="_blank" class="responsive-sites-video-guides-btn"><?php esc_html_e( 'Watch Now', 'responsive-addons' ); ?></a>
 					</div>
+					<!-- Remaining content -->
+					<!-- ... -->
 				</div>
 			</div>
 		<?php
@@ -2425,41 +2497,56 @@ class Responsive_Add_Ons {
 	 * @since  2.8.6
 	 */
 	public function add_to_favorite() {
-
+		// Permission check.
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( 'You are not allowed to perform this action', 'responsive-addons' );
+			wp_send_json_error( [ 'message' => __( 'Unauthorized action.', 'responsive-add-ons' ) ] );
 		}
-		// Verify Nonce.
+
+		// Nonce verification.
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
-		$site_id = isset( $_POST['site_id'] ) ? sanitize_key( $_POST['site_id'] ) : '';
+		// Sanitize and validate inputs.
+		$site_id     = isset( $_POST['site_id'] ) ? sanitize_text_field( wp_unslash( $_POST['site_id'] ) ) : '';
+		$is_favorite = isset( $_POST['is_favorite'] ) ? sanitize_text_field( wp_unslash( $_POST['is_favorite'] ) ) : '';
 
 		if ( empty( $site_id ) ) {
-			wp_send_json_error();
+			wp_send_json_error( [ 'message' => __( 'Invalid site ID.', 'responsive-add-ons' ) ] );
 		}
 
-		$favorite_settings = get_option( 'responsive-sites-favorites', array() );
-
-		if ( false !== $favorite_settings && is_array( $favorite_settings ) ) {
-			self::$new_favorites = $favorite_settings;
+		// Retrieve existing favorites.
+		$favorites = get_option( 'responsive-sites-favorites', array() );
+		if ( ! is_array( $favorites ) ) {
+			$favorites = array();
 		}
 
-		$is_favorite = isset( $_POST['is_favorite'] ) ? sanitize_key( $_POST['is_favorite'] ) : '';
+		// Add or remove favorite efficiently.
+		$key = array_search( $site_id, $favorites, true );
 
-		if ( 'false' === $is_favorite ) {
-			if ( in_array( $site_id, self::$new_favorites, true ) ) {
-				$key = array_search( $site_id, self::$new_favorites, true );
-				unset( self::$new_favorites[ $key ] );
-			}
-		} elseif ( ! in_array( $site_id, self::$new_favorites, true ) ) {
-				array_push( self::$new_favorites, $site_id );
+		if ( 'false' === $is_favorite && false !== $key ) {
+			unset( $favorites[ $key ] );
+		} elseif ( 'true' === $is_favorite && false === $key ) {
+			$favorites[] = $site_id;
 		}
 
-		update_option( 'responsive-sites-favorites', self::$new_favorites, 'no' );
+		$favorites = array_values( $favorites );
 
-		wp_send_json_success( self::$new_favorites );
+		update_option( 'responsive-sites-favorites', $favorites, false );
+		// Return response.
+		wp_send_json_success( [
+			'favorites' => $favorites,
+			'count'     => count( $favorites ),
+			'action'    => ( 'true' === $is_favorite ) ? 'added' : 'removed',
+		] );
 	}
 
+	/**
+	 * Handles AJAX request to update and return the favorite status of all sites.
+	 *
+	 * Verifies the AJAX nonce 'responsive-addons' for security.
+	 * Responds with a JSON success containing all site data.
+	 *
+	 * @return void Outputs JSON response and exits.
+	 */
 	public function update_all_sites_fav_status() {
 
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
@@ -2698,7 +2785,7 @@ class Responsive_Add_Ons {
 				'ccAppURL'    => CC_APP_URL,
 				'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
 				'_nonce'      => wp_create_nonce( 'wp_rest' ),
-				'site_url '   => rawurlencode( get_site_url() ),
+				'site_url'    => rawurlencode( get_site_url() ),
 				'cookies'     => $_COOKIE,
 			);
 
@@ -2989,9 +3076,19 @@ class Responsive_Add_Ons {
 			return;
 		}
 
-		if ( isset( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) ) {// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-			$value = array_map( 'esc_attr', wp_unslash( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) );
+		// Check if custom fonts taxonomy POST data is set.
+		// Check for nonce to verify the request's authenticity.
+		if (
+			! isset( $_POST['_custom_fonts_nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_custom_fonts_nonce'] ) ), 'save_custom_fonts' )
+		) {
+			wp_die( esc_html__( 'Security check failed. Please try again.', 'responsive-addons' ) );
+		}
+
+		// Check if custom fonts taxonomy POST data is set.
+		if ( isset( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) ) {
+			// Sanitize and process input values.
+			$value = array_map( 'sanitize_text_field', wp_unslash( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) );
 			Responsive_Add_Ons_Custom_Fonts_Taxonomy::update_font_links( $value, $term_id );
 		}
 	}
@@ -3251,7 +3348,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
+			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-add-ons' ) );
 		}
 
 		require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
@@ -3263,7 +3360,7 @@ class Responsive_Add_Ons {
 		$product_id = $settings->get( 'account', 'product_id' );
 
 		if ( empty( $api_key ) || '' === $api_key || empty( $product_id ) || '' === $product_id ) {
-			$err_msg = __( 'Connection details are missing. Please reconnect to Cyberchimps to continue.', 'responsive-addons' );
+			$err_msg = __( 'Connection details are missing. Please reconnect to Cyberchimps Responsive Domain to continue.', 'responsive-add-ons' );
 			wp_send_json_error(
 				array(
 					'message' => $err_msg,
@@ -3287,8 +3384,7 @@ class Responsive_Add_Ons {
 		$activate_args = $wcam_lib_responsive_addons->activate( $args, $product_id );
 		$status_args   = $wcam_lib_responsive_addons->status( $args, $product_id );
 		$ready_site_subscribe_checkbox = isset( $_POST['ready_sites_subscripiton_checkbox'] ) ? sanitize_key( wp_unslash( $_POST['ready_sites_subscripiton_checkbox'] ) ) : '';
-		$userEmail = isset( $_POST['user_email'] ) ? sanitize_key( wp_unslash( $_POST['user_email'] ) ) : '';
-
+		$userEmail = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
 
 		$response      = $this->cc_app_auth->post(
 			'plugin/importcaps',
@@ -3307,26 +3403,28 @@ class Responsive_Add_Ons {
 		);
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$response_body = json_decode( wp_remote_retrieve_body( $response ) );
+		$message 	   = isset( $response_body->message ) ? $response_body->message : '';
 
-		if ( 403 === $response_code ) {
-			wp_send_json_error(
-				array(
-					'message' => $response_body->message,
-					'error'   => true,
-					'error_code' => $response_code,
-				),
-			);
+		if ( empty( $message ) ) {
+			if ( $response_code >= 500 ) {
+				$message = __( 'Server is temporarily unavailable', 'responsive-add-ons' );
+			} elseif ( $response_code >= 400 ) {
+				$message = __( 'Request failed due to an authentication/authorization issue', 'responsive-add-ons' );
+			}
 		}
+
 		if ( 200 !== $response_code ) {
-			$err_msg = sprintf(
-				__( '%1$s Please reconnect to Cyberchimps to continue.', 'responsive-addons' ), $response_body->message );
+			$formatted_message = sprintf(
+				__( '%1$s. Please try again.', 'responsive-add-ons' ),
+				$message
+			);
 
 			wp_send_json_error(
 				array(
-					'message' => $err_msg,
-					'error'   => true,
+					'message'    => $formatted_message,
+					'error'      => true,
 					'error_code' => $response_code,
-				),
+				)
 			);
 		}
 
@@ -3430,6 +3528,20 @@ class Responsive_Add_Ons {
 		update_option( 'responsive_addons_contribution_consent', $consent );
 
 		wp_send_json_success();
+	}
+
+	/**
+	 * Admin Body Classes
+	 *
+	 * @since 3.4.0
+	 * @param string $classes Space separated class string.
+	 * @return void
+	 */
+	public function admin_body_class( $classes = '' ) {
+		$theme_builder_class = isset( $_GET['page'] ) && 'responsive_add_ons' === $_GET['page'] ? 'responsive-add-ons-import-sites' : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Fetching a $_GET value, no nonce available to validate.
+		$classes            .= ' ' . $theme_builder_class . ' ';
+
+		return $classes;
 	}
 
 }

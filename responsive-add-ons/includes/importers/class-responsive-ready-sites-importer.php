@@ -39,6 +39,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			return self::$instance;
 		}
 
+		public static $active_site_plugins = array();
+
 		/**
 		 * Constructor.
 		 *
@@ -55,7 +57,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 			if ( is_admin() ) {
 				// Import AJAX.
-				add_action( 'wp_ajax_responsive-ready-sites-import-set-site-data-free', array( $this, 'import_start' ) );
+				add_action( 'wp_ajax_responsive-ready-sites-import-get-site-data', array( $this, 'get_site_data_for_import' ) );
 				add_action( 'wp_ajax_responsive-ready-sites-import-xml', array( $this, 'import_xml_data' ) );
 				add_action( 'wp_ajax_responsive-ready-sites-import-wpforms', array( $this, 'import_wpforms' ) );
 				add_action( 'wp_ajax_responsive-ready-sites-import-customizer-settings', array( $this, 'import_customizer_settings' ) );
@@ -70,10 +72,10 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 				// Reset Post & Terms.
 				add_action( 'wp_ajax_responsive-ready-sites-delete-posts', array( $this, 'delete_imported_posts' ) );
-				add_action( 'wp_ajax_responsive-ready-sites-delete-wp-forms', array( $this, 'delete_imported_wp_forms' ) );
-				add_action( 'wp_ajax_responsive-ready-sites-delete-terms', array( $this, 'delete_imported_terms' ) );
+				add_action( 'wp_ajax_responsive-ready-sites-delete-terms-wp-forms', array( $this, 'delete_imported_terms_wp_forms' ) );
 
 				// Import single page.
+				add_action( 'wp_ajax_responsive-sites-page-required-plugins', array( $this, 'prepare_page_required_plugins' ) );
 				add_action( 'wp_ajax_responsive-sites-create-page', array( $this, 'import_single_page' ) );
 
 				if ( ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.0.0', '>=' ) ) ) {
@@ -86,6 +88,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 				add_action( 'wp_ajax_responsive-sites-log-import-time', array( $this, 'responsive_log_template_import_time' ) );
 				add_action( 'wp_ajax_responsive-ready-sites-log-demo-view', array( $this, 'responsive_log_template_view' ) );
+				add_action( 'wp_ajax_responsive-ready-sites-log-import-error', array( $this, 'log_import_error_and_notify' ) );
 			}
 
 			add_action( 'responsive_ready_sites_import_complete', array( $this, 'clear_cache' ) );
@@ -191,67 +194,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 		}
 
 		/**
-		 * Start Site Import
-		 *
-		 * @since  1.0.0
-		 * @return void
-		 */
-		public function import_start() {
-
-			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
-
-			if ( ! current_user_can( 'install_plugins' ) ) {
-				wp_send_json_error( __( 'User does not have permission!', 'responsive-addons' ) );
-			}
-
-            $demo_api_uri = isset( $_POST['api_url'] ) ? esc_url( $_POST['api_url'] ) : ''; //phpcs:ignore
-
-			if ( ! empty( $demo_api_uri ) ) {
-
-				$demo_data = self::get_responsive_single_demo( $demo_api_uri );
-				if ( empty( $demo_data ) || isset( $demo_data['success'] ) && ! $demo_data['success'] ) {
-					wp_send_json_error( $demo_data );
-				}
-
-				update_option( 'responsive_ready_sites_import_data', $demo_data );
-
-				if ( is_wp_error( $demo_data ) ) {
-					wp_send_json_error( $demo_data->get_error_message() );
-				} else {
-					do_action( 'responsive_ready_sites_import_start', $demo_data, $demo_api_uri );
-				}
-
-				// Track Template Import event if user has given consent for tracking.
-				if( 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ) ) {
-					$event = array(
-						'event' => 'Template Import',
-						'properties' => array(
-							'token'         => 'f8fbbc680f8f9d9b80a50e8c030a3605',
-							'distinct_id'   => substr( hash( 'sha256', get_site_url() ), 0, 16 ),
-							'Template Name' => $demo_data['title'],
-							'Page Builder'  => $demo_data['page_builder'],
-							'User Site URL' => get_site_url(),
-						),
-					);
-	
-					$encoded_data = base64_encode( wp_json_encode( $event ) );
-	
-					$response = wp_remote_post( 'https://api.mixpanel.com/track?ip=1', [
-						'body' => [
-							'data' => $encoded_data,
-						]
-					]);
-				}
-
-				wp_send_json_success( $demo_data );
-
-			} else {
-				wp_send_json_error( __( 'Request site API URL is empty.', 'responsive-addons' ) );
-			}
-		}
-
-
-		/**
 		 * Import XML Data.
 		 *
 		 * @since  1.0.0
@@ -267,7 +209,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			}
 
 			if ( ! class_exists( 'XMLReader' ) ) {
-				wp_send_json_error( __( 'The XMLReader library is not available. This library is required to import the content for the website.', 'responsive-addons' ) );
+				$error_msg = __( 'The XMLReader library is not available. This library is required to import the content for the website.', 'responsive-addons' );
+				$this->send_import_error_email( '', 'XML Import', 'XMLReader Missing', $error_msg, 'xmlreader_missing', $error_msg );
+				wp_send_json_error( $error_msg );
 			}
 
             $wxr_url = ( isset( $_REQUEST['xml_path'] ) ) ? urldecode( $_REQUEST['xml_path'] ) : ''; //phpcs:ignore
@@ -348,13 +292,25 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 						wp_send_json_success( $data );
 					} else {
-						wp_send_json_error( __( 'There was an error downloading the XML file.', 'responsive-addons' ) );
+						$error_msg = __( 'There was an error downloading the XML file.', 'responsive-addons' );
+						$import_data = get_option( 'responsive_ready_sites_import_data', array() );
+						$template_name = ! empty( $import_data['title'] ) ? $import_data['title'] : '';
+						$this->send_import_error_email( $template_name, 'XML Import', 'XML Download Failed', $error_msg, 'xml_download_error', $error_msg );
+						wp_send_json_error( $error_msg );
 					}
 				} else {
-					wp_send_json_error( $xml_path['data'] );
+					$error_msg = is_string( $xml_path['data'] ) ? $xml_path['data'] : __( 'XML file download failed.', 'responsive-addons' );
+					$import_data = get_option( 'responsive_ready_sites_import_data', array() );
+					$template_name = ! empty( $import_data['title'] ) ? $import_data['title'] : '';
+					$this->send_import_error_email( $template_name, 'XML Import', 'XML Download Failed', $error_msg, 'xml_download_error', $error_msg );
+					wp_send_json_error( $error_msg );
 				}
 			} else {
-				wp_send_json_error( __( 'Invalid site XML file!', 'responsive-addons' ) );
+				$error_msg = __( 'Invalid site XML file!', 'responsive-addons' );
+				$import_data = get_option( 'responsive_ready_sites_import_data', array() );
+				$template_name = ! empty( $import_data['title'] ) ? $import_data['title'] : '';
+				$this->send_import_error_email( $template_name, 'XML Import', 'Invalid XML File', $error_msg, 'invalid_xml', $error_msg );
+				wp_send_json_error( $error_msg );
 			}
 		}
 
@@ -372,7 +328,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 			if ( ! current_user_can( 'install_plugins' ) ) {
-				wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
+				wp_send_json_error( __( "Permission denied: You don't have the required capability to import forms. Please contact your site administrator.", 'responsive-addons' ) );
 			}
 
             $site_wpforms_url = ( isset( $_REQUEST['wpforms_path'] ) ) ? urldecode( $_REQUEST['wpforms_path'] ) : ''; //phpcs:ignore
@@ -428,13 +384,21 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 								}
 							}
 						} else {
-							wp_send_json_error( __( 'Invalid JSON file for WP Forms.', 'responsive-addons' ) );
+							wp_send_json_error( __( 'Invalid JSON file for WP Forms.', 'responsive-add-ons' ) );
 						}
 					} else {
-						wp_send_json_error( __( 'There was an error downloading the WP Forms file.', 'responsive-addons' ) );
+						$message = __( 'There was an error downloading the WP Forms file.', 'responsive-add-ons' );
+						if ( ! empty( $xml_path['data'] ) ) {
+							$message .= ' : ' . $xml_path['data'];
+						}
+						wp_send_json_error( $message );
 					}
 				} else {
-					wp_send_json_error( __( 'There was an error downloading the WP Forms file.', 'responsive-addons' ) );
+					$message = __( 'There was an error downloading the WP Forms file.', 'responsive-add-ons' );
+					if ( ! empty( $xml_path['data'] ) ) {
+						$message .= ' - ' . $xml_path['data'];
+					}
+					wp_send_json_error( $message );
 				}
 			}
 
@@ -456,7 +420,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 			if ( ! current_user_can( 'install_plugins' ) ) {
-				wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
+				wp_send_json_error( __( 'Permission denied: You don\'t have the required capability to import customizer settings. Please contact your site administrator.', 'responsive-addons' ) );
 			}
 
             $customizer_data = ( isset( $_POST['site_customizer_data'] ) ) ? (array) json_decode( stripcslashes( $_POST['site_customizer_data'] ), 1 ) : array(); //phpcs:ignore
@@ -565,7 +529,11 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				$options_importer->import_options( $options_data );
 				wp_send_json_success();
 			} catch ( Exception $e ) {
-				wp_send_json_error( sprintf( __( 'Import options failed: %s', 'responsive-addons' ), $e->getMessage() ) );
+				$error_msg = sprintf( __( 'Import options failed: %s', 'responsive-addons' ), $e->getMessage() );
+				$import_data = get_option( 'responsive_ready_sites_import_data', array() );
+				$template_name = ! empty( $import_data['title'] ) ? $import_data['title'] : '';
+				$this->send_import_error_email( $template_name, 'Site Options Import', 'Import Options Exception', $error_msg, 'options_import_exception', $e->getMessage() );
+				wp_send_json_error( $error_msg );
 			}
 		}
 
@@ -665,111 +633,12 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			);
 
 			update_option( 'responsive_current_active_site', $current_active_site_data, 'no' );
+			// Set permalink structure to use post name.
+			update_option( 'permalink_structure', '/%postname%/' );
 
 			do_action( 'responsive_ready_sites_import_complete' );
 
 			wp_send_json_success( __( 'Site imported successfully.', 'responsive-addons' ) );
-		}
-
-
-		/**
-		 * Get single demo.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param (String) $demo_api_uri API URL of a demo.
-		 *
-		 * @return (Array) $responsive_demo_data demo data for the demo.
-		 */
-		public static function get_responsive_single_demo( $demo_api_uri ) {
-
-			// default values.
-			$remote_args = array();
-			$defaults    = array(
-				'id'                   => '',
-				'xml_path'             => '',
-				'wpforms_path'         => '',
-				'site_customizer_data' => '',
-				'required_plugins'     => '',
-				'site_widgets_data'    => '',
-				'slug'                 => '',
-				'site_options_data'    => '',
-				'pages'                => '',
-				'page_builder'         => '',
-			);
-
-			$api_args = apply_filters(
-				'responsive_sites_api_args',
-				array(
-					'timeout' => 15,
-				)
-			);
-
-			// Use this for premium demos.
-			$request_params = apply_filters(
-				'responsive_sites_api_params',
-				array(
-					'api_key'               => '',
-					'site_url'              => site_url(),
-					'responsive_addons_ver' => RESPONSIVE_ADDONS_VER,
-				)
-			);
-
-			$demo_api_uri = add_query_arg( $request_params, $demo_api_uri );
-
-			// API Call.
-			$response = wp_safe_remote_get( $demo_api_uri, $api_args );
-
-			if ( is_wp_error( $response ) || ( isset( $response->status ) && 0 === $response->status ) ) {
-				if ( isset( $response->status ) ) {
-					$data = json_decode( $response, true );
-				} else {
-					return false;
-				}
-			} else {
-				$data = json_decode( wp_remote_retrieve_body( $response ), true );
-				if ( ! $data['success'] ) {
-					return $data;
-				}
-			}
-
-			$rbea_plugin = array(
-				'name' => 'Responsive Block Editor Addons',
-				'slug' => 'responsive-block-editor-addons',
-				'init' => 'responsive-block-editor-addons/responsive-block-editor-addons.php',
-			);
-
-			$plugin_exists = false;
-
-			foreach ( $data['required_plugins'] as $existing_plugin ) {
-				if ( $existing_plugin['slug'] === $rbea_plugin['slug'] ) {
-					$plugin_exists = true;
-					break;
-				}
-			}
-			if ( ! $plugin_exists ) {
-				array_unshift( $data['required_plugins'], $rbea_plugin );
-			}
-
-			if ( ! isset( $data['code'] ) ) {
-				$remote_args['id']                   = $data['id'];
-				$remote_args['xml_path']             = $data['xml_path'];
-				$remote_args['wpforms_path']         = $data['wpforms_path'];
-				$remote_args['site_customizer_data'] = $data['site_customizer_data'];
-				$remote_args['required_plugins']     = $data['required_plugins'];
-				$remote_args['required_pro_plugins'] = $data['required_pro_plugins'];
-				$remote_args['pages']                = isset( $data['pages'] ) ? $data['pages'] : '';
-				$remote_args['site_widgets_data']    = json_decode( $data['site_widgets_data'] );
-				$remote_args['site_options_data']    = $data['site_options_data'];
-				$remote_args['slug']                 = $data['slug'];
-				$remote_args['featured_image_url']   = $data['featured_image_url'];
-				$remote_args['title']                = $data['title']['rendered'];
-				$remote_args['success']              = true;
-				$remote_args['page_builder']         = $data['page_builder'];
-			}
-
-			// Merge remote demo and defaults.
-			return wp_parse_args( $remote_args, $defaults );
 		}
 
 		/**
@@ -884,8 +753,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
 			}
 
-			// $posts = $_REQUEST['ids'];
-			$posts = isset( $_REQUEST['ids'] ) ? array_map( 'absint', wp_unslash( $_REQUEST['ids'] ) ) : array();
+			$posts = self::get_reset_posts_data();
 			$count = 0;
 
 			if ( ! empty( $posts ) ) {
@@ -920,14 +788,12 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 		}
 
 		/**
-		 * Delete imported WP forms
+		 * Delete imported terms and forms
 		 *
-		 * @since  1.3.0
-		 * @param int $post_id Post Id.
+		 * @since  3.4.0
 		 * @return void
 		 */
-		public function delete_imported_wp_forms( $post_id = 0 ) {
-
+		public function delete_imported_terms_wp_forms() {
 			// Verify Nonce.
 			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
@@ -935,49 +801,36 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
 			}
 
-			$post_id = isset( $_REQUEST['post_id'] ) ? absint( $_REQUEST['post_id'] ) : $post_id;
+			$terms = self::get_reset_term_data();
 
-			$message = '';
-			if ( $post_id ) {
-				$message = 'Deleted - Form ID ' . $post_id . ' - ' . get_post_type( $post_id ) . ' - ' . get_the_title( $post_id );
-				Responsive_Ready_Sites_Importer_Log::add( $message );
-				wp_delete_post( $post_id, true );
-			}
-			/* translators: %s is the form ID */
-			wp_send_json_success( $message );
-		}
-
-		/**
-		 * Delete imported terms
-		 *
-		 * @since  1.3.0
-		 * @param int $term_id Term Id.
-		 * @return void
-		 */
-		public function delete_imported_terms( $term_id = 0 ) {
-
-			// Verify Nonce.
-			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
-
-			if ( ! current_user_can( 'install_plugins' ) ) {
-				wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
-			}
-
-			$term_id = isset( $_REQUEST['term_id'] ) ? absint( $_REQUEST['term_id'] ) : $term_id;
-
-			$message = '';
-
-			if ( $term_id ) {
-				$term = get_term( $term_id );
-				if ( $term ) {
-					$message = 'Deleted - Term ' . $term_id . ' - ' . $term->name . ' ' . $term->taxonomy;
-					Responsive_Ready_Sites_Importer_Log::add( $message );
-					wp_delete_term( $term_id, $term->taxonomy );
+			if ( ! empty( $terms ) ) {
+				foreach ( $terms as $key => $term_id ) {
+					$term_id = absint( $term_id );
+					if ( $term_id ) {
+						$term = get_term( $term_id );
+						if ( ! is_wp_error( $term ) && ! empty( $term ) && is_object( $term ) ) {
+							$message = 'Deleted - Term ' . $term_id . ' - ' . $term->name . ' ' . $term->taxonomy;
+							Responsive_Ready_Sites_Importer_Log::add( $message );
+							wp_delete_term( $term_id, $term->taxonomy );
+						}
+					}
 				}
 			}
 
-			/* translators: %s is the term ID */
-			wp_send_json_success( $message );
+			$forms = self::get_reset_forms_data();
+
+			if ( ! empty( $forms ) ) {
+				foreach ( $forms as $key => $post_id ) {
+					$post_id = absint( $post_id );
+					if ( $post_id ) {
+						$message = 'Deleted - Form ID ' . $post_id . ' - ' . get_post_type( $post_id ) . ' - ' . get_the_title( $post_id );
+						Responsive_Ready_Sites_Importer_Log::add( $message );
+						wp_delete_post( $post_id, true );
+					}
+				}
+			}
+
+			wp_send_json_success();
 		}
 
 		/**
@@ -1114,7 +967,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				}
 			}
 
-			if( 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ) ) {
+			if( 'yes' === get_option( 'responsive_addons_contribution_consent', 'yes' ) ) {
 				// Send data to Mixpanel.
 				$event = array(
 					'event' => 'Single Page Import',
@@ -1239,6 +1092,11 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 		 * @since 3.3.3
 		 */
 		public function responsive_log_template_import_time() {
+
+			if( 'no' === get_option( 'responsive_addons_contribution_consent', 'yes' ) ) {
+				return;
+			}
+
 			// Verify Nonce.
 			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
@@ -1250,7 +1108,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			$template     = isset( $_POST['current_site'] ) ? sanitize_text_field( wp_unslash( $_POST['current_site'] ) ) : '';
 			$page_builder = isset( $_POST['page_builder'] ) ? sanitize_text_field( wp_unslash( $_POST['page_builder'] ) ) : '';
 			$import_type  = isset( $_POST['import_type'] ) ? sanitize_text_field( wp_unslash( $_POST['import_type'] ) ) : '';
-			$title        = isset( $_POST['data']['title']['rendered'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['title'] )['rendered'] ) : '';
+			$title        = isset( $_POST['page_title'] ) ? sanitize_text_field( wp_unslash( $_POST['page_title'] ) ) : '';
 
 			$properties = array(
 				'token'                => 'f8fbbc680f8f9d9b80a50e8c030a3605',
@@ -1258,7 +1116,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				'Template Name'        => $template,
 				'Page Builder'         => $page_builder,
 				'User Site URL'        => get_site_url(),
-				'Import Time Taken(s)' => $time_taken,
+				'Import Time Taken' => $time_taken,
 			);
 
 			$event = array(
@@ -1282,6 +1140,207 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				),
 			));
 			wp_send_json_success();
+		}
+
+		/**
+		 * Log import error and send email notification.
+		 *
+		 * @since 3.4.1
+		 * @return void
+		 */
+		public function log_import_error_and_notify() {
+
+			// Verify Nonce - but don't die on failure, just log it.
+			$nonce_check = check_ajax_referer( 'responsive-addons', '_ajax_nonce', false );
+
+			if ( ! current_user_can( 'install_plugins' ) ) {
+				wp_send_json_error( __( 'User does not have permission!', 'responsive-addons' ) );
+			}
+
+			// Get error data from JS.
+			$stage         = isset( $_POST['stage'] ) ? sanitize_text_field( wp_unslash( $_POST['stage'] ) ) : '';
+			$template_name = isset( $_POST['template_name'] ) ? sanitize_text_field( wp_unslash( $_POST['template_name'] ) ) : '';
+			$primary       = isset( $_POST['primary_text'] ) ? sanitize_text_field( wp_unslash( $_POST['primary_text'] ) ) : '';
+			$secondary     = isset( $_POST['secondary_text'] ) ? sanitize_text_field( wp_unslash( $_POST['secondary_text'] ) ) : '';
+			$error_code    = isset( $_POST['error_code'] ) ? sanitize_text_field( wp_unslash( $_POST['error_code'] ) ) : '';
+			$error_text    = isset( $_POST['error_text'] ) ? wp_kses_post( wp_unslash( $_POST['error_text'] ) ) : '';
+
+			// Fallback: Get template name from last import data if not provided.
+			if ( empty( $template_name ) ) {
+				$import_data = get_option( 'responsive_ready_sites_import_data', array() );
+				if ( ! empty( $import_data['title'] ) ) {
+					$template_name = $import_data['title'];
+				}
+			}
+
+			// Send email notification.
+			$this->send_import_error_email( $template_name, $stage, $primary, $secondary, $error_code, $error_text );
+
+			wp_send_json_success();
+		}
+
+		/**
+		 * Get country name from IP address.
+		 *
+		 * @param string $ip
+		 * @return string
+		 */
+		private function get_country_from_ip( $ip ) {
+			if ( empty( $ip ) ) {
+				return 'Unknown';
+			}
+
+			$response = wp_remote_get(
+				"https://ipapi.co/{$ip}/json/",
+				array(
+					'timeout' => 5,
+				)
+			);
+
+			if ( is_wp_error( $response ) ) {
+				return 'Unknown';
+			}
+
+			$body = wp_remote_retrieve_body( $response );
+			$data = json_decode( $body, true );
+
+			if ( empty( $data ) || empty( $data['country_name'] ) ) {
+				return 'Unknown';
+			}
+
+			return sanitize_text_field( $data['country_name'] );
+		}
+
+		/**
+		 * Send email notification for import errors.
+		 *
+		 * @since 3.4.1
+		 * @param string $template_name Template name.
+		 * @param string $stage         Import stage/process.
+		 * @param string $primary       Primary error text.
+		 * @param string $secondary     Secondary error text.
+		 * @param string $error_code    Error code.
+		 * @param string $error_text    Detailed error text.
+		 * @return void
+		 */
+		private function send_import_error_email( $template_name = '', $stage = '', $primary = '', $secondary = '', $error_code = '', $error_text = '' ) {
+			// Gather environment information.
+			$php_version      = phpversion();
+			$wp_version       = get_bloginfo( 'version' );
+			$addons_version   = defined( 'RESPONSIVE_ADDONS_VER' ) ? RESPONSIVE_ADDONS_VER : 'Unknown';
+			$theme            = wp_get_theme();
+			$theme_name       = $theme->get( 'Name' );
+			$theme_version    = $theme->get( 'Version' );
+			$active_plugins   = (array) get_option( 'active_plugins', array() );
+			$site_url         = get_site_url();
+			$admin_email      = 'support@cyberchimps.com';
+
+			// Get user IP address.
+			$user_ip = '';
+			if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+				$user_ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ) );
+			} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+				$user_ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+			} elseif ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+				$user_ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+			}
+
+			// Determine internet status based on error text.
+			$internet_status = 'Unknown';
+			$error_lower     = strtolower( $error_text );
+			if ( strpos( $error_lower, 'connection failed' ) !== false
+				|| strpos( $error_lower, 'timeout' ) !== false
+				|| strpos( $error_lower, 'network' ) !== false
+				|| strpos( $error_lower, 'server returned an unexpected error page' ) !== false
+				|| strpos( $error_lower, 'fetch' ) !== false
+			) {
+				$internet_status = 'Possible network/server issue detected';
+			} else {
+				$internet_status = 'Internet connection appears to be working';
+			}
+
+			// Detect error types.
+			$error_types = array();
+			if ( strpos( $error_lower, 'fatal' ) !== false ) {
+				$error_types[] = 'Fatal Error';
+			}
+			if ( strpos( $error_lower, 'critical' ) !== false ) {
+				$error_types[] = 'Critical Error';
+			}
+			if ( strpos( $error_lower, 'white screen' ) !== false || strpos( $error_lower, 'wsod' ) !== false ) {
+				$error_types[] = 'White Screen of Death (WSOD)';
+			}
+			if ( strpos( $error_lower, 'stuck' ) !== false || strpos( $error_lower, 'loading' ) !== false ) {
+				$error_types[] = 'Stuck at Loading';
+			}
+			if ( empty( $error_types ) ) {
+				$error_types[] = 'General Error';
+			}
+
+			$country = $this->get_country_from_ip( $user_ip );
+
+			// Build plugin list for conflict detection.
+			$plugins_list = array();
+			if ( ! empty( $active_plugins ) ) {
+				foreach ( $active_plugins as $plugin_file ) {
+					$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
+					$plugin_name = ! empty( $plugin_data['Name'] ) ? $plugin_data['Name'] : $plugin_file;
+					$plugin_ver  = ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : 'N/A';
+					$plugins_list[] = sprintf( '- %s (v%s)', $plugin_name, $plugin_ver );
+				}
+			}
+
+			// Prepare email subject.
+			$subject = sprintf(
+				'[Responsive Add-ons] Template Import Failed - %s',
+				! empty( $template_name ) ? $template_name : 'Unknown Template'
+			);
+
+			// Build email message.
+			$message = "Template Import Failed\n";
+			$message .= str_repeat( '=', 50 ) . "\n\n";
+
+			$message .= "Template Name: " . ( ! empty( $template_name ) ? $template_name : 'Not provided' ) . "\n";
+			$message .= "Failed Process: " . ( ! empty( $stage ) ? $stage : 'Unknown' ) . "\n";
+			$message .= "Site URL: {$site_url}\n";
+			$message .= "Date: " . current_time( 'mysql' ) . "\n\n";
+
+			$message .= "Error Details:\n";
+			$message .= str_repeat( '-', 30 ) . "\n";
+			$message .= "Primary: " . ( ! empty( $primary ) ? $primary : 'N/A' ) . "\n";
+			$message .= "Secondary: " . ( ! empty( $secondary ) ? $secondary : 'N/A' ) . "\n";
+			$message .= "Error Code: " . ( ! empty( $error_code ) ? $error_code : 'N/A' ) . "\n";
+			$message .= "Error Types: " . implode( ', ', $error_types ) . "\n";
+			$message .= "Error Message:\n" . ( ! empty( $error_text ) ? $error_text : 'N/A' ) . "\n\n";
+
+			$message .= "Environment Information:\n";
+			$message .= str_repeat( '-', 30 ) . "\n";
+			$message .= "PHP Version: {$php_version}\n";
+			$message .= "WordPress Version: {$wp_version}\n";
+			$message .= "Responsive Add-ons Version: {$addons_version}\n";
+			$message .= "Active Theme: {$theme_name} (v{$theme_version})\n";
+			$message .= "Internet Status: {$internet_status}\n";
+			$message .= "User IP: {$user_ip}\n";
+			$message .= "Country: {$country}\n\n";
+
+			$message .= "Active Plugins (Potential Conflicts):\n";
+			$message .= str_repeat( '-', 30 ) . "\n";
+			if ( ! empty( $plugins_list ) ) {
+				$message .= implode( "\n", $plugins_list ) . "\n";
+			} else {
+				$message .= "No active plugins detected.\n";
+			}
+
+			// Apply filters to allow customization.
+			$to      = apply_filters( 'responsive_ready_sites_import_error_email_to', $admin_email, $template_name, $stage );
+			$subject = apply_filters( 'responsive_ready_sites_import_error_email_subject', $subject, $template_name, $stage );
+			$message = apply_filters( 'responsive_ready_sites_import_error_email_message', $message, $template_name, $stage );
+
+			// Set email headers.
+			$headers = array( 'Content-Type: text/plain; charset=UTF-8' );
+
+			// Send email.
+			$mail_sent = wp_mail( $to, $subject, $message, $headers );
 		}
 
 		/**
@@ -1320,6 +1379,342 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			));
 			wp_send_json_success();
 		}
+
+		/**
+		 * Give Template data from database.
+		 * 
+		 * @since 3.4.0
+		 */
+		public function get_queried_template_data_from_db( $option, $site_id, $demo_api_uri = null ) {
+
+			$option_data = get_option( $option, array() );
+			// If option is empty, fetch from API
+			if ( empty( $option_data ) || ! is_array( $option_data ) ) {
+				$demo_data = self::get_queried_template_data_from_readysites( $demo_api_uri );
+
+				if ( is_wp_error( $demo_data ) ) {
+					wp_send_json_error( $demo_data->get_error_message() );
+				}
+
+				if ( empty( $demo_data ) || ( isset( $demo_data['success'] ) && ! $demo_data['success'] ) ) {
+					wp_send_json_error( $demo_data );
+				}
+				return $demo_data;
+			}
+
+			// Locate the matching template data.
+			$raw_site_data = array();
+			foreach ( $option_data as $page_data ) {
+				if ( isset( $page_data['id'] ) && intval( $site_id ) === intval( $page_data['id'] ) ) {
+					return $page_data;
+				}
+			}
+
+			return $raw_site_data;
+		}
+
+		public function get_queried_template_data_from_readysites( $demo_api_uri ){
+
+			$api_args = apply_filters(
+				'responsive_sites_api_args',
+				array(
+					'timeout' => 15,
+				)
+			);
+
+			$request_params = apply_filters(
+				'responsive_sites_api_params',
+				array(
+					'api_key'               => '',
+					'site_url'              => site_url(),
+					'responsive_addons_ver' => RESPONSIVE_ADDONS_VER,
+				)
+			);
+
+			$demo_api_uri = add_query_arg( $request_params, $demo_api_uri );
+			// API Call.
+			$response = wp_safe_remote_get( $demo_api_uri, $api_args );
+
+			if ( is_wp_error( $response ) ) {
+				return new WP_Error( 'api_error', $response->get_error_message() );
+			}
+
+			$body = wp_remote_retrieve_body( $response );
+			$data = json_decode( $body, true );
+
+			if ( empty( $data ) || ! is_array( $data ) ) {
+				return new WP_Error( 'invalid_json', 'Invalid API response received.' );
+			}
+
+			if ( isset( $data['success'] ) && ! $data['success'] ) {
+				return $data;
+			}
+
+			return $data;
+		}
+
+		/**
+		 * Get Site Import Data.
+		 *
+		 * @since 3.4.0
+		 * @return void
+		 */
+		public function get_site_data_for_import() {
+
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( __( 'User does not have permission!', 'responsive-add-ons' ) );
+			}
+
+			// Sanitize input data.
+			$demo_api_uri  = ! empty( $_POST['api_url'] ) ? esc_url_raw( $_POST['api_url'] ) : '';
+			$site_location = ! empty( $_POST['location'] ) ? sanitize_text_field( $_POST['location'] ) : '';
+			$tmpl_id       = ! empty( $_POST['site_id'] ) ? sanitize_key( $_POST['site_id'] ) : '';
+
+			if ( empty( $site_location ) ) {
+				wp_send_json_error( __( 'Invalid site location parameter.', 'responsive-add-ons' ) );
+			}
+
+			if ( empty( $tmpl_id ) ) {
+				wp_send_json_error( __( 'Missing or invalid template ID.', 'responsive-add-ons' ) );
+			}
+
+			// Fetch stored option data.
+			$raw_site_data = $this->get_queried_template_data_from_db($site_location, $tmpl_id, $demo_api_uri);
+
+			if ( empty( $raw_site_data ) ) {
+				wp_send_json_error( __( 'Data not found for the selected template.', 'responsive-add-ons' ) );
+			}
+
+			$current_site_data = self::prepare_site_data_for_import( $raw_site_data );
+
+			if ( is_wp_error( $current_site_data ) ) {
+				wp_send_json_error( $current_site_data->get_error_message() );
+			}
+
+			if ( empty( $current_site_data ) || ( isset( $current_site_data['success'] ) && ! $current_site_data['success'] ) ) {
+				wp_send_json_error( __( 'Failed to prepare site data for import.', 'responsive-add-ons' ) );
+			}
+
+			update_option( 'responsive_ready_sites_import_data', $current_site_data );
+
+			/**
+			 * Trigger the start of import process.
+			 */
+			do_action( 'responsive_ready_sites_import_start', $current_site_data, $demo_api_uri );
+
+			/**
+			 * Mixpanel tracking — only if user consented.
+			 */
+			if ( 'yes' === get_option( 'responsive_addons_contribution_consent', 'yes' ) ) {
+				$event = array(
+					'event' => 'Template Import',
+					'properties' => array(
+						'token'         => 'f8fbbc680f8f9d9b80a50e8c030a3605',
+						'distinct_id'   => substr( hash( 'sha256', get_site_url() ), 0, 16 ),
+						'Template Name' => $current_site_data['title'],
+						'Page Builder'  => $current_site_data['page_builder'],
+						'User Site URL' => get_site_url(),
+					),
+				);
+
+				$response = wp_remote_post(
+					'https://api.mixpanel.com/track?ip=1',
+					array(
+						'body' => array( 'data' => base64_encode( wp_json_encode( $event ) ) ),
+						'timeout' => 5,
+					)
+				);
+
+				if ( is_wp_error( $response ) ) {
+					error_log( 'Mixpanel tracking failed: ' . $response->get_error_message() );
+				}
+			}
+
+			wp_send_json_success( $current_site_data );
+		}
+
+
+		/**
+		 * Prepare single site data for import.
+		 *
+		 * @since 3.4.0
+		 * @param array $data Raw site data.
+		 * @return array Prepared site data.
+		 */
+		public static function prepare_site_data_for_import( $data ) {
+
+			if ( empty( $data ) || ! is_array( $data ) ) {
+				return array();
+			}
+
+			$defaults = array(
+				'id'                   => '',
+				'xml_path'             => '',
+				'wpforms_path'         => '',
+				'site_customizer_data' => '',
+				'required_plugins'     => array(),
+				'site_widgets_data'    => '',
+				'slug'                 => '',
+				'site_options_data'    => '',
+				'pages'                => '',
+				'page_builder'         => '',
+			);
+
+			// Ensure the RBEA plugin is listed.
+			$rbea_plugin = array(
+				'name' => 'Responsive Block Editor Addons',
+				'slug' => 'responsive-block-editor-addons',
+				'init' => 'responsive-block-editor-addons/responsive-block-editor-addons.php',
+			);
+
+			$plugins = isset( $data['required_plugins'] ) && is_array( $data['required_plugins'] )
+				? $data['required_plugins']
+				: array();
+
+			$plugin_slugs = wp_list_pluck( $plugins, 'slug' );
+			if ( ! in_array( $rbea_plugin['slug'], $plugin_slugs, true ) ) {
+				array_unshift( $plugins, $rbea_plugin );
+			}
+
+			$processedPluginsList = self::prepare_template_required_plugins( $plugins );
+
+			// Build final structure.
+			$prepared = array(
+				'id'                   => $data['id'] ?? '',
+				'xml_path'             => $data['xml_path'] ?? '',
+				'wpforms_path'         => $data['wpforms_path'] ?? '',
+				'site_customizer_data' => $data['site_customizer_data'] ?? '',
+				'required_plugins'     => $plugins,
+				'required_pro_plugins' => $data['required_pro_plugins'] ?? array(),
+				'pages'                => $data['pages'] ?? '',
+				'site_widgets_data'    => ! empty( $data['site_widgets_data'] ) ? json_decode( $data['site_widgets_data'], true ) : array(),
+				'site_options_data'    => $data['site_options_data'] ?? '',
+				'slug'                 => $data['slug'] ?? '',
+				'featured_image_url'   => $data['featured_image_url'] ?? '',
+				'title'                => $data['title']['rendered'] ?? '',
+				'success'              => true,
+				'page_builder'         => $data['page_builder'] ?? '',
+				'site-url'             => $data['site_url'] ?? '',
+				'allow-pages'          => $data['allow_pages'] ?? false,
+				'notInstalledPlugins'  => $processedPluginsList['notinstalled'] ?? array(),
+				'notActivePlugins'     => $processedPluginsList['inactive'] ?? array(),
+			);
+
+			return wp_parse_args( $prepared, $defaults );
+		}
+
+		public static function prepare_template_required_plugins( $required_plugins = array(), $required_pro_plugins = array() ) {
+
+			$response = array(
+				'active'       => array(),
+				'inactive'     => array(),
+				'notinstalled' => array(),
+				'proplugins'   => array(),
+			);
+
+			if ( ! current_user_can( 'install_plugins' ) ) {
+				wp_send_json_error( $response );
+			}
+
+			$required_plugins_count = count( $required_plugins );
+			$required_pro_plugins   = map_deep( $required_pro_plugins, 'sanitize_text_field' );
+
+			if ( $required_plugins_count > 0 ) {
+
+				for ( $i = 0; $i < $required_plugins_count; $i++ ) {
+					$name = isset( $required_plugins[ $i ]['name'] ) ? sanitize_text_field( wp_unslash( $required_plugins[ $i ]['name'] ) ) : '';
+					$slug = isset( $required_plugins[ $i ]['slug'] ) ? sanitize_text_field( wp_unslash( $required_plugins[ $i ]['slug'] ) ) : '';
+					$init = isset( $required_plugins[ $i ]['init'] ) ? sanitize_text_field( wp_unslash( $required_plugins[ $i ]['init'] ) ) : '';
+
+					$plugin = array(
+						'name' => $name,
+						'slug' => $slug,
+						'init' => $init,
+					);
+
+					if ( file_exists( WP_PLUGIN_DIR . '/' . $init ) && is_plugin_inactive( $init ) ) {
+
+						$response['inactive'][] = $plugin;
+
+					} elseif ( ! file_exists( WP_PLUGIN_DIR . '/' . $init ) ) {
+
+						$response['notinstalled'][] = $plugin;
+
+					} else {
+						$response['active'][] = $plugin;
+					}
+				}
+			}
+
+			if ( is_array( $required_pro_plugins ) && count( $required_pro_plugins ) > 0 ) {
+				foreach ( $required_pro_plugins as $key => $plugin ) {
+					$response['proplugins'][] = $plugin;
+				}
+			}
+
+			return $response;
+		}
+
+		/**
+		 * Get terms reset data.
+		 * 
+		 * @since 3.4.0
+		 */
+		public static function get_reset_term_data() {
+
+			global $wpdb;
+			$term_ids = $wpdb->get_col( "SELECT term_id FROM {$wpdb->termmeta} WHERE meta_key='_responsive_ready_sites_imported_term'" );
+
+			return $term_ids;
+		}
+
+		/**
+		 * Get forms reset data.
+		 * 
+		 * @since 3.4.0
+		 */
+		public static function get_reset_forms_data() {
+
+			global $wpdb;
+
+			$form_ids = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_responsive_ready_sites_imported_wp_forms'" );
+
+			return $form_ids;
+		}
+
+		/**
+		 * Get imported posts reset data.
+		 * 
+		 * @since 3.4.0
+		 */
+		public static function get_reset_posts_data() {
+
+			global $wpdb;
+
+			$post_ids = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_responsive_ready_sites_imported_post'" );
+
+			return $post_ids;
+		}
+
+		/**
+		 * Prepare required plugins for a page.
+		 */
+		public function prepare_page_required_plugins() {
+
+			// Verify Nonce.
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+			if ( ! current_user_can( 'install_plugins' ) ) {
+				wp_send_json_error( __( 'User does not have permission!', 'responsive-add-ons' ) );
+			}
+
+			$required_plugins     = isset( $_POST['required_plugins'] ) ? json_decode( wp_unslash( $_POST['required_plugins'] ), true ) : array();
+			$processedPluginsList = self::prepare_template_required_plugins( $required_plugins );
+
+			wp_send_json_success( $processedPluginsList );
+		}
+
 	}
 
 	/**

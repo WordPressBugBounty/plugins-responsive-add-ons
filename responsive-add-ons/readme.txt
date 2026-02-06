@@ -3,9 +3,9 @@ Contributors: cyberchimps
 Donate Link: https://cyberchimps.com
 Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 3.3.4
+Stable tag: 3.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -242,6 +242,32 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 8. Responsive Plus advanced features.
 
 == Changelog ==
+
+= 3.4.4 - 30th January 2026 =
+* Improvement - Improved the import template flow by redirecting users to the Template Library page immediately after plugin activation.
+* Fix - Resolved an issue where enabling Mega Menu caused the mobile menu toggle to stop working.
+
+= 3.4.3 - 14th January 2026 =
+* Fix - Resolved issues in starter templates.
+* Fix - Fixed hamburger and close icons not appearing correctly on Desktop and Mobile views when header is added via Site Builder.
+* Fix - Enhanced Security: Strengthened the codebase to further protect your website.
+
+= 3.4.2 - 31st December 2025 = 
+* Fix - Fixed post_status error appearing due to Tags and Categories not getting created properly.
+* Fix - Fixed an error causing the nav menu structure to appear broken after template import on an existing site.
+
+= 3.4.1 - 5th December 2025 =
+* Fix - Made compatible with WordPress 6.9
+
+= 3.4.0 - 25th November 2025 =
+* Improvement - Revamped the starter templates import journey.
+* Improvement - Made Site Builder compatible with Responsive theme's Mobile Header builder.
+
+= 3.3.5 - 27th October 2025 =
+* Improvement - Enhanced the template import experience.
+* Improvement - Improved synchronization of the template library.
+* Fix - Resolved an issue where the permalink structure changed after importing a template.
+* Fix - Updated code to comply with WordPress and PHPCS coding standards.
 
 = 3.3.4 - 29th September 2025 =
 * Improvement - Added support for Responsive Blocks (Gutenberg) to work seamlessly with the Site Builder.

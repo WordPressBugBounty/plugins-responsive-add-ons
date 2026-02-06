@@ -29,8 +29,21 @@ jQuery( document ).ready(
 			function (event) {
 				if (event.isTrusted && event.origin === responsiveAddonsGettingStarted.ccAppURL) {
 					if ( event.data === 'success' ) {
-						location.reload();
-					} else {
+						const params = new URLSearchParams(window.location.search);
+						const page = params.get('page');
+						if ( page && page === 'responsive_add_ons' ) {
+							ResponsiveSitesAdmin._closeUnlockTemplatesModal();
+							ResponsiveSitesAdmin._closeAppConnectModal();
+							if( ResponsiveSitesAdmin.lastClickedImportType ) {
+								$( ResponsiveSitesAdmin.lastClickedImportType ).trigger('click');
+							} else {
+								$('.responsive-addons-demo-import-options').trigger('click');
+							}
+						} else {
+							location.reload();
+						}
+
+					} else if ( responsiveAddonsGettingStarted.site_url === encodeURIComponent( event.data.site_url ) ) {
 						_storeAuth( event.data );
 					}
 				}
@@ -133,15 +146,26 @@ jQuery( document ).ready(
 						origin: data.origin,
 					},
 					success: function (response) {
-						setTimeout( () => {
-							location.reload();
-						}, 800 );
+						const params = new URLSearchParams(window.location.search);
+						const page = params.get('page');
+						if ( page && page === 'responsive_add_ons' ) {
+							ResponsiveSitesAdmin._closeUnlockTemplatesModal();
+							ResponsiveSitesAdmin._closeAppConnectModal();
+							if( ResponsiveSitesAdmin.lastClickedImportType ) {
+								$( ResponsiveSitesAdmin.lastClickedImportType ).trigger('click');
+							} else {
+								$('.responsive-addons-demo-import-options').trigger('click');
+							}
+						} else {
+							setTimeout( () => {
+								location.reload();
+							}, 800 );
+						}
 					},
 					error: function (error) {
 					}
 				}
 			);
-
 		}
 
 		function _deleteAppAuth() {

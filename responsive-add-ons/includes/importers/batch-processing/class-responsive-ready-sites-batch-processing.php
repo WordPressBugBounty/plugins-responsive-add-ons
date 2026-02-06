@@ -346,7 +346,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 				'timeout' => 60,
 			);
 
-			$api_url = self::$api_url . 'get-rst-blocks-requests-count2/?per_page=15';
+			$api_url = self::$api_url . 'get-rst-blocks-requests-count2/?per_page=30';
 
 			$response = wp_safe_remote_get( $api_url, $api_args );
 
@@ -569,6 +569,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 				}
 				// Get count.
 				if ( $responsive_sites_request ) {
+					update_site_option( 'responsive-ready-sites-requests', $responsive_sites_request );
 					for ( $page = 1; $page <= $responsive_sites_request; $page++ ) {
 						$sites_and_pages = array();
 						if ( file_exists( $dir . 'responsive-ready-sites-and-pages-page-' . $page . '.json' ) ) {

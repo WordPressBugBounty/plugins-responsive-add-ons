@@ -69,61 +69,63 @@ class Responsive_Ready_Sites_Batch_Processing_Elementor extends Source_Local {
 	 * @param  integer $post_id Post ID.
 	 * @return void
 	 */
-	public function import_single_post( $post_id = 0 ) {
+	public function import_single_post($post_id = 0)
+	{
 
-		if ( ! empty( $post_id ) ) {
+		if (!empty($post_id)) {
 
-			$hotlink_imported = get_post_meta( $post_id, '_responsive_sites_hotlink_imported', true );
+			$hotlink_imported = get_post_meta($post_id, '_responsive_sites_hotlink_imported', true);
 
-			if ( empty( $hotlink_imported ) ) {
+			if (empty($hotlink_imported)) {
 
-				$data = get_post_meta( $post_id, '_elementor_data', true );
+				$data = get_post_meta($post_id, '_elementor_data', true);
 
-				if ( ! empty( $data ) ) {
+				if (!empty($data)) {
 
 					// Update WP form IDs.
-					$ids_mapping = get_option( 'responsive_sites_wpforms_ids_mapping', array() );
-					if ( $ids_mapping ) {
-						foreach ( $ids_mapping as $old_id => $new_id ) {
-							$data = str_replace( '[wpforms id=\"' . $old_id, '[wpforms id=\"' . $new_id, $data );
+					$ids_mapping = get_option('responsive_sites_wpforms_ids_mapping', array());
+					if ($ids_mapping) {
+						foreach ($ids_mapping as $old_id => $new_id) {
+							$data = str_replace('[wpforms id=\"' . $old_id, '[wpforms id=\"' . $new_id, $data);
 						}
 					}
 
-					if ( ! is_array( $data ) ) {
-						$data = json_decode( $data, true );
+					if (!is_array($data)) {
+						$data = json_decode($data, true);
 					}
 
-					$term_ids_mapping = get_option( 'responsive_sites_term_ids_mapping', array() );
-					$term_ids_mapping = maybe_unserialize( $term_ids_mapping );
+					$term_ids_mapping = get_option('responsive_sites_term_ids_mapping', array());
+					$term_ids_mapping = maybe_unserialize($term_ids_mapping);
 
-					array_walk( $data, array( $this, 'traverse_array_recursive' ), $term_ids_mapping );
+					array_walk($data, array($this, 'traverse_array_recursive'), $term_ids_mapping);
 
-					$document = Plugin::$instance->documents->get( $post_id );
-					if ( $document ) {
-						$data = $document->get_elements_raw_data( $data, true );
+					$document = Plugin::$instance->documents->get($post_id);
+					if ($document) {
+						$data = $document->get_elements_raw_data($data, true);
 					}
 
 					// Import the data.
-					$data = $this->process_export_import_content( $data, 'on_import' );
+					$data = $this->process_export_import_content($data, 'on_import');
 
-					$current_page_api = get_option( 'current_page_api' );
-					if ( isset( $current_page_api ) ) {
-						$data = wp_json_encode( $data, true );
-						if ( ! empty( $data ) ) {
-							$site_url         = get_site_url();
-							$site_url         = str_replace( '/', '\/', $site_url );
-							$current_page_api = str_replace( '/', '\/', $current_page_api );
-							$data             = str_replace( $current_page_api, $site_url, $data );
-							$data             = json_decode( $data, true );
+					$current_page_api = get_option('current_page_api');
+					if (isset($current_page_api)) {
+						$data = wp_json_encode($data, true);
+						if (!empty($data)) {
+							$site_url = get_site_url();
+							$site_url = str_replace('/', '\/', $site_url);
+							$current_page_api = str_replace('/', '\/', $current_page_api);
+							$data = str_replace($current_page_api, $site_url, $data);
+							$data = json_decode($data, true);
 						}
 					}
 
 					// Update processed meta.
-					update_metadata( 'post', $post_id, '_elementor_data', $data );
-					update_metadata( 'post', $post_id, '_responsive_sites_hotlink_imported', true );
+					update_metadata('post', $post_id, '_elementor_data', $data);
+					update_metadata('post', $post_id, '_responsive_sites_hotlink_imported', true);
 
 					// !important, Clear the cache after images import.
 					Plugin::$instance->files_manager->clear_cache();
+					Plugin::$instance->posts_css_manager->clear_cache();
 
 				}
 			}
@@ -158,29 +160,30 @@ class Responsive_Ready_Sites_Batch_Processing_Elementor extends Source_Local {
 	 * @param  array   $data Elementor Data.
 	 * @return array   $data Elementor Imported Data.
 	 */
-	public function responsive_import_post_meta( $post_id = 0, $data = array() ) {
+	public function responsive_import_post_meta($post_id = 0, $data = array())
+	{
 
-		if ( ! empty( $post_id ) && ! empty( $data ) ) {
+		if (!empty($post_id) && !empty($data)) {
 
-			$data = wp_json_encode( $data, true );
+			$data = wp_json_encode($data, true);
 
 			// Update WP form IDs.
-			$ids_mapping = get_option( 'responsive_sites_wpforms_ids_mapping', array() );
+			$ids_mapping = get_option('responsive_sites_wpforms_ids_mapping', array());
 
-			if ( $ids_mapping ) {
-				foreach ( $ids_mapping as $old_id => $new_id ) {
-					$data = str_replace( '[wpforms id=\"' . $old_id, '[wpforms id=\"' . $new_id, $data );
-					$data = str_replace( '"select_form":"' . $old_id, '"select_form":"' . $new_id, $data );
+			if ($ids_mapping) {
+				foreach ($ids_mapping as $old_id => $new_id) {
+					$data = str_replace('[wpforms id=\"' . $old_id, '[wpforms id=\"' . $new_id, $data);
+					$data = str_replace('"select_form":"' . $old_id, '"select_form":"' . $new_id, $data);
 				}
 			}
 
-			$data = json_decode( $data, true );
+			$data = json_decode($data, true);
 
 			// Import the data.
-			$data = $this->process_export_import_content( $data, 'on_import' );
+			$data = $this->process_export_import_content($data, 'on_import');
 
 			// Update processed meta.
-			update_metadata( 'post', $post_id, '_elementor_data', $data );
+			update_metadata('post', $post_id, '_elementor_data', $data);
 
 			// !important, Clear the cache after images import.
 			Plugin::$instance->posts_css_manager->clear_cache();

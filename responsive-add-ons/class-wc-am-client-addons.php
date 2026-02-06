@@ -1,15 +1,16 @@
 <?php
-
 /**
- * The WooCommerce API Manager PHP Client Library is designed to be droppped into a WordPress plugin or theme.
- * This version is designed to be used with the WooCommerce API Manager version 2.x.
+ * WooCommerce API Manager PHP Client Library
+ *
+ * A PHP library designed to be embedded in a WordPress plugin or theme for communicating with the WooCommerce API Manager 2.x.
+ * Provides functions for license activation, deactivation, and software updates.
  *
  * Intellectual Property rights, and copyright, reserved by Todd Lahman, LLC as allowed by law include,
  * but are not limited to, the working concept, function, and behavior of this software,
  * the logical code structure and expression as written.
  *
  * @version       2.7
- * @author        Todd Lahman LLC https://www.toddlahman.com/
+ * @author        Todd Lahman LLC <https://www.toddlahman.com/>
  * @copyright     Copyright (c) Todd Lahman LLC (support@toddlahman.com)
  * @package       WooCommerce API Manager plugin and theme library
  * @license       Copyright Todd Lahman LLC
@@ -19,45 +20,201 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
-	class WC_AM_Client_2_7_Responsive_Addons {
+if ( ! class_exists( 'WC_AM_Client_Addons' ) ) {
+	/**
+	 * Sends and receives data to and from the server API
+	 *
+	 * @since  2.0
+	 *
+	 * @param array  $args
+	 * @param string $target_url
+	 * @param array  $header
+	 * @param string $id
+	 *
+	 * @return array|string|false
+	 */
+	class WC_AM_Client_Addons {
 
 		/**
-		 * Class args
+		 * URL to the API endpoint.
 		 *
 		 * @var string
 		 */
-		public $api_url          = '';
-		public $data_key         = '';
-		public $file             = '';
-		public $plugin_name      = '';
-		public $plugin_or_theme  = '';
-		public $product_id       = '';
-		public $slug             = '';
-		public $software_title   = '';
+		public $api_url = '';
+
+		/**
+		 * The key used to retrieve stored activation data.
+		 *
+		 * @var string
+		 */
+		public $data_key = '';
+
+		/**
+		 * Path to the plugin or theme file.
+		 *
+		 * @var string
+		 */
+		public $file = '';
+
+		/**
+		 * Name of the plugin or theme.
+		 *
+		 * @var string
+		 */
+		public $plugin_name = '';
+
+		/**
+		 * Either 'plugin' or 'theme'.
+		 *
+		 * @var string
+		 */
+		public $plugin_or_theme = '';
+
+		/**
+		 * Product ID as set in the API Manager.
+		 *
+		 * @var string
+		 */
+		public $product_id = '';
+
+		/**
+		 * Unique identifier for the plugin or theme.
+		 *
+		 * @var string
+		 */
+		public $slug = '';
+
+		/**
+		 * Display title of the software.
+		 *
+		 * @var string
+		 */
+		public $software_title = '';
+
+		/**
+		 * Current version of the software.
+		 *
+		 * @var string
+		 */
 		public $software_version = '';
-		public $text_domain      = ''; // For language translation.
 
 		/**
-		 * Class properties.
+		 * Text domain used for language translation.
 		 *
 		 * @var string
 		 */
-		public $data                          = array();
-		public $identifier                    = '';
-		public $no_product_id                 = false;
-		public $product_id_chosen             = 0;
-		public $wc_am_activated_key           = '';
-		public $wc_am_api_key_key             = '';
-		public $wc_am_deactivate_checkbox_key = '';
-		public $wc_am_domain                  = '';
-		public $wc_am_instance_id             = '';
-		public $wc_am_instance_key            = '';
-		public $wc_am_plugin_name             = '';
-		public $wc_am_product_id              = '';
-		public $wc_am_software_version        = '';
-		public $responsive_activated          = false;
+		public $text_domain = '';
 
+		/**
+		 * Storage for various runtime data.
+		 *
+		 * @var array
+		 */
+		public $data = array();
+
+		/**
+		 * License identifier for this instance.
+		 *
+		 * @var string
+		 */
+		public $identifier = '';
+
+		/**
+		 * Whether no product ID is used.
+		 *
+		 * @var bool
+		 */
+		public $no_product_id = false;
+
+		/**
+		 * Numeric product ID chosen.
+		 *
+		 * @var int
+		 */
+		public $product_id_chosen = 0;
+
+		/**
+		 * Transient option key for whether this plugin is activated.
+		 *
+		 * @var string
+		 */
+		public $wc_am_activated_key = '';
+
+		/**
+		 * Transient option key for the API key.
+		 *
+		 * @var string
+		 */
+		public $wc_am_api_key_key = '';
+
+		/**
+		 * Transient option key for the deactivation checkbox.
+		 *
+		 * @var string
+		 */
+		public $wc_am_deactivate_checkbox_key = '';
+
+		/**
+		 * Domain name where the plugin or theme is activated.
+		 *
+		 * @var string
+		 */
+		public $wc_am_domain = '';
+
+		/**
+		 * Instance ID of this activation.
+		 *
+		 * @var string
+		 */
+		public $wc_am_instance_id = '';
+
+		/**
+		 * Unique key for this instance.
+		 *
+		 * @var string
+		 */
+		public $wc_am_instance_key = '';
+
+		/**
+		 * Plugin name used in API communication.
+		 *
+		 * @var string
+		 */
+		public $wc_am_plugin_name = '';
+
+		/**
+		 * Product ID used in API communication.
+		 *
+		 * @var string
+		 */
+		public $wc_am_product_id = '';
+
+		/**
+		 * Software version used in API communication.
+		 *
+		 * @var string
+		 */
+		public $wc_am_software_version = '';
+
+		/**
+		 * Whether the plugin is currently activated.
+		 *
+		 * @var bool
+		 */
+		public $responsive_activated = false;
+		/**
+		 * Constructor for the API Manager client.
+		 *
+		 * Initializes the software activation handler for a plugin or theme.
+		 *
+		 * @param string     $file             Path to the plugin or theme file.
+		 * @param string|int $product_id   Product ID used in the API Manager.
+		 * @param string     $software_version Current software version.
+		 * @param string     $plugin_or_theme  Indicates whether it's a plugin or a theme.
+		 * @param string     $api_url          API endpoint URL.
+		 * @param string     $software_title   (Optional) Display title of the software.
+		 * @param string     $text_domain      (Optional) Text domain for translations.
+		 */
 		public function __construct( $file, $product_id, $software_version, $plugin_or_theme, $api_url, $software_title = '', $text_domain = '' ) {
 			$this->no_product_id   = empty( $product_id ) ? true : false;
 			$this->plugin_or_theme = esc_attr( $plugin_or_theme );
@@ -67,15 +224,10 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 				$product_id              = strtolower( str_ireplace( array( ' ', '_', '&', '?', '-' ), '_', $this->identifier ) );
 				$this->wc_am_product_id  = 'wc_am_product_id_' . $product_id;
 				$this->product_id_chosen = get_option( $this->wc_am_product_id );
+			} elseif ( is_int( $product_id ) ) {
+				$this->product_id = absint( $product_id );
 			} else {
-				/**
-				 * Preserve the value of $product_id to use for API requests. Pre 2.0 product_id is a string, and >= 2.0 is an integer.
-				 */
-				if ( is_int( $product_id ) ) {
-					$this->product_id = absint( $product_id );
-				} else {
-					$this->product_id = esc_attr( $product_id );
-				}
+				$this->product_id = esc_attr( $product_id );
 			}
 
 			// If the product_id was not provided, but was saved by the customer, used the saved product_id.
@@ -125,10 +277,10 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 				$this->wc_am_deactivate_checkbox_key = $this->data_key . '_deactivate_checkbox';
 
 				/**
-				 * Set all software update data here
+				 * Set all software update data here.
 				 */
 				$this->data              = get_option( $this->data_key );
-				$this->wc_am_plugin_name = 'plugin' == $this->plugin_or_theme ? untrailingslashit( plugin_basename( $this->file ) ) : get_stylesheet(); // same as plugin. slug. if a theme use a theme name like 'twentyeleven'
+				$this->wc_am_plugin_name = 'plugin' == $this->plugin_or_theme ? untrailingslashit( plugin_basename( $this->file ) ) : get_stylesheet(); // same as plugin. slug. if a theme use a theme name like 'twentyeleven'.
 				$this->wc_am_instance_id = get_option( $this->wc_am_instance_key ); // Instance ID (unique to each blog activation).
 				/**
 				 * Some web hosts have security policies that block the : (colon) and // (slashes) in http://,
@@ -182,6 +334,8 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 		 */
 		public function uninstall() {
 			/**
+			 * Allows disabling the uninstall() method via filter.
+			 *
 			 * @since 2.5.1
 			 *
 			 * Filter wc_am_client_uninstall_disable
@@ -252,9 +406,9 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 		/**
 		 * Builds the URL containing the API query string for activation, deactivation, and status requests.
 		 *
-		 * @param array $args
+		 * @param array $args Query arguments to append to the API URL.
 		 *
-		 * @return string
+		 * @return string The full API URL with query parameters.
 		 */
 		public function create_software_api_url( $args ) {
 			return add_query_arg( 'wc-api', 'wc-am-api', $this->api_url ) . '&' . http_build_query( $args );
@@ -263,12 +417,12 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 		/**
 		 * Sends the request to activate to the API Manager.
 		 *
-		 * @param array $args
+		 * @param array      $args Arguments for activation request.
+		 * @param int|string $product_id Optional product ID to activate. Default 0.
 		 *
-		 * @return bool|string
+		 * @return bool|string API response or false on failure.
 		 */
 		public function activate( $args, $product_id = 0 ) {
-
 			$this->product_id = $product_id;
 
 			$defaults = array(
@@ -284,23 +438,38 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 			return $args;
 		}
 
+		/**
+		 * Sends a request to deactivate the license via API Manager.
+		 *
+		 * @param array      $args       Arguments for deactivation request.
+		 * @param string     $target_url URL of the API endpoint to send the request.
+		 * @param array      $header     HTTP headers for the request.
+		 * @param int|string $id         Unique identifier of the license or instance.
+		 *
+		 * @return false|string          False on failure, or API response body on success.
+		 */
 		public function deactivate( $args, $target_url, $header, $id ) {
 			$defaults = array(
-				'wc_am_action'    => 'deactivate',
-				'product_id' => $this->product_id,
-				'instance'   => $this->wc_am_instance_id,
-				'object'     => $this->wc_am_domain,
+				'wc_am_action' => 'deactivate',
+				'product_id'   => $this->product_id,
+				'instance'     => $this->wc_am_instance_id,
+				'object'       => $this->wc_am_domain,
 			);
 
 			$args    = wp_parse_args( $defaults, $args );
-			$request = wp_remote_post( $target_url, array(
-				'timeout' => 15,
-				'body'    => wp_json_encode(array(
-					'id'              => $id,
-					'disconnect_args' => $args,
-				)),
-				'headers' => $header,
-			) );
+			$request = wp_remote_post(
+				$target_url,
+				array(
+					'timeout' => 15,
+					'body'    => wp_json_encode(
+						array(
+							'id'              => $id,
+							'disconnect_args' => $args,
+						)
+					),
+					'headers' => $header,
+				)
+			);
 
 			if ( is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) != 200 ) {
 				// Request failed.
@@ -332,13 +501,13 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 		}
 
 		/**
-		 * Sends and receives data to and from the server API
+		 * Sends and receives data to and from the server API.
 		 *
 		 * @since  2.0
 		 *
-		 * @param array $args
+		 * @param array $args Array of query parameters to send with the API request.
 		 *
-		 * @return bool|string $response
+		 * @return bool|string $response The API response body as a string, or false on failure.
 		 */
 		public function send_query( $args ) {
 			$target_url = esc_url_raw( add_query_arg( 'wc-api', 'wc-am-api', $this->api_url ) . '&' . http_build_query( $args ) );
@@ -354,16 +523,16 @@ if ( ! class_exists( 'WC_AM_Client_2_7_Responsive_Addons' ) ) {
 		}
 
 		/**
-		 * API request for informatin.
+		 * API request for information.
 		 *
 		 * If `$action` is 'query_plugins' or 'plugin_information', an object MUST be passed.
-		 * If `$action` is 'hot_tags` or 'hot_categories', an array should be passed.
+		 * If `$action` is 'hot_tags' or 'hot_categories', an array should be passed.
 		 *
 		 * @param false|object|array $result The result object or array. Default false.
 		 * @param string             $action The type of information being requested from the Plugin Install API.
-		 * @param object             $args
+		 * @param object             $args   Arguments passed to the request.
 		 *
-		 * @return object
+		 * @return object The response object from the API or the original $result on failure.
 		 */
 		public function information_request( $result, $action, $args ) {
 			// Check if this plugins API is about this plugin.

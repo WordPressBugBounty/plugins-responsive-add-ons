@@ -1,13 +1,18 @@
 <?php
 /**
  * Provide a admin area view for the plugin
+ *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
  * @link       https://cyberchimps.com/
- * @since      1.0.0
+ * @since      2.6.6
+ *
  * @package    Responsive Ready Sites
  */
 
+?>
+
+<?php
 require_once RESPONSIVE_ADDONS_DIR . 'includes/class-responsive-add-ons-app-auth.php';
 require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
 $cc_app_auth                = new Responsive_Add_Ons_App_Auth();
@@ -25,8 +30,10 @@ $responsive_sites_header_after_connection_success = false;
 <div id="responsive-ready-sites-page-import-progress"></div>
 <div id="responsive-ready-sites-import-done-congrats"></div>
 <div id="responsive-ready-sites-admin-page">
-	<?php if ( get_transient( 'responsive_ready_sites_display_connect_success' ) ) : 
-		$responsive_sites_header_after_connection_success = true ?>
+	<?php
+	if ( get_transient( 'responsive_ready_sites_display_connect_success' ) ) :
+		$responsive_sites_header_after_connection_success = true
+		?>
 		<div class="responsive-templates-app-auth-sucess-msg">
 			<p class="auth-success-msg"><span class="auth-success-msg">
 			<?php esc_html_e( 'Congratulations! Your website is now connected to Cyberchimps Responsive. You can start importing Templates.', 'responsive-add-ons' ); ?>
@@ -41,7 +48,7 @@ $responsive_sites_header_after_connection_success = false;
 		<div class="responsive-addons-consent-wrapper">
 			<!-- Consent Toggle -->
 			<label class="switch">
-				<input type="checkbox" id="responsive-addons-consent-toggle" <?php echo 'yes' === get_option( 'responsive_addons_contribution_consent', 'no' ) ? 'checked' : ''; ?>>
+				<input type="checkbox" id="responsive-addons-consent-toggle" <?php echo 'yes' === get_option( 'responsive_addons_contribution_consent', 'yes' ) ? 'checked' : ''; ?>>
 				<span class="slider round"></span>
 			</label>
 			<div class="responsive-addons-consent-text">
@@ -53,7 +60,7 @@ $responsive_sites_header_after_connection_success = false;
 	<?php
 
 	$responsive_sites_header_after_connection_success = false;
-	$business_subcategories   = array(
+	$business_subcategories                           = array(
 		array(
 			'name' => 'Advertising & Marketing',
 			'slug' => 'advertising-marketing',
@@ -95,7 +102,7 @@ $responsive_sites_header_after_connection_success = false;
 			'slug' => 'technology-apps',
 		),
 	);
-	$health_subcategories     = array(
+	$health_subcategories                             = array(
 		array(
 			'name' => 'Doctor',
 			'slug' => 'doctor',
@@ -125,7 +132,7 @@ $responsive_sites_header_after_connection_success = false;
 			'slug' => 'yoga',
 		),
 	);
-	$fashion_subcategories    = array(
+	$fashion_subcategories                            = array(
 		array(
 			'name' => 'Fashion',
 			'slug' => 'fashion',
@@ -143,7 +150,7 @@ $responsive_sites_header_after_connection_success = false;
 			'slug' => 'makeup-cosmetics',
 		),
 	);
-	$restaurant_subcategories = array(
+	$restaurant_subcategories                         = array(
 		array(
 			'name' => 'Food',
 			'slug' => 'food',
@@ -165,7 +172,7 @@ $responsive_sites_header_after_connection_success = false;
 			'slug' => 'catering-chef',
 		),
 	);
-	$travel_subcategories     = array(
+	$travel_subcategories                             = array(
 		array(
 			'name' => 'Apartments & Hostels',
 			'slug' => 'apartments-hostels',
@@ -175,7 +182,7 @@ $responsive_sites_header_after_connection_success = false;
 			'slug' => 'hotels-b&bs',
 		),
 	);
-	$services_subcategories   = array(
+	$services_subcategories                           = array(
 		array(
 			'name' => 'Accounting',
 			'slug' => 'accounting',
@@ -217,7 +224,7 @@ $responsive_sites_header_after_connection_success = false;
 			'slug' => 'hair-stylist',
 		),
 	);
-	$creative_subcategories   = array(
+	$creative_subcategories                           = array(
 		array(
 			'name' => 'Photography',
 			'slug' => 'photography',
@@ -619,6 +626,18 @@ $responsive_sites_header_after_connection_success = false;
 				</div>
 			</div>
 		</div>
+		<!-- Overlay -->
+		<div id="responsive-sites-sync-overlay" class="responsive-sites-sync-overlay">
+			<div class="responsive-sites-sync-modal">
+				<div class="responsive-sites-sync-header">
+					<span class="responsive-sites-sync-title"><?php esc_html_e( 'Syncing Templates Library...', 'responsive-add-ons' ); ?></span>
+					<span class="sync-icon">
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="rotate"><path d="M17.5 1.6665V6.6665H12.5" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2.5 10C2.50132 8.55277 2.92133 7.13682 3.70938 5.92295C4.49743 4.70909 5.61985 3.74914 6.94126 3.15891C8.26267 2.56868 9.72662 2.37338 11.1566 2.59655C12.5865 2.81973 13.9213 3.45185 15 4.41667L17.5 6.66667" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2.5 18.3335V13.3335H7.5" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17.5 10C17.4987 11.4472 17.0787 12.8632 16.2906 14.0771C15.5026 15.2909 14.3802 16.2509 13.0587 16.8411C11.7373 17.4313 10.2734 17.6266 8.84345 17.4035C7.41352 17.1803 6.07871 16.5482 5 15.5833L2.5 13.3333" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+					</span>
+				</div>
+				<p class="responsive-sites-sync-message"><?php esc_html_e( 'Updating the library to include all the latest templates.', 'responsive-add-ons' ); ?></p>
+			</div>
+		</div>
 		<div id="responsive-sites" class="themes wp-clearfix"></div>
 	</div>
 </div>
@@ -665,9 +684,9 @@ $responsive_sites_header_after_connection_success = false;
 								<path d="M6.245 2.50498C4.975 2.43748 3.70125 2.86248 2.76375 3.79998C0.887495 5.67998 1.08375 8.83498 3.09125 10.845L3.7325 11.4862L9.56 17.3187C9.67715 17.4355 9.83582 17.5011 10.0012 17.5011C10.1667 17.5011 10.3253 17.4355 10.4425 17.3187L16.2675 11.4862L16.9087 10.845C18.9162 8.83498 19.1112 5.67998 17.2337 3.80123C15.3575 1.92248 12.2087 2.12248 10.2025 4.13123L10 4.33373L9.79749 4.13123C8.79375 3.12498 7.51625 2.57248 6.245 2.50498Z" fill="#9CA3AF"/>
 							</svg>
 							<# if ( data[ key ].favorite_status === 'active' ) { #>
-								<span id="rst-favorite-btn-tooltip-text" class="tooltip-text favourite"><?php esc_html_e( 'Remove from favourites', 'responsive-add-ons' );  ?> </span>
+								<span id="rst-favorite-btn-tooltip-text" class="tooltip-text favourite"><?php esc_html_e( 'Remove from favourites', 'responsive-add-ons' ); ?> </span>
 							<# } else { #>
-								<span id="rst-favorite-btn-tooltip-text" class="tooltip-text"><?php esc_html_e( 'Add to favourites', 'responsive-add-ons' );  ?> </span>
+								<span id="rst-favorite-btn-tooltip-text" class="tooltip-text"><?php esc_html_e( 'Add to favourites', 'responsive-add-ons' ); ?> </span>
 							<# } #>
 						</div>
 					</div>
@@ -741,75 +760,10 @@ $responsive_sites_header_after_connection_success = false;
 				</div>
 				<div class="responsive-addons-import-btns">
 					<button class="responsive-addons-go-back-btn responsive-addons"><span class="responsive-addons-go-back-btn-text"><?php esc_html_e( 'Go Back', 'responsive-add-ons' ); ?></span></button>
-					<# if ( data.is_responsive_addons_pro_installed && data.is_responsive_addons_pro_license_active  ) { #>
-
-						<button class="button button-primary responsive-addons responsive-demo-import-options-{{{data.demo_type}}}"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
-
-						<# if ( data.allow_pages ) { #>
-
-						<button class="button button-primary responsive-addons responsive-page-import-options-{{{data.demo_type}}}"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
-
-						<# } #>
-					<# } else if ( data.has_app_auth ) {
-						<?php if ( 'free' === $plan_status ) : ?>
-							if( 'free' === data.demo_type ){
-							#>
-
-							<button class="button button-primary responsive-addons responsive-addons-demo-import-options"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
-
-								<# if ( data.allow_pages ) { #>
-
-								<button class="button button-primary responsive-addons responsive-addons-page-import-options"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
-
-							<# }} else{ #>
-									<button class="button button-primary responsive-addons responsive-demo-import-unlock-preminum-templates raddons-upgrade-the-plan"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
-								<# if ( data.allow_pages ) { #>
-									<button class="button button-primary responsive-addons  responsive-page-import-unlock-preminum-templates raddons-upgrade-the-plan"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
-								<#
-							}}
-						#>
-
-					<#
-							<?php
-						else :
-							?>
-						#>
-						<button class="button button-primary responsive-addons responsive-addons-demo-import-options"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
-
-								<# if ( data.allow_pages ) { #>
-
-									<button class="button button-primary responsive-addons responsive-addons-page-import-options"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
-
-								<# } #>
-					<# <?php endif; ?>
-				}
-
-					else {
-						if( data.demo_type === 'free'){
-						#>
-
-							<button class="button button-primary responsive-addons responsive-demo-import-options-no-auth"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
-
-							<# if ( data.allow_pages ) { #>
-
-							<button class="button button-primary responsive-addons responsive-page-import-options-no-auth"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
-
-							<# } #>
-						<# }
-						else { #>
-							<button class="button button-primary responsive-addons responsive-demo-import-options-no-auth-unlock-access responsive-demo-import-unlock-preminum-templates"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
-
-							<# if ( data.allow_pages ) { #>
-
-							<button class="button button-primary responsive-addons responsive-page-import-options-no-auth-unlock-access responsive-page-import-unlock-preminum-templates"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
-
-							<#
-						}}
-						#>
-
-					<# }
-
-					#>
+					<button id="responsive-addons-demo-import-options" class="button button-primary responsive-addons responsive-addons-demo-import-options"><?php esc_html_e( 'Import Site', 'responsive-add-ons' ); ?></button>
+					<# if ( data.allow_pages ) { #>
+					<button class="button button-primary responsive-addons responsive-addons-page-import-options"><?php esc_html_e( 'Import Template', 'responsive-add-ons' ); ?></button>
+					<# } #>
 				</div>
 				<div class="responsive-addons-modal responsive-addons-app-connect-modal" style="display: none;">
 					<div class="responsive-addons-app-modal-content">

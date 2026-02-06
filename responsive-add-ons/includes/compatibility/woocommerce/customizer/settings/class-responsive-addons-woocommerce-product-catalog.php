@@ -163,7 +163,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 					)
 				);
 				$wp_customize->add_control(
-					new Responsive_Customizer_Select_Control(
+					new Responsive_Customizer_Responsive_Select_Control(
 						$wp_customize,
 						'product_image_hover_style_options',
 						array(
