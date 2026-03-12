@@ -100,6 +100,32 @@ class Responsive_Ready_Sites_Options_Importer {
 
 			// Plugin: EventOn.
 			'evcal_options_evcal_1',
+
+			// Plugin: Responsive Block Editor Addons.
+			'rbea_global_inherit_from_theme',
+			'rbea_global_inherit_from_theme_last_changed',
+
+			// Products per row.
+			'woocommerce_catalog_columns',
+
+			// Rows per page.
+			'woocommerce_catalog_rows',
+
+			// Product Images.
+			'woocommerce_single_image_width',
+			'woocommerce_thumbnail_image_width',
+			'woocommerce_thumbnail_cropping',
+			'woocommerce_thumbnail_cropping_custom_width',
+			'woocommerce_thumbnail_cropping_custom_height',
+
+			// Site Title
+			'blogname',
+			'elementor_kit_container_width',
+			// Elementor Global Colors
+			'elementor_global_color_primary',
+			'elementor_global_color_secondary',
+			'elementor_global_color_text',
+			'elementor_global_color_accent',
 		);
 	}
 
@@ -152,6 +178,34 @@ class Responsive_Ready_Sites_Options_Importer {
 						// import WooCommerce category images.
 						case 'woocommerce_product_cat':
 							$this->set_woocommerce_product_cat( $option_value );
+							break;
+
+						case 'elementor_kit_container_width':
+							// set_elementor_content_width() can apply it at the end of import.
+							set_transient( '_rst_elementor_kit_width', (int) $option_value, HOUR_IN_SECONDS );
+							break;
+
+						case 'elementor_container_width':
+							// Legacy wp_option — still update for backward compatibility with older Elementor.
+							update_option( $option_name, $option_value );
+							break;
+
+						// Import Elementor Global Colors
+						case 'elementor_global_color_primary':
+						case 'elementor_global_color_secondary':
+						case 'elementor_global_color_text':
+						case 'elementor_global_color_accent':
+							$color_id = str_replace( 'elementor_global_color_', '', $option_name );
+							set_transient( '_rst_elementor_global_color_' . $color_id, $option_value, HOUR_IN_SECONDS );
+							break;
+
+						// Site Title - Handle with try-catch
+						case 'blogname':
+							try {
+								update_option( 'blogname', sanitize_text_field( $option_value ) );
+							} catch ( \Exception $e ) {
+								Responsive_Ready_Sites_Importer_Log::add( 'Failed to update site title: ' . $e->getMessage(), 'warning' );
+							}
 							break;
 
 						default:

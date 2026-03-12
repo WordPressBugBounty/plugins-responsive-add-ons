@@ -143,7 +143,7 @@ class Responsive_Ready_Sites_Batch_Processing_Elementor extends Source_Local {
 	 */
 	protected function traverse_array_recursive( &$value, $key, $term_ids_mapping ) {
 		// This condition is specifically for Product categories related widget.
-		if ( 'rea_query_include_categories' !== $key && 'rea_query_exclude_categories' !== $key && 'rea-posts_include_term_ids' !== $key && 'category_ids' !== $key && is_array( $value ) ) {
+		if ( 'rael_query_include_categories' !== $key && 'rael_query_exclude_categories' !== $key && 'rael-posts_include_term_ids' !== $key && 'category_ids' !== $key && is_array( $value ) ) {
 			array_walk( $value, array( $this, 'traverse_array_recursive' ), $term_ids_mapping );
 		} elseif ( is_array( $value ) ) {
 			foreach ( $value as $index => $term_id ) {

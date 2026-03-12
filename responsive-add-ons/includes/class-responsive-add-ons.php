@@ -101,9 +101,13 @@ class Responsive_Add_Ons {
 		$this->load_responsive_customizer_settings();
 
 		if ( ! get_option( 'rplus_custom_fonts_enable' ) ) {
-			add_option( 'rplus_custom_fonts_enable', 'on' );
+			update_option( 'rplus_custom_fonts_enable', 'on' );
 		}
 
+		if ( ! get_option( 'rpro_woocommerce_enable' ) ) {
+			update_option( 'rpro_woocommerce_enable', 'on' );
+		}
+		
 		// Display Custom Fonts only when Responsive theme is active.
 		$theme                      = wp_get_theme();
 		$this->responsive_activated = 'Responsive' === $theme->get( 'Name' ) ? true : false;

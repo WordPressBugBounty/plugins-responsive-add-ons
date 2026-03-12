@@ -91,7 +91,10 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				add_action( 'wp_ajax_responsive-ready-sites-log-import-error', array( $this, 'log_import_error_and_notify' ) );
 			}
 
+			add_action( 'responsive_ready_sites_regenerate_product_lookup', array( $this, 'regenerate_product_lookup' ) );
+
 			add_action( 'responsive_ready_sites_import_complete', array( $this, 'clear_cache' ) );
+			add_action( 'responsive_ready_sites_import_complete', array( $this, 'set_elementor_content_width' ) );
 
 			include_once $responsive_ready_sites_importers_dir . 'batch-processing/class-responsive-ready-sites-batch-processing.php';
 
@@ -101,6 +104,21 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 			// action to force delete elementor kit.
 			add_action( 'rst_before_delete_imported_posts', array( $this, 'force_delete_kit' ), 10, 2 );
+		}
+
+		/**
+		 * Regenerate WooCommerce product lookup tables.
+		 *
+		 * Triggers rebuilding of the wp_wc_product_meta_lookup table
+		 * and logs the regeneration event.
+		 *
+		 * @return void
+		 */
+		public function regenerate_product_lookup() {
+			if ( function_exists('wc_update_product_lookup_tables') ) {
+				wc_update_product_lookup_tables();
+				Responsive_Ready_Sites_Importer_Log::add( 'Regenerated Product Lookup Table' );
+			}
 		}
 
 		/**
@@ -114,6 +132,113 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				Elementor\Plugin::$instance->files_manager->clear_cache();
 			}
 			Responsive_Ready_Sites_Importer_Log::add( 'Complete ' );
+		}
+
+		/**
+		 * Set Elementor Kit Content Width.
+		 *
+		 * Sets the container_width in the active Elementor Kit after import.
+		 *
+		 * @return void
+		 */
+		public function set_elementor_content_width() {
+
+			if ( ! defined( 'ELEMENTOR_VERSION' ) || ! class_exists( '\Elementor\Plugin' ) ) {
+				return;
+			}
+
+			$kits_manager = \Elementor\Plugin::$instance->kits_manager;
+			if ( ! $kits_manager ) {
+				return;
+			}
+
+			// Get or create active kit.
+			$kit_id = (int) get_option( 'elementor_active_kit' );
+			$kit_post = $kit_id ? get_post( $kit_id ) : null;
+			$is_valid = $kit_post
+				&& 'elementor_library' === $kit_post->post_type
+				&& 'trash' !== $kit_post->post_status
+				&& 'kit' === get_post_meta( $kit_id, '_elementor_template_type', true );
+
+			// Create kit if invalid.
+			if ( ! $is_valid ) {
+				$new_id = wp_insert_post(
+					array(
+						'post_title'  => __( 'Default Kit', 'elementor' ),
+						'post_type'   => 'elementor_library',
+						'post_status' => 'publish',
+						'meta_input'  => array(
+							'_elementor_edit_mode'     => 'builder',
+							'_elementor_template_type' => 'kit',
+							'_elementor_version'       => ELEMENTOR_VERSION,
+						),
+					)
+				);
+
+				if ( is_wp_error( $new_id ) || ! $new_id ) {
+					return;
+				}
+
+				update_option( 'elementor_active_kit', $new_id );
+				$kit_id = $new_id;
+			}
+
+			// Load kit document.
+			$kit = $kits_manager->get_kit( $kit_id );
+			if ( ! $kit || ! $kit->get_id() ) {
+				return;
+			}
+
+			// Read existing settings.
+			$current_settings = $kit->get_settings();
+			if ( ! is_array( $current_settings ) ) {
+				$current_settings = array();
+			}
+
+			// Read the real value exported from the source site's kit
+			$container_width = (int) get_transient( '_rst_elementor_kit_width' );
+			if ( $container_width <= 0 ) {
+				$container_width = 1140;
+			}
+			delete_transient( '_rst_elementor_kit_width' );
+
+			$current_settings['container_width'] = array(
+				'size' => $container_width,
+				'unit' => 'px',
+			);
+
+			// Update Elementor Global Colors
+			$global_colors = array( 'primary', 'secondary', 'text', 'accent' );
+			foreach ( $global_colors as $color_id ) {
+				$color_value = get_transient( '_rst_elementor_global_color_' . $color_id );
+				if ( false !== $color_value ) {
+					// Ensure system_colors array exists
+					if ( ! isset( $current_settings['system_colors'] ) || ! is_array( $current_settings['system_colors'] ) ) {
+						$current_settings['system_colors'] = array();
+					}
+
+					$found = false;
+					foreach ( $current_settings['system_colors'] as $index => $color ) {
+						if ( isset( $color['_id'] ) && $color['_id'] === $color_id ) {
+							$current_settings['system_colors'][ $index ]['color'] = sanitize_hex_color( $color_value ) ?: sanitize_text_field( $color_value );
+							$found = true;
+							break;
+						}
+					}
+
+					if ( ! $found ) {
+						$current_settings['system_colors'][] = array(
+							'_id' => $color_id,
+							'title' => ucfirst( $color_id ),
+							'color' => sanitize_hex_color( $color_value ) ?: sanitize_text_field( $color_value ),
+						);
+					}
+
+					delete_transient( '_rst_elementor_global_color_' . $color_id );
+				}
+			}
+
+			$kit->save( array( 'settings' => $current_settings ) );
 		}
 
 		/**
@@ -284,6 +409,11 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_custom_amount_text', 'Custom Amount' ) );
 								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_show_register_form', 'none' ) );
 								$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, 291, '_give_donation_levels', $give_donation_levels_pro ) );
+						}
+
+						// Delete default WooCommerce pages to prevent skipping demo content due to post_exists check.
+						if ( class_exists( 'WooCommerce' ) ) {
+							$this->delete_default_woocommerce_pages();
 						}
 
 						$data = Responsive_Ready_Sites_WXR_Importer::instance()->get_xml_data( $xml_path['data']['file'] );
@@ -636,6 +766,24 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			// Set permalink structure to use post name.
 			update_option( 'permalink_structure', '/%postname%/' );
 
+			// Map WooCommerce pages automatically based on standard slugs if WooCommerce is active.
+			if ( class_exists( 'WooCommerce' ) ) {
+				$wc_slugs = array(
+					'cart'       => 'woocommerce_cart_page_id',
+					'checkout'   => 'woocommerce_checkout_page_id',
+					'my-account' => 'woocommerce_myaccount_page_id',
+				);
+				foreach ( $wc_slugs as $slug => $option_name ) {
+					$page = get_page_by_path( $slug );
+					if ( $page && 'page' === $page->post_type ) {
+						update_option( $option_name, $page->ID );
+						Responsive_Ready_Sites_Importer_Log::add( sprintf( "Set '%s' to page ID: %d", $option_name, $page->ID ) );
+					}
+				}
+			}
+
+			do_action( 'responsive_ready_sites_regenerate_product_lookup' );
+
 			do_action( 'responsive_ready_sites_import_complete' );
 
 			wp_send_json_success( __( 'Site imported successfully.', 'responsive-addons' ) );
@@ -784,6 +932,35 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				wp_send_json_success();
 			} else {
 				wp_send_json_error( __( 'There was an error resetting the posts.', 'responsive-addons' ) );
+			}
+		}
+
+		/**
+		 * Delete Default WooCommerce Pages.
+		 *
+		 * Temporarily deletes the default WooCommerce pages before importing demo content.
+		 * This prevents the WXR importer's `post_exists` check from skipping the beautifully
+		 * styled demo pages (which might share the same slug, e.g., 'cart').
+		 *
+		 * @since 3.4.5
+		 * @return void
+		 */
+		private function delete_default_woocommerce_pages() {
+			$wc_slugs = array(
+				'cart'       => 'woocommerce_cart_page_id',
+				'checkout'   => 'woocommerce_checkout_page_id',
+				'my-account' => 'woocommerce_myaccount_page_id',
+			);
+
+			foreach ( $wc_slugs as $slug => $option_name ) {
+				$page = get_page_by_path( $slug );
+				if ( $page && 'page' === $page->post_type ) {
+					// Permanently delete to prevent 'get_page_by_title' from matching trashed pages
+					// during the Options import phase.
+					wp_delete_post( $page->ID, true );
+					delete_option( $option_name );
+					Responsive_Ready_Sites_Importer_Log::add( sprintf( 'Deleted default WooCommerce page: %s (ID: %d)', $slug, $page->ID ) );
+				}
 			}
 		}
 
