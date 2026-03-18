@@ -5,6 +5,10 @@
  * @package woocommerce
  */
 
+if( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! function_exists( 'responsive_addons_pagination_callbacks' ) ) {
 	/**
 	 * Function for sanitizing

@@ -5,6 +5,9 @@
  * @package Responsive Addon
  */
 
+if( !defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <div class="responsive-quick-view-bg"><div class="responsive-quick-view-loader blockUI blockOverlay"></div></div>
 <div id="responsive-quick-view-modal">

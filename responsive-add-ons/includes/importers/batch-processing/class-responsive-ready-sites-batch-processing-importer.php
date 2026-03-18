@@ -102,7 +102,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 				return $sites_and_pages;
 			} else {
 				// Send a 403 status code with a message.
-				wp_send_json_error( esc_html__( 'User does not have permission!', 'responsive-addons' ), 403 );
+				wp_send_json_error( esc_html__( 'User does not have permission!', 'responsive-add-ons' ), 403 );
 			}
 		}
 
@@ -153,7 +153,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 				return $blocks;
 			} else {
 				// Send a 403 status code with a message.
-				wp_send_json_error( esc_html__( 'User does not have permission!', 'responsive-addons' ), 403 );
+				wp_send_json_error( esc_html__( 'User does not have permission!', 'responsive-add-ons' ), 403 );
 			}
 		}
 

@@ -19,11 +19,11 @@ $elements = responsive_popup_elements_positioning();
 
 // Vars.
 $popup_title         = get_theme_mod( 'responsive_popup_title_text', 'Item added to your cart' );
-$default_content     = esc_html__( '[responsive_woo_cart_items] items in the cart ([responsive_woo_total_cart])', 'responsive-addons-pro' );
+$default_content     = esc_html__( '[responsive_woo_cart_items] items in the cart ([responsive_woo_total_cart])', 'responsive-add-ons' );
 $content             = get_theme_mod( 'responsive_popup_content', $default_content );
 $continue_btn        = get_theme_mod( 'responsive_popup_continue_btn_text', 'Continue Shopping' );
 $cart_btn            = get_theme_mod( 'responsive_popup_cart_btn_text', 'Go To The Cart' );
-$default_bottom_text = esc_html__( '[responsive_woo_free_shipping_left]', 'responsive-addons-pro' );
+$default_bottom_text = esc_html__( '[responsive_woo_free_shipping_left]', 'responsive-add-ons' );
 $text                = get_theme_mod( 'responsive_popup_bottom_text', $default_bottom_text );
 $overlay             = get_theme_mod( 'responsive_popup_overlay_color', '#000000' );
 $opacity             = get_theme_mod( 'responsive_popup_overlay_color_opacity', '0.7' ); ?>

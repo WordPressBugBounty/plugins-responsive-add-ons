@@ -273,14 +273,24 @@ class Responsive_Add_Ons {
 		// Update user consent.
 		add_action( 'wp_ajax_responsive-addons-update-user-consent', array( $this, 'responsive_addons_update_user_consent' ) );
 
+
 		add_action( 'admin_body_class', array( $this, 'admin_body_class' ) );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'responsive_addons_enqueue_preview_script' ) );
+	}
+
+	/**
+	 * Enqueue script for customizer preview.
+	 */
+	public function responsive_addons_enqueue_preview_script() {
+		wp_enqueue_script( 'responsive-addons-preview-handler', RESPONSIVE_ADDONS_DIR_URL . 'admin/js/preview-handler.js', array(), RESPONSIVE_ADDONS_VER, true );
 	}
 
 	public function responsive_ready_sites_handle_install_plugin() {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'install_plugins' ) ) {
-			wp_send_json_error( [ 'message' => __( 'Permission denied.', 'responsive-addons' ) ] );
+			wp_send_json_error( [ 'message' => __( 'Permission denied.', 'responsive-add-ons' ) ] );
 		}
 		
 		$slug = sanitize_text_field( $_POST['slug'] );
@@ -290,7 +300,7 @@ class Responsive_Add_Ons {
 		include_once ABSPATH . 'wp-admin/includes/file.php';
 
 		if ( file_exists( WP_PLUGIN_DIR . '/' . $slug ) ) {
-			wp_send_json_success( [ 'message' => __( 'Plugin already installed.', 'responsive-addons' ) ] );
+			wp_send_json_success( [ 'message' => __( 'Plugin already installed.', 'responsive-add-ons' ) ] );
 		}
 
 		$api = plugins_api( 'plugin_information', [ 'slug' => $slug, 'fields' => [ 'sections' => false ] ] );
@@ -300,7 +310,7 @@ class Responsive_Add_Ons {
 		}
 
 		if ( empty( $api->download_link ) ) {
-			wp_send_json_error( [ 'message' => __( 'No download link found for this plugin.', 'responsive-addons' ) ] );
+			wp_send_json_error( [ 'message' => __( 'No download link found for this plugin.', 'responsive-add-ons' ) ] );
 		}
 
 		$upgrader = new Plugin_Upgrader( new WP_Ajax_Upgrader_Skin() );
@@ -310,7 +320,7 @@ class Responsive_Add_Ons {
 			wp_send_json_error( [ 'message' => $result->get_error_message() ] );
 		}
 
-		wp_send_json_success( [ 'message' => __( 'Plugin installed successfully.', 'responsive-addons' ) ] );
+		wp_send_json_success( [ 'message' => __( 'Plugin installed successfully.', 'responsive-add-ons' ) ] );
 	}
 
 	/**
@@ -359,11 +369,11 @@ class Responsive_Add_Ons {
 				</div>',
 				esc_url( $image_path ),
 				'https://wordpress.org/support/plugin/responsive-add-ons/reviews/#new-post',
-				esc_html__( 'Hello! Seems like you have used Responsive Starter Templates plugin to build this website — Thanks a ton!', 'responsive-addons' ),
-				esc_html__( 'Could you please do us a BIG favor and give it a 5-star rating on WordPress? This would boost our motivation and help other users make a comfortable decision while choosing the Responsive Starter Templates plugin.', 'responsive-addons' ),
-				esc_html__( 'Ok, you deserve it', 'responsive-addons' ),
-				esc_html__( 'Nope, maybe later', 'responsive-addons' ),
-				esc_html__( 'I already did', 'responsive-addons' )
+				esc_html__( 'Hello! Seems like you have used Responsive Starter Templates plugin to build this website — Thanks a ton!', 'responsive-add-ons' ),
+				esc_html__( 'Could you please do us a BIG favor and give it a 5-star rating on WordPress? This would boost our motivation and help other users make a comfortable decision while choosing the Responsive Starter Templates plugin.', 'responsive-add-ons' ),
+				esc_html__( 'Ok, you deserve it', 'responsive-add-ons' ),
+				esc_html__( 'Nope, maybe later', 'responsive-add-ons' ),
+				esc_html__( 'I already did', 'responsive-add-ons' )
 			);
 			do_action( 'tag_review' );
 		}
@@ -520,10 +530,10 @@ class Responsive_Add_Ons {
 		<div id="responsive-welcome_banner-section" class="responsive-notice notice">
 			<div class="reponsive-welcome_banner-welcome-section">
 				<div class="reponsive-welcome_banner-welcome-section-content">
-					<h1 class="reponsive-welcome_banner-welcome-section-text"><?php echo esc_html__( 'Welcome To Responsive Starter Templates', 'responsive-addons' ); ?></h1>
+					<h1 class="reponsive-welcome_banner-welcome-section-text"><?php echo esc_html__( 'Welcome To Responsive Starter Templates', 'responsive-add-ons' ); ?></h1>
 					<img src="<?php echo esc_attr( $image_path_underline ); ?>" alt="underline" class="underline_image">
-					<p class="reponsive-welcome_banner-welcome-section-tag"><?php echo esc_html__( 'Create professionally designed pixel-perfect websites in minutes.' ); ?></p>
-					<a class="responsive-welcome_banner-explore-button" href="<?php echo esc_url( admin_url( 'admin.php?page=responsive_add_ons' ) ); ?>"><?php echo esc_html__( 'Explore Templates', 'responsive-addons' ); ?></a>
+					<p class="reponsive-welcome_banner-welcome-section-tag"><?php echo esc_html__( 'Create professionally designed pixel-perfect websites in minutes.', 'responsive-add-ons' ); ?></p>
+					<a class="responsive-welcome_banner-explore-button" href="<?php echo esc_url( admin_url( 'admin.php?page=responsive_add_ons' ) ); ?>"><?php echo esc_html__( 'Explore Templates', 'responsive-add-ons' ); ?></a>
 				</div>
 				<a class="responsive-welcome_banner-close-icon" id="rst_welcome_banner_close_icon" href="#">
 					<img src="<?php echo esc_attr( $image_path_close ); ?>" alt="close">
@@ -536,31 +546,31 @@ class Responsive_Add_Ons {
 						<div class="responsive-welcome_banner-features-row">
 							<div class="feature-row">
 								<span class="dashicons dashicons-saved"></span>
-								<p class="feature-row-text"><?php echo esc_html__( 'Loads Blazing Fast', 'responsive-addons' ); ?></p>
+								<p class="feature-row-text"><?php echo esc_html__( 'Loads Blazing Fast', 'responsive-add-ons' ); ?></p>
 							</div>
 							<div class="feature-row">
 								<span class="dashicons dashicons-saved"></span>
-								<p class="feature-row-text"><?php echo esc_html__( 'Customizable Settings', 'responsive-addons' ); ?></p>
-							</div>
-						</div>
-						<div class="responsive-welcome_banner-features-row">
-							<div class="feature-row">
-								<span class="dashicons dashicons-saved"></span>
-								<p class="feature-row-text"><?php echo esc_html__( 'Pre-designed pages', 'responsive-addons' ); ?></p>
-							</div>
-							<div class="feature-row">
-								<span class="dashicons dashicons-saved"></span>
-								<p class="feature-row-text"><?php echo esc_html__( 'Contact Form', 'responsive-addons' ); ?></p>
+								<p class="feature-row-text"><?php echo esc_html__( 'Customizable Settings', 'responsive-add-ons' ); ?></p>
 							</div>
 						</div>
 						<div class="responsive-welcome_banner-features-row">
 							<div class="feature-row">
 								<span class="dashicons dashicons-saved"></span>
-								<p class="feature-row-text"><?php echo esc_html__( 'In-time Support', 'responsive-addons' ); ?></p>
+								<p class="feature-row-text"><?php echo esc_html__( 'Pre-designed pages', 'responsive-add-ons' ); ?></p>
 							</div>
 							<div class="feature-row">
 								<span class="dashicons dashicons-saved"></span>
-								<p class="feature-row-text"><?php echo esc_html__( '1- Click Import', 'responsive-addons' ); ?></p>
+								<p class="feature-row-text"><?php echo esc_html__( 'Contact Form', 'responsive-add-ons' ); ?></p>
+							</div>
+						</div>
+						<div class="responsive-welcome_banner-features-row">
+							<div class="feature-row">
+								<span class="dashicons dashicons-saved"></span>
+								<p class="feature-row-text"><?php echo esc_html__( 'In-time Support', 'responsive-add-ons' ); ?></p>
+							</div>
+							<div class="feature-row">
+								<span class="dashicons dashicons-saved"></span>
+								<p class="feature-row-text"><?php echo esc_html__( '1- Click Import', 'responsive-add-ons' ); ?></p>
 							</div>
 						</div>
 					</div>
@@ -571,7 +581,7 @@ class Responsive_Add_Ons {
 				if ( empty( $user_details ) || ( ! empty( $user_details ) && 'free' === $user_details['account']['plan'] ) ) {
 					?>
 					<a href="<?php echo esc_url( 'https://cyberchimps.com/pricing/?utm_source=wpdash&utm_medium=RST_plugin&utm_campaign=intro_banner&utm_content=upgrade-to-pro' ); ?>" target="_blank" class="responsive-welcome_banner-upgrade-button">
-					<p class="upgrade-button-text"><?php echo esc_html__( 'Upgrade To Pro', 'responsive-addons' ); ?> </p>
+					<p class="upgrade-button-text"><?php echo esc_html__( 'Upgrade To Pro', 'responsive-add-ons' ); ?> </p>
 					<span class="dashicons dashicons-arrow-right-alt"></span>
 				</a>
 				<?php } ?>
@@ -631,7 +641,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'install_plugins' ) ) {
-			wp_send_json_error( __( 'You are not allowed to activate the Theme', 'responsive-addons' ) );
+			wp_send_json_error( __( 'You are not allowed to activate the Theme', 'responsive-add-ons' ) );
 		}
 
 		$notice_id = ( isset( $_POST['notice_id'] ) ) ? sanitize_key( $_POST['notice_id'] ) : '';
@@ -656,7 +666,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'switch_themes' ) ) {
-			wp_send_json_error( __( 'You are not allowed to activate the Theme', 'responsive-addons' ) );
+			wp_send_json_error( __( 'You are not allowed to activate the Theme', 'responsive-add-ons' ) );
 		}
 
 		switch_theme( 'responsive' );
@@ -664,7 +674,7 @@ class Responsive_Add_Ons {
 		wp_send_json_success(
 			array(
 				'success' => true,
-				'message' => __( 'Theme Activated', 'responsive-addons' ),
+				'message' => __( 'Theme Activated', 'responsive-add-ons' ),
 			)
 		);
 	}
@@ -740,7 +750,6 @@ class Responsive_Add_Ons {
 	 */
 	public function responsive_addons_translations() {
 		// Load the text domain for translations.
-		load_plugin_textdomain( 'responsive-add-ons', false, basename( __DIR__ ) . '/languages' );
 	}
 
 	/**
@@ -835,7 +844,7 @@ class Responsive_Add_Ons {
 	 * @return mixed
 	 */
 	public function plugin_settings_link( $links ) {
-		$settings_link = '<a href="themes.php?page=responsive-add-ons">' . __( 'Settings', 'responsive-addons' ) . '</a>';
+		$settings_link = '<a href="themes.php?page=responsive-add-ons">' . __( 'Settings', 'responsive-add-ons' ) . '</a>';
 		array_unshift( $links, $settings_link );
 
 		return $links;
@@ -900,6 +909,9 @@ class Responsive_Add_Ons {
 		$decoded_theme_name = urldecode($encoded_part);
 
 		if ( ( 'toplevel_page_responsive_add_ons' === $hook || $theme_name . '_page_responsive_add_ons' === $hook  || $theme_name . '_page_responsive_add_ons' === $decoded_theme_name . '_page_responsive_add_ons') && empty( $_GET['action'] ) ) {
+			wp_enqueue_media();
+			wp_enqueue_style( 'imgareaselect' );
+			wp_enqueue_script( 'imgareaselect' );
 			wp_enqueue_script( 'responsive-ready-sites-admin-import-react-js', RESPONSIVE_ADDONS_URI . 'admin/template-import/react/build/index.js', array( 'react', 'react-dom', 'updates' ), RESPONSIVE_ADDONS_VER, true );
 			wp_enqueue_style( 'toastr-css', RESPONSIVE_ADDONS_URI .'/admin/css/toastr.min.css', array(), RESPONSIVE_ADDONS_VER );
 			wp_enqueue_script( 'toastr-js', RESPONSIVE_ADDONS_URI . '/admin/js/toastr.min.js', array( 'jquery' ), RESPONSIVE_ADDONS_VER, true );
@@ -915,15 +927,15 @@ class Responsive_Add_Ons {
 					'required_plugins'                => array(),
 					'ApiURL'                          => self::$api_url,
 					/* translators: %s is a template name */
-					'importSingleTemplateButtonTitle' => __( 'Import "%s" Template', 'responsive-addons' ),
+					'importSingleTemplateButtonTitle' => __( 'Import "%s" Template', 'responsive-add-ons' ),
 					'default_page_builder_sites'      => $this->get_sites_by_page_builder(),
 					'strings'                         => array(
 						'syncCompleteMessage'  => $this->get_sync_complete_message(),
 						/* translators: %s is a template name */
-						'importSingleTemplate' => __( 'Import "%s" Template', 'responsive-addons' ),
+						'importSingleTemplate' => __( 'Import "%s" Template', 'responsive-add-ons' ),
 					),
-					'dismiss'                         => __( 'Dismiss this notice.', 'responsive-addons' ),
-					'syncTemplatesLibraryStart'       => '<span class="message">' . esc_html__( 'Syncing Responsive Starter Templates in the background. The process will complete in just a few seconds. We will notify you once done.', 'responsive-addons' ) . '</span>',
+					'dismiss'                         => __( 'Dismiss this notice.', 'responsive-add-ons' ),
+					'syncTemplatesLibraryStart'       => '<span class="message">' . esc_html__( 'Syncing Responsive Starter Templates in the background. The process will complete in just a few seconds. We will notify you once done.', 'responsive-add-ons' ) . '</span>',
 					'activated_first_time'            => get_option( 'ra_first_time_activation' ),
 					'hasAppAuth'                      => $this->cc_app_auth->has_auth(),
 					'isResponsiveProActive'           => $pro_plugin_active_status,
@@ -953,10 +965,10 @@ class Responsive_Add_Ons {
 			$data = apply_filters(
 				'responsive_sites_install_theme_localize_vars',
 				array(
-					'installed'   => __( 'Installed! Activating..', 'responsive-addons' ),
-					'activating'  => __( 'Activating..', 'responsive-addons' ),
-					'activated'   => __( 'Activated! Reloading..', 'responsive-addons' ),
-					'installing'  => __( 'Installing..', 'responsive-addons' ),
+					'installed'   => __( 'Installed! Activating..', 'responsive-add-ons' ),
+					'activating'  => __( 'Activating..', 'responsive-add-ons' ),
+					'activated'   => __( 'Activated! Reloading..', 'responsive-add-ons' ),
+					'installing'  => __( 'Installing..', 'responsive-add-ons' ),
 					'ajaxurl'     => esc_url( admin_url( 'admin-ajax.php' ) ),
 					'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
 				)
@@ -974,7 +986,7 @@ class Responsive_Add_Ons {
 	 */
 	public function get_sync_complete_message( $echo = false ) {
 
-		$message = __( 'Responsive Templates data refreshed!', 'responsive-addons' );
+		$message = __( 'Responsive Templates data refreshed!', 'responsive-add-ons' );
 		if ( $echo ) {
 			echo esc_html( $message );
 		} else {
@@ -1036,9 +1048,9 @@ class Responsive_Add_Ons {
 		$pro_purchase_url = 'https://cyberchimps.com/responsive-go-pro/?utm_source=free-to-pro&utm_medium=responsive-add-ons&utm_campaign=responsive-pro&utm_content=preview-ready-site';
 
 		/* translators: %s are link. */
-		$license_msg = sprintf( __( 'This is a Pro Template available with Responsive Pro. You can purchase it from <a href="%s" target="_blank">here</a>.', 'responsive-addons' ), esc_url( $pro_purchase_url ) );
+		$license_msg = sprintf( __( 'This is a Pro Template available with Responsive Pro. You can purchase it from <a href="%s" target="_blank">here</a>.', 'responsive-add-ons' ), esc_url( $pro_purchase_url ) );
 		/* translators: %s are link. */
-		$license_block_msg = sprintf( __( 'This is a Pro Block available with Responsive Pro. You can purchase it from <a href="%s" target="_blank">here</a>.', 'responsive-addons' ), esc_url( $pro_purchase_url ) );
+		$license_block_msg = sprintf( __( 'This is a Pro Block available with Responsive Pro. You can purchase it from <a href="%s" target="_blank">here</a>.', 'responsive-add-ons' ), esc_url( $pro_purchase_url ) );
 
 		$data = apply_filters(
 			'responsive_sites_render_localize_vars',
@@ -1058,15 +1070,15 @@ class Responsive_Add_Ons {
 				'isPro'                       => defined( 'RESPONSIVE_ADDONS_PRO_VERSION' ) ? true : false,
 				'license_msg'                 => $license_msg,
 				'license_block_msg'           => $license_block_msg,
-				'dismiss_text'                => esc_html__( 'Dismiss', 'responsive-addons' ),
-				'noPlugins'                   => __( 'No Plugins Required' ),
-				'syncCompleteMessage'         => __( 'Template library refreshed!', 'responsive-addons' ),
-				'getProText'                  => __( 'Upgrade to Pro!', 'responsive-addons' ),
+				'dismiss_text'                => esc_html__( 'Dismiss', 'responsive-add-ons' ),
+				'noPlugins'                   => __( 'No Plugins Required', 'responsive-add-ons' ),
+				'syncCompleteMessage'         => __( 'Template library refreshed!', 'responsive-add-ons' ),
+				'getProText'                  => __( 'Upgrade to Pro!', 'responsive-add-ons' ),
 				'getProURL'                   => esc_url( 'https://cyberchimps.com/responsive-go-pro/?utm_source=free-to-pro&utm_medium=responsive-add-ons&utm_campaign=responsive-pro&utm_content=preview-ready-site' ),
 				'getREAURL'                   => esc_url( 'https://cyberchimps.com/elementor-widgets/docs/how-to-install-activate-the-responsive-elementor-addons/' ),
 				'siteURL'                     => site_url(),
-				'template'                    => esc_html__( 'Template', 'responsive-addons' ),
-				'install_plugin_text'         => esc_html__( 'Install Required Plugins', 'responsive-addons' ),
+				'template'                    => esc_html__( 'Template', 'responsive-add-ons' ),
+				'install_plugin_text'         => esc_html__( 'Install Required Plugins', 'responsive-add-ons' ),
 				'isREAActivated'              => $this->is_rea_activated(),
 				'blockSiteURL'                => self::$rst_blocks_api_url,
 				'blockCategories'             => $this->block_categories(),
@@ -1103,11 +1115,11 @@ class Responsive_Add_Ons {
 	 */
 	public function block_categories() {
 		return array(
-			__( 'About', 'responsive-addons' ),
-			__( 'Team', 'responsive-addons' ),
-			__( 'Testimonial', 'responsive-addons' ),
-			__( 'Hero', 'responsive-addons' ),
-			__( 'Call to Action', 'responsive-addons' ),
+			__( 'About', 'responsive-add-ons' ),
+			__( 'Team', 'responsive-add-ons' ),
+			__( 'Testimonial', 'responsive-add-ons' ),
+			__( 'Hero', 'responsive-add-ons' ),
+			__( 'Call to Action', 'responsive-add-ons' ),
 		);
 	}
 
@@ -1199,7 +1211,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
+			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-add-ons' ) );
 		}
 
 		$api_url = isset( $_POST['url'] ) ? sanitize_text_field( wp_unslash( $_POST['url'] ) ) : '';
@@ -1229,7 +1241,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
+			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-add-ons' ) );
 		}
 
 		$api_url = isset( $_POST['url'] ) ? sanitize_text_field( wp_unslash( $_POST['url'] ) ) : '';
@@ -1245,7 +1257,7 @@ class Responsive_Add_Ons {
 		$data = json_decode( $body, true );
 
 		if ( ! isset( $data['post-meta']['_elementor_data'] ) ) {
-			wp_send_json_error( __( 'Invalid Post Meta', 'responsive-addons' ) );
+			wp_send_json_error( __( 'Invalid Post Meta', 'responsive-add-ons' ) );
 		}
 
 		$meta = json_decode( $data['post-meta']['_elementor_data'], true );
@@ -1255,7 +1267,7 @@ class Responsive_Add_Ons {
 		$post_id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : '';
 
 		if ( empty( $post_id ) || empty( $meta ) ) {
-			wp_send_json_error( __( 'Invalid Post ID or Elementor Meta', 'responsive-addons' ) );
+			wp_send_json_error( __( 'Invalid Post ID or Elementor Meta', 'responsive-add-ons' ) );
 		}
 
 		$import      = new \Elementor\TemplateLibrary\Responsive_Ready_Sites_Batch_Processing_Elementor();
@@ -1321,7 +1333,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'install_plugins' ) ) {
-			wp_send_json_error( __( 'User does not have permission!', 'responsive-addons' ) );
+			wp_send_json_error( __( 'User does not have permission!', 'responsive-add-ons' ) );
 		}
 
 		$file_name    = 'responsive-ready-sites-backup-' . date( 'd-M-Y-h-i-s' ) . '.json'; // phpcs:ignore
@@ -1431,7 +1443,7 @@ class Responsive_Add_Ons {
 			wp_send_json_error(
 				array(
 					'success' => false,
-					'message' => __( 'Error: You don\'t have the required permissions to install plugins.', 'responsive-addons' ),
+					'message' => __( 'Error: You don\'t have the required permissions to install plugins.', 'responsive-add-ons' ),
 				)
 			);
 		}
@@ -1519,7 +1531,7 @@ class Responsive_Add_Ons {
 			wp_send_json_error(
 				array(
 					'success' => false,
-					'message' => __( 'Error: You don\'t have the required permissions to install plugins.', 'responsive-addons' ),
+					'message' => __( 'Error: You don\'t have the required permissions to install plugins.', 'responsive-add-ons' ),
 				)
 			);
 		}
@@ -1529,7 +1541,7 @@ class Responsive_Add_Ons {
 			wp_send_json_error(
 				array(
 					'success' => false,
-					'message' => __( 'Plugins data is missing.', 'responsive-addons' ),
+					'message' => __( 'Plugins data is missing.', 'responsive-add-ons' ),
 				)
 			);
 		}
@@ -1552,7 +1564,7 @@ class Responsive_Add_Ons {
 		wp_send_json_success(
 			array(
 				'success' => true,
-				'message' => __( 'Plugin Activated', 'responsive-addons' ),
+				'message' => __( 'Plugin Activated', 'responsive-add-ons' ),
 			)
 		);
 	}
@@ -1854,7 +1866,7 @@ class Responsive_Add_Ons {
 						</div>
 
 						<!-- Search Input -->
-						<input autocomplete="off" placeholder="<?php esc_html_e( 'Search', 'responsive-addons' ); ?>" 
+						<input autocomplete="off" placeholder="<?php esc_html_e( 'Search', 'responsive-add-ons' ); ?>" 
 								type="textarea" aria-describedby="live-search-desc" 
 								id="wp-filter-search-input" class="wp-filter-search">
 
@@ -1932,7 +1944,7 @@ class Responsive_Add_Ons {
 			return $links;
 		}
 		$rate_url  = 'https://wordpress.org/support/plugin/responsive-add-ons/reviews/#new-post';
-		$rate_link = '<a target="_blank" href="' . esc_url( $rate_url ) . '" title="' . esc_attr__( 'Rate the plugin', 'responsive-addons' ) . '">' . esc_html__( 'Rate the plugin ★★★★★', 'responsive-addons' ) . '</a>';
+		$rate_link = '<a target="_blank" href="' . esc_url( $rate_url ) . '" title="' . esc_attr__( 'Rate the plugin', 'responsive-add-ons' ) . '">' . esc_html__( 'Rate the plugin ★★★★★', 'responsive-add-ons' ) . '</a>';
 		$links[]   = $rate_link;
 		return $links;
 	}
@@ -1953,7 +1965,7 @@ class Responsive_Add_Ons {
 		if ( in_array( $page, $show_footer ) ) {
 			$rate_text = '<div class="rst-branding-footer">
 							<div class="rst-branding-footer-text">
-							    If you like <strong>Responsive Starter Templates</strong>, please leave us a "<a href="https://wordpress.org/support/view/plugin-reviews/responsive-add-ons?filter=5#postform" target="_blank" class="responsive-rating-link" style="text-decoration:none;" data-rated="' . esc_attr__( 'Thanks :)', 'responsive-addons' ) . '">&#9733;&#9733;&#9733;&#9733;&#9733;</a>" rating. Thank you!
+							    If you like <strong>Responsive Starter Templates</strong>, please leave us a "<a href="https://wordpress.org/support/view/plugin-reviews/responsive-add-ons?filter=5#postform" target="_blank" class="responsive-rating-link" style="text-decoration:none;" data-rated="' . esc_attr__( 'Thanks :)', 'responsive-add-ons' ) . '">&#9733;&#9733;&#9733;&#9733;&#9733;</a>" rating. Thank you!
 							</div>
 							<img class="rst-footer-branding-img" src="' . esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/responsive-addons-footer-thumbnail.png' ) . '">
 						</div>';
@@ -1981,7 +1993,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'switch_themes' ) ) {
-			wp_send_json_error( __( 'User does not have permission!', 'responsive-addons' ) );
+			wp_send_json_error( __( 'User does not have permission!', 'responsive-add-ons' ) );
 		}
 
 		$current_theme = wp_get_theme();
@@ -2007,7 +2019,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'customize' ) ) {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
+			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-add-ons' ) );
 		}
 
 		$id   = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : '';
@@ -2090,7 +2102,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'install_themes' ) ) {
-			wp_die( esc_html__( 'Sorry, you are not allowed to install themes on this site.' ) );
+			wp_die( esc_html__( 'Sorry, you are not allowed to install themes on this site.', 'responsive-add-ons' ) );
 		}
 
 		include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'; // For themes_api().
@@ -2131,8 +2143,8 @@ class Responsive_Add_Ons {
 			add_menu_page( 'Responsive', 'Responsive', 'manage_options', 'responsive_add_ons', array( $this, 'responsive_add_ons_templates' ), esc_url( RESPONSIVE_ADDONS_DIR_URL ) . 'admin/images/responsive-add-ons-menu-icon.png', 59 );
 			add_submenu_page(
 				'responsive_add_ons',
-				__( 'Templates', 'responsive-addons' ),
-				__( 'Templates', 'responsive-addons' ),
+				__( 'Templates', 'responsive-add-ons' ),
+				__( 'Templates', 'responsive-add-ons' ),
 				'manage_options',
 				'responsive_add_ons',
 				array( $this, 'responsive_add_ons_templates' ),
@@ -2142,8 +2154,8 @@ class Responsive_Add_Ons {
 		if ( ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) && version_compare( RESPONSIVE_THEME_VERSION, '4.9.7.1', '<=' ) ) {
 
 			add_menu_page(
-				__( 'Responsive Starter Templates', 'responsive-addons' ),
-				__( 'Responsive', 'responsive-addons' ),
+				__( 'Responsive Starter Templates', 'responsive-add-ons' ),
+				__( 'Responsive', 'responsive-add-ons' ),
 				'manage_options',
 				'responsive_add_ons',
 				array( $this, 'responsive_add_ons_templates' ),
@@ -2154,7 +2166,7 @@ class Responsive_Add_Ons {
 			add_submenu_page(
 				'responsive_add_ons',
 				'Responsive Starter Templates',
-				__( 'Responsive Templates', 'responsive-addons' ),
+				__( 'Responsive Templates', 'responsive-add-ons' ),
 				'manage_options',
 				'responsive_add_ons',
 				array( $this, 'responsive_add_ons_templates' ),
@@ -2425,7 +2437,7 @@ class Responsive_Add_Ons {
 	 * @param array $links holds plugin links.
 	 */
 	public function responsive_add_view_library_btn( $links ) {
-		$settings_link = '<a href="' . admin_url( 'admin.php?page=responsive_add_ons' ) . '">' . __( 'View Library', 'responsive-addons' ) . '</a>';
+		$settings_link = '<a href="' . admin_url( 'admin.php?page=responsive_add_ons' ) . '">' . __( 'View Library', 'responsive-add-ons' ) . '</a>';
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
@@ -2435,7 +2447,7 @@ class Responsive_Add_Ons {
 	 * @param array $links holds plugin links.
 	 */
 	public function responsive_add_view_settings_btn( $links ) {
-		$settings_link = '<a href="' . admin_url( 'admin.php?page=responsive#home' ) . '">' . __( 'Settings', 'responsive-addons' ) . '</a>';
+		$settings_link = '<a href="' . admin_url( 'admin.php?page=responsive#home' ) . '">' . __( 'Settings', 'responsive-add-ons' ) . '</a>';
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
@@ -2458,12 +2470,12 @@ class Responsive_Add_Ons {
 						</svg>
 					</button>
 					<div class="responsive-sites-go-pro">
-						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Go Pro', 'responsive-addons' ); ?></h3>
-						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Get access to all the pro templates and unlock more theme customizer settings using Responsive Pro.', 'responsive-addons' ); ?></p>
-						<a href="https://cyberchimps.com/responsive-go-pro/?utm_source=RST_plugin&utm_medium=intro_screen_slidein_btn&utm_campaign=free-to-pro&utm_term=Go_Pro_btn" target="_blank" class="button button-primary responsive-sites-go-pro-btn"><?php esc_html_e( 'Go Pro', 'responsive-addons' ); ?></a>
+						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Go Pro', 'responsive-add-ons' ); ?></h3>
+						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Get access to all the pro templates and unlock more theme customizer settings using Responsive Pro.', 'responsive-add-ons' ); ?></p>
+						<a href="https://cyberchimps.com/responsive-go-pro/?utm_source=RST_plugin&utm_medium=intro_screen_slidein_btn&utm_campaign=free-to-pro&utm_term=Go_Pro_btn" target="_blank" class="button button-primary responsive-sites-go-pro-btn"><?php esc_html_e( 'Go Pro', 'responsive-add-ons' ); ?></a>
 					</div>
 					<div class="responsive-sites-rate-us">
-						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Rate Us', 'responsive-addons' ); ?></h3>
+						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Rate Us', 'responsive-add-ons' ); ?></h3>
 						<p class="responsive-sites-rate-us-stars">
 							<?php
 							for ( $i = 0; $i < 5; $i++ ) {
@@ -2473,20 +2485,20 @@ class Responsive_Add_Ons {
 							}
 							?>
 						</p>
-						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Please let us know what you think, we would appreciate every single review.', 'responsive-addons' ); ?></p>
-						<a href="https://wordpress.org/support/plugin/responsive-add-ons/reviews/" target="_blank" class="responsive-sites-rate-us-btn"><?php esc_html_e( 'Submit Review', 'responsive-addons' ); ?></a>
+						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Please let us know what you think, we would appreciate every single review.', 'responsive-add-ons' ); ?></p>
+						<a href="https://wordpress.org/support/plugin/responsive-add-ons/reviews/" target="_blank" class="responsive-sites-rate-us-btn"><?php esc_html_e( 'Submit Review', 'responsive-add-ons' ); ?></a>
 					</div>
 					<div class="responsive-sites-help-center">
-						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Help Center', 'responsive-addons' ); ?></h3>
-						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Read the documentation to find answers to your questions.', 'responsive-addons' ); ?></p>
-						<a href="https://cyberchimps.com/docs/responsive-starter-templates/" target="_blank" class="responsive-sites-help-center-btn"><?php esc_html_e( 'Docs', 'responsive-addons' ); ?></a>
-						<?php esc_html_e( 'or', 'responsive-addons' ); ?>
-						<a href="https://www.facebook.com/groups/responsive.theme/" target="_blank" class="responsive-sites-community-support-btn"><?php esc_html_e( 'Visit Facebook Group', 'responsive-addons' ); ?></a>
+						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Help Center', 'responsive-add-ons' ); ?></h3>
+						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Read the documentation to find answers to your questions.', 'responsive-add-ons' ); ?></p>
+						<a href="https://cyberchimps.com/docs/responsive-starter-templates/" target="_blank" class="responsive-sites-help-center-btn"><?php esc_html_e( 'Docs', 'responsive-add-ons' ); ?></a>
+						<?php esc_html_e( 'or', 'responsive-add-ons' ); ?>
+						<a href="https://www.facebook.com/groups/responsive.theme/" target="_blank" class="responsive-sites-community-support-btn"><?php esc_html_e( 'Visit Facebook Group', 'responsive-add-ons' ); ?></a>
 					</div>
 					<div class="responsive-sites-video-guides">
-						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Video Guides', 'responsive-addons' ); ?></h3>
-						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Browse through these video tutorials to learn more about how the plugin functions.', 'responsive-addons' ); ?></p>
-						<a href="https://www.youtube.com/playlist?list=PLXTwxw3ZJwPSpE3RYanAdYgnDptbSvjXl" target="_blank" class="responsive-sites-video-guides-btn"><?php esc_html_e( 'Watch Now', 'responsive-addons' ); ?></a>
+						<h3 class="responsive-sites-overlay-heading"><?php esc_html_e( 'Video Guides', 'responsive-add-ons' ); ?></h3>
+						<p class="responsive-sites-overlay-content"><?php esc_html_e( 'Browse through these video tutorials to learn more about how the plugin functions.', 'responsive-add-ons' ); ?></p>
+						<a href="https://www.youtube.com/playlist?list=PLXTwxw3ZJwPSpE3RYanAdYgnDptbSvjXl" target="_blank" class="responsive-sites-video-guides-btn"><?php esc_html_e( 'Watch Now', 'responsive-add-ons' ); ?></a>
 					</div>
 					<!-- Remaining content -->
 					<!-- ... -->
@@ -2577,8 +2589,8 @@ class Responsive_Add_Ons {
 	public function rst_register_admin_menu( $slug ) {
 		add_submenu_page(
 			$slug,
-			__( 'Templates', 'responsive-elementor-addons' ),
-			__( 'Templates', 'responsive-elementor-addons' ),
+			__( 'Templates', 'responsive-add-ons' ),
+			__( 'Templates', 'responsive-add-ons' ),
 			'manage_options',
 			'responsive_add_ons',
 			array( $this, 'responsive_add_ons_templates' ),
@@ -2587,8 +2599,8 @@ class Responsive_Add_Ons {
 		if ( $this->responsive_addons_is_theme_site_builder_compatible() && 'on' === get_option( 'rplus_site_builder_enable' ) && ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) ) {
 			add_submenu_page(
 				$slug,
-				__( 'Site Builder', 'responsive-addons' ),
-				__( 'Site Builder', 'responsive-addons' ),
+				__( 'Site Builder', 'responsive-add-ons' ),
+				__( 'Site Builder', 'responsive-add-ons' ),
 				'manage_options',
 				'responsive-site-builder',
 				array( $this, 'responsive_site_builder' ),
@@ -2963,7 +2975,7 @@ class Responsive_Add_Ons {
 	 */
 	public function responsive_addons_register_custom_fonts_menu() {
 
-		$title = apply_filters( 'responsive_custom_fonts_menu_title', __( 'Custom Fonts', 'responsive-addons' ) );
+		$title = apply_filters( 'responsive_custom_fonts_menu_title', __( 'Custom Fonts', 'responsive-add-ons' ) );
 		add_submenu_page(
 			'themes.php',
 			$title,
@@ -2992,7 +3004,7 @@ class Responsive_Add_Ons {
 		<style>#addtag div.form-field.term-slug-wrap, #edittag tr.form-field.term-slug-wrap { display: none; }
 			#addtag div.form-field.term-description-wrap, #edittag tr.form-field.term-description-wrap { display: none; }</style><script>jQuery( document ).ready( function( $ ) {
 				var $wrapper = $( '#addtag, #edittag' );
-				$wrapper.find( 'tr.form-field.term-name-wrap p, div.form-field.term-name-wrap > p' ).text( '<?php esc_html_e( 'The name of the font as it appears in the customizer options.', 'responsive-addons' ); ?>' );
+				$wrapper.find( 'tr.form-field.term-name-wrap p, div.form-field.term-name-wrap > p' ).text( '<?php esc_html_e( 'The name of the font as it appears in the customizer options.', 'responsive-add-ons' ); ?>' );
 			} );</script>
 			<?php
 	}
@@ -3026,12 +3038,12 @@ class Responsive_Add_Ons {
 	 * @since 3.0.2
 	 */
 	public function responsive_addons_add_new_taxonomy_data() {
-		$this->responsive_addons_font_file_new_field( 'font_woff_2', __( 'Upload Font', 'responsive-addons' ), __( 'Allowed Font types are .woff2, .woff, .ttf, .eot, .svg, .otf', 'responsive-addons' ) );
+		$this->responsive_addons_font_file_new_field( 'font_woff_2', __( 'Upload Font', 'responsive-add-ons' ), __( 'Allowed Font types are .woff2, .woff, .ttf, .eot, .svg, .otf', 'responsive-add-ons' ) );
 
 		$this->responsive_addons_select_new_field(
 			'font-display',
-			__( 'Font Display', 'responsive-addons' ),
-			__( 'Select font-display property for this font', 'responsive-addons' ),
+			__( 'Font Display', 'responsive-add-ons' ),
+			__( 'Select font-display property for this font', 'responsive-add-ons' ),
 			array(
 				'auto'     => 'auto',
 				'block'    => 'block',
@@ -3051,13 +3063,13 @@ class Responsive_Add_Ons {
 	public function responsive_addons_edit_taxonomy_data( $term ) {
 
 		$data = Responsive_Add_Ons_Custom_Fonts_Taxonomy::get_font_links( $term->term_id );
-		$this->responsive_addons_font_file_edit_field( 'font_woff_2', __( 'Upload Font', 'responsive-addons' ), $data['font_woff_2'], __( 'Allowed Font types are .woff2, .woff, .ttf, .eot, .svg, .otf', 'responsive-addons' ) );
+		$this->responsive_addons_font_file_edit_field( 'font_woff_2', __( 'Upload Font', 'responsive-add-ons' ), $data['font_woff_2'], __( 'Allowed Font types are .woff2, .woff, .ttf, .eot, .svg, .otf', 'responsive-add-ons' ) );
 
 		$this->responsive_addons_select_edit_field(
 			'font-display',
-			__( 'Font Display', 'responsive-addons' ),
+			__( 'Font Display', 'responsive-add-ons' ),
 			$data['font-display'],
-			__( 'Select font-display property for this font', 'responsive-addons' ),
+			__( 'Select font-display property for this font', 'responsive-add-ons' ),
 			array(
 				'auto'     => 'Auto',
 				'block'    => 'Block',
@@ -3086,7 +3098,7 @@ class Responsive_Add_Ons {
 			! isset( $_POST['_custom_fonts_nonce'] ) ||
 			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_custom_fonts_nonce'] ) ), 'save_custom_fonts' )
 		) {
-			wp_die( esc_html__( 'Security check failed. Please try again.', 'responsive-addons' ) );
+			wp_die( esc_html__( 'Security check failed. Please try again.', 'responsive-add-ons' ) );
 		}
 
 		// Check if custom fonts taxonomy POST data is set.
@@ -3419,6 +3431,7 @@ class Responsive_Add_Ons {
 
 		if ( 200 !== $response_code ) {
 			$formatted_message = sprintf(
+				/* translators: %1$s is the error message returned by the API. */
 				__( '%1$s. Please try again.', 'responsive-add-ons' ),
 				$message
 			);
@@ -3524,7 +3537,7 @@ class Responsive_Add_Ons {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-addons' ) );
+			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-add-ons' ) );
 		}
 
 		$consent = isset( $_POST['consent'] ) ? sanitize_text_field( wp_unslash( $_POST['consent'] ) ) : 'no';

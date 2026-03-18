@@ -344,14 +344,13 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Display_Rules' ) ) {
 			$taxonomies = get_taxonomies( $args, $output, $operator );
 
 			foreach ( $taxonomies as $taxonomy ) {
-				$terms = get_terms(
-					$taxonomy->name,
-					array(
-						'orderby'    => 'count',
-						'hide_empty' => 0,
-						'name__like' => $search_string,
-					)
-				);
+				$terms = get_terms( array(
+					'taxonomy'   => $taxonomy->name,
+					'orderby'    => 'count',
+					'order'      => 'DESC',
+					'hide_empty' => false,
+					'name__like' => sanitize_text_field( $search_string ),
+				) );
 
 				$data = array();
 

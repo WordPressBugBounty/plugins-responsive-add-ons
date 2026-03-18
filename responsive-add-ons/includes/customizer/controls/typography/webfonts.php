@@ -5,6 +5,10 @@
  * @package Responsive WordPress theme
  */
 
+if( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! function_exists( 'responsive_standard_fonts' ) ) {
 	/**
 	 * List of standard fonts

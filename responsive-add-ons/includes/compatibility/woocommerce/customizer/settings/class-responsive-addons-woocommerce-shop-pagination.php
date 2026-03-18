@@ -48,13 +48,13 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 						$wp_customize,
 						'shop_pagination',
 						array(
-							'label'    => __( 'Shop Pagination', 'responsive' ),
+							'label'    => __( 'Shop Pagination', 'responsive-add-ons' ),
 							'section'  => 'responsive_woocommerce_shop',
 							'settings' => 'shop_pagination',
 							'priority' => 51,
 							'choices'  => array(
-								'default'  => esc_html__( 'Default', 'responsive' ),
-								'infinite' => esc_html__( 'Infinite', 'responsive' ),
+								'default'  => esc_html__( 'Default', 'responsive-add-ons' ),
+								'infinite' => esc_html__( 'Infinite', 'responsive-add-ons' ),
 							),
 						)
 					)
@@ -78,15 +78,15 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 						$wp_customize,
 						'shop_pagination_quick_view',
 						array(
-							'label'    => __( 'Shop Quick View', 'responsive-addons-pro' ),
+							'label'    => __( 'Shop Quick View', 'responsive-add-ons' ),
 							'section'  => 'responsive_woocommerce_shop',
 							'settings' => 'shop_pagination_quick_view',
 							'priority' => 54,
 							'choices'  => array(
-								'disabled'       => esc_html__( 'Disabled', 'responsive-addons-pro' ),
-								'on-image'       => esc_html__( 'On Image', 'responsive-addons-pro' ),
-								'on-image-click' => esc_html__( 'On Image Click', 'responsive-addons-pro' ),
-								'after-summary'  => esc_html__( 'After Summary', 'responsive-addons-pro' ),
+								'disabled'       => esc_html__( 'Disabled', 'responsive-add-ons' ),
+								'on-image'       => esc_html__( 'On Image', 'responsive-add-ons' ),
+								'on-image-click' => esc_html__( 'On Image Click', 'responsive-add-ons' ),
+								'after-summary'  => esc_html__( 'After Summary', 'responsive-add-ons' ),
 							),
 						)
 					)
@@ -111,13 +111,13 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 						'shop_pagination_style',
 						array(
 							'active_callback' => 'responsive_addons_pagination_callbacks',
-							'label'           => __( 'Shop Pagination Style', 'responsive-addons-pro' ),
+							'label'           => __( 'Shop Pagination Style', 'responsive-add-ons' ),
 							'section'         => 'responsive_woocommerce_shop',
 							'settings'        => 'shop_pagination_style',
 							'priority'        => 52,
 							'choices'         => array(
-								'square' => __( 'Square', 'responsive-addons-pro' ),
-								'circle' => __( 'Circle', 'responsive-addons-pro' ),
+								'square' => __( 'Square', 'responsive-add-ons' ),
+								'circle' => __( 'Circle', 'responsive-add-ons' ),
 							),
 						)
 					)
@@ -137,13 +137,13 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 						'shop-infinite-scroll-event',
 						array(
 							'active_callback' => 'responsive_addons_pagination_trigger',
-							'label'           => __( 'Event to Trigger Infinite Loading', 'responsive-addons-pro' ),
+							'label'           => __( 'Event to Trigger Infinite Loading', 'responsive-add-ons' ),
 							'section'         => 'responsive_woocommerce_shop',
 							'settings'        => 'shop-infinite-scroll-event',
 							'priority'        => 52,
 							'choices'         => array(
-								'scroll' => __( 'Scroll', 'responsive-addons-pro' ),
-								'click'  => __( 'Click', 'responsive-addons-pro' ),
+								'scroll' => __( 'Scroll', 'responsive-add-ons' ),
+								'click'  => __( 'Click', 'responsive-add-ons' ),
 							),
 						)
 					)
@@ -161,7 +161,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 					'shop-load-more-text',
 					array(
 						'active_callback' => 'responsive_addons_load_more_callback',
-						'label'           => __( 'Load More Text', 'responsive-addons-pro' ),
+						'label'           => __( 'Load More Text', 'responsive-add-ons' ),
 						'section'         => 'responsive_woocommerce_shop',
 						'settings'        => 'shop-load-more-text',
 						'type'            => 'text',
@@ -194,7 +194,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) :
 							$wp_customize,
 							'responsive_checkout_width',
 							array(
-								'label'       => __( 'Checkout Form Width (px)', 'responsive-addons-pro' ),
+								'label'       => __( 'Checkout Form Width (px)', 'responsive-add-ons' ),
 								'section'     => 'woocommerce_checkout',
 								'settings'    => 'responsive_checkout_width',
 								'priority'    => 10,

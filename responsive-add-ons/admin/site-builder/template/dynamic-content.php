@@ -8,6 +8,11 @@
  * @since 3.3.2
  */
 
+if( !defined( 'ABSPATH' ) )
+{
+	exit;
+}
+
 if ( isset( $args['layout_id'] ) ) {
 	Responsive_Add_Ons_Site_Builder_Markup::get_instance()->render_overridden_template( absint( $args['layout_id'] ) );
 }

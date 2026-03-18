@@ -364,7 +364,16 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 
                 $site_builder_builder_instance = $site_builder_compatibility_base_instance->get_active_page_builder( $post_id );
 
+                ob_start();
                 $site_builder_builder_instance->render_content( $post_id );
+                $content = ob_get_clean();
+
+                // If template buffering is off (e.g., restricted by Elementor), manually process Interactivity API directives
+                if ( function_exists( 'wp_interactivity_process_directives' ) && function_exists( 'wp_should_output_buffer_template_for_enhancement' ) && ! wp_should_output_buffer_template_for_enhancement() ) {
+                    $content = wp_interactivity_process_directives( $content );
+                }
+
+                echo $content;
 
             }
             ?>
@@ -647,6 +656,10 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 					}
 				}
 			}
+
+			if ( ! empty( $result ) ) {
+				wp_enqueue_style( 'wp-block-library' );
+			}
 		}
 
 		/**
@@ -734,9 +747,20 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Markup' ) ) {
 		}
 
 		public function responsive_addons_enable_buffering_if_header_active( $value ) {
-			// Only run on frontend
-			if ( is_admin() ) {
+			// Only run on frontend and after the main query has been set up
+			if ( is_admin() || ! did_action( 'wp' ) ) {
 				return $value;
+			}
+
+			// Don't enable buffering if this is an Elementor page and Elementor disabled it
+			if ( class_exists( '\Elementor\Plugin' ) ) {
+				$plugin = \Elementor\Plugin::$instance;
+				if ( isset( $plugin->documents ) ) {
+					$document = $plugin->documents->get( get_the_ID() );
+					if ( $document && $document->is_built_with_elementor() ) {
+						return $value;
+					}
+				}
 			}
 
 			// Check if we have an active header layout

@@ -10,6 +10,11 @@
  * @package    Responsive Ready Sites
  */
 
+
+if( !defined('ABSPATH') )
+{
+	exit;
+}
 ?>
 
 <?php
@@ -52,8 +57,8 @@ $responsive_sites_header_after_connection_success = false;
 				<span class="slider round"></span>
 			</label>
 			<div class="responsive-addons-consent-text">
-				<h3><?php esc_html_e( 'Contribute to Responsive Starter Templates', 'responsive-addons' ); ?></h3>
-				<p><?php esc_html_e( "Allow Responsive Starter Templates to collect non-sensitive data like templates used and website's PHP version to improve features and fix issues faster.", 'responsive-addons' ); ?></p>
+				<h3><?php esc_html_e( 'Contribute to Responsive Starter Templates', 'responsive-add-ons' ); ?></h3>
+				<p><?php esc_html_e( "Allow Responsive Starter Templates to collect non-sensitive data like templates used and website's PHP version to improve features and fix issues faster.", 'responsive-add-ons' ); ?></p>
 			</div>
 		</div>
 	</div>
@@ -713,11 +718,11 @@ $responsive_sites_header_after_connection_success = false;
 				<div class="description">
 					<p>
 						<?php
-						esc_html_e( 'Can\'t find a Responsive Starter Template that suits your purpose ?' );
+						esc_html_e( 'Can\'t find a Responsive Starter Template that suits your purpose ?', 'responsive-add-ons' );
 						?>
 						<br><a target="_blank" href="mailto:support@cyberchimps.com?Subject=New%20Site%20Suggestion">
 						<?php
-						esc_html_e( 'Suggest A Site' )
+						esc_html_e( 'Suggest A Site', 'responsive-add-ons' );
 						?>
 						</a>
 					</p>

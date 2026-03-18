@@ -130,7 +130,7 @@ class Responsive_Ready_Sites_Widgets_Importer {
 				$sidebar_available    = false;
 				$use_sidebar_id       = 'wp_inactive_widgets'; // add to inactive if sidebar does not exist in theme.
 				$sidebar_message_type = 'error';
-				$sidebar_message      = esc_html__( 'Widget area does not exist in theme (using Inactive)', 'responsive-addons' );
+				$sidebar_message      = esc_html__( 'Widget area does not exist in theme (using Inactive)', 'responsive-add-ons' );
 			}
 
 			// Result for sidebar.
@@ -152,7 +152,7 @@ class Responsive_Ready_Sites_Widgets_Importer {
 				if ( ! $fail && ! isset( $available_widgets[ $id_base ] ) ) {
 					$fail                = true;
 					$widget_message_type = 'error';
-					$widget_message      = esc_html__( 'Site does not support widget', 'responsive-addons' ); // explain why widget not imported.
+					$widget_message      = esc_html__( 'Site does not support widget', 'responsive-add-ons' ); // explain why widget not imported.
 				}
 
 				// Filter to modify settings object before conversion to array and import
@@ -195,7 +195,7 @@ class Responsive_Ready_Sites_Widgets_Importer {
 
 							$fail                = true;
 							$widget_message_type = 'warning';
-							$widget_message      = esc_html__( 'Widget already exists', 'responsive-addons' ); // explain why widget not imported.
+							$widget_message      = esc_html__( 'Widget already exists', 'responsive-add-ons' ); // explain why widget not imported.
 
 							break;
 
@@ -264,10 +264,10 @@ class Responsive_Ready_Sites_Widgets_Importer {
 					// Success message.
 					if ( $sidebar_available ) {
 						$widget_message_type = 'success';
-						$widget_message      = esc_html__( 'Imported', 'responsive-addons' );
+						$widget_message      = esc_html__( 'Imported', 'responsive-add-ons' );
 					} else {
 						$widget_message_type = 'warning';
-						$widget_message      = esc_html__( 'Imported to Inactive', 'responsive-addons' );
+						$widget_message      = esc_html__( 'Imported to Inactive', 'responsive-add-ons' );
 					}
 				}
 

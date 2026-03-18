@@ -5,6 +5,11 @@
  * @package WordPress Importer
  */
 
+if( !defined( 'ABSPATH' ))
+{
+	exit;
+}
+
 if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 	/**
 	 * Class WXR_Importer
@@ -238,7 +243,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			// } end.
 
 			if ( ! $status ) {
-				return new WP_Error( 'wxr_importer.cannot_parse', __( 'Could not open the file for parsing', 'wordpress-importer' ) );
+				return new WP_Error( 'wxr_importer.cannot_parse', __( 'Could not open the file for parsing', 'responsive-add-ons' ) );
 			}
 
 			return $reader;
@@ -275,7 +280,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 							$this->logger->warning(
 								sprintf(
 									/* translators: 1: Version, 2: MAX_WXR_VERSION */
-									__( 'This WXR file (version %1$s) is newer than the importer (version %2$s) and may not be supported. Please consider updating.', 'wordpress-importer' ),
+									__( 'This WXR file (version %1$s) is newer than the importer (version %2$s) and may not be supported. Please consider updating.', 'responsive-add-ons' ),
 									$this->version,
 									self::MAX_WXR_VERSION
 								)
@@ -394,7 +399,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 							$this->logger->warning(
 								sprintf(
 									/* translators: 1: Version, 2: MAX_WXR_VERSION */
-									__( 'This WXR file (version %1$s) is newer than the importer (version %2$s) and may not be supported. Please consider updating.', 'wordpress-importer' ),
+									__( 'This WXR file (version %1$s) is newer than the importer (version %2$s) and may not be supported. Please consider updating.', 'responsive-add-ons' ),
 									$this->version,
 									self::MAX_WXR_VERSION
 								)
@@ -470,7 +475,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 							$this->logger->warning(
 								sprintf(
 									/* translators: 1: Version, 2: MAX_WXR_VERSION */
-									__( 'This WXR file (version %1$s) is newer than the importer (version %2$s) and may not be supported. Please consider updating.', 'wordpress-importer' ),
+									__( 'This WXR file (version %1$s) is newer than the importer (version %2$s) and may not be supported. Please consider updating.', 'responsive-add-ons' ),
 									$this->version,
 									self::MAX_WXR_VERSION
 								)
@@ -619,7 +624,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 		 */
 		protected function import_start( $file ) {
 			if ( ! is_file( $file ) ) {
-				return new WP_Error( 'wxr_importer.file_missing', __( 'The file does not exist, please try again.', 'wordpress-importer' ) );
+				return new WP_Error( 'wxr_importer.file_missing', __( 'The file does not exist, please try again.', 'responsive-add-ons' ) );
 			}
 
 			// Suspend bunches of stuff in WP core.
@@ -679,7 +684,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 		public function set_user_mapping( $mapping ) {
 			foreach ( $mapping as $map ) {
 				if ( empty( $map['old_slug'] ) || empty( $map['old_id'] ) || empty( $map['new_id'] ) ) {
-					$this->logger->warning( __( 'Invalid author mapping', 'wordpress-importer' ) );
+					$this->logger->warning( __( 'Invalid author mapping', 'responsive-add-ons' ) );
 					$this->logger->debug( var_export( $map, true ) );
 					continue;
 				}
@@ -780,7 +785,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 							// Bail now.
 							return new WP_Error(
 								'wxr_importer.post.cannot_import_draft',
-								__( 'Cannot import auto-draft posts' ),
+								__( 'Cannot import auto-draft posts', 'responsive-add-ons' ),
 								$data
 							);
 						}
@@ -870,7 +875,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 				$this->logger->warning(
 					sprintf(
 						/* translators: 1: Post Title, 2: Post Type */
-						__( 'Failed to import "%1$s": Invalid post type %2$s', 'wordpress-importer' ),
+						__( 'Failed to import "%1$s": Invalid post type %2$s', 'responsive-add-ons' ),
 						$data['post_title'],
 						$data['post_type']
 					)
@@ -886,7 +891,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 				$this->logger->info(
 					sprintf(
 						/* translators: 1: Singular Name, 2: Post Title */
-						__( '%1$s "%2$s" already exists.', 'wordpress-importer' ),
+						__( '%1$s "%2$s" already exists.', 'responsive-add-ons' ),
 						$post_type_object->labels->singular_name,
 						$data['post_title']
 					)
@@ -1033,7 +1038,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 					$this->logger->notice(
 						sprintf(
 							/* translators: 1: Post Title */
-							__( 'Skipping attachment "%s", fetching attachments disabled' ),
+							__( 'Skipping attachment "%s", fetching attachments disabled', 'responsive-add-ons' ),
 							$data['post_title']
 						)
 					);
@@ -1057,7 +1062,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 				$this->logger->error(
 					sprintf(
 						/* translators: 1: Post Title, 2: Singular Name */
-						__( 'Failed to import "%1$s" (%2$s)', 'wordpress-importer' ),
+						__( 'Failed to import "%1$s" (%2$s)', 'responsive-add-ons' ),
 						$data['post_title'],
 						$post_type_object->labels->singular_name
 					)
@@ -1092,7 +1097,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			$this->logger->info(
 				sprintf(
 					/* translators: 1: Post Title, 2: Singular Name */
-					__( 'Imported "%1$s" (%2$s)', 'wordpress-importer' ),
+					__( 'Imported "%1$s" (%2$s)', 'responsive-add-ons' ),
 					$data['post_title'],
 					$post_type_object->labels->singular_name
 				)
@@ -1100,7 +1105,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			$this->logger->debug(
 				sprintf(
 					/* translators: 1: Original Post Id, 2: Post Id */
-					__( 'Post %1$d remapped to %2$d', 'wordpress-importer' ),
+					__( 'Post %1$d remapped to %2$d', 'responsive-add-ons' ),
 					$original_id,
 					$post_id
 				)
@@ -1264,7 +1269,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 
 			$info = wp_check_filetype( $upload['file'] );
 			if ( ! $info ) {
-				return new WP_Error( 'attachment_processing_error', __( 'Invalid file type.', 'wordpress-importer' ) );
+				return new WP_Error( 'attachment_processing_error', __( 'Invalid file type.', 'responsive-add-ons' ) );
 			}
 
 			$post['post_mime_type'] = $info['type'];
@@ -1782,7 +1787,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 				$this->logger->error(
 					sprintf(
 						/* translators: 1: User */
-						__( 'Failed to import user "%s"', 'wordpress-importer' ),
+						__( 'Failed to import user "%s"', 'responsive-add-ons' ),
 						$userdata['user_login']
 					)
 				);
@@ -1806,14 +1811,14 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			$this->logger->info(
 				sprintf(
 					/* translators: 1: User */
-					__( 'Imported user "%s"', 'wordpress-importer' ),
+					__( 'Imported user "%s"', 'responsive-add-ons' ),
 					$userdata['user_login']
 				)
 			);
 			$this->logger->debug(
 				sprintf(
 					/* translators: 1: Original ID, 2: Id */
-					__( 'User %1$d remapped to %2$d', 'wordpress-importer' ),
+					__( 'User %1$d remapped to %2$d', 'responsive-add-ons' ),
 					$original_id,
 					$user_id
 				)
@@ -2015,7 +2020,8 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			if ( ! $term_name ) {
 				$this->logger->warning(
 					sprintf(
-						__( 'Skipped importing term for taxonomy %s due to missing name and slug.', 'wordpress-importer' ),
+						/* translators: %s is the taxonomy name (e.g. category, post_tag). */
+						__( 'Skipped importing term for taxonomy %s due to missing name and slug.', 'responsive-add-ons' ),
 						$data['taxonomy'] ?? 'unknown'
 					)
 				);
@@ -2027,7 +2033,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 				$this->logger->warning(
 					sprintf(
 						/* translators: 1: Taxonomy, 2: Name */
-						__( 'Failed to import %1$s %2$s', 'wordpress-importer' ),
+						__( 'Failed to import %1$s %2$s', 'responsive-add-ons' ),
 						$data['taxonomy'],
 						$term_name
 					)
@@ -2058,7 +2064,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			$this->logger->info(
 				sprintf(
 					/* translators: 1: Name, 2: Taxonomy */
-					__( 'Imported "%1$s" (%2$s)', 'wordpress-importer' ),
+					__( 'Imported "%1$s" (%2$s)', 'responsive-add-ons' ),
 					$term_name,
 					$data['taxonomy']
 				)
@@ -2066,7 +2072,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			$this->logger->debug(
 				sprintf(
 					/* translators: 1: Original Id, 2: Term Id */
-					__( 'Term %1$d remapped to %2$d', 'wordpress-importer' ),
+					__( 'Term %1$d remapped to %2$d', 'responsive-add-ons' ),
 					$original_id,
 					$term_id
 				)
@@ -2111,7 +2117,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 
 			// request failed.
 			if ( is_wp_error( $response ) ) {
-				unlink( $upload['file'] );
+				wp_delete_file( $upload['file'] );
 				return $response;
 			}
 
@@ -2119,12 +2125,12 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 
 			// make sure the fetch was successful.
 			if ( 200 !== $code ) {
-				unlink( $upload['file'] );
+				wp_delete_file( $upload['file'] );
 				return new WP_Error(
 					'import_file_error',
 					sprintf(
 						/* translators: 1: Status Code, 2: Status Description, 3: URL */
-						__( 'Remote server returned %1$d %2$s for %3$s', 'wordpress-importer' ),
+						__( 'Remote server returned %1$d %2$s for %3$s', 'responsive-add-ons' ),
 						$code,
 						get_status_header_desc( $code ),
 						$url
@@ -2136,21 +2142,21 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			$headers  = wp_remote_retrieve_headers( $response );
 
 			if ( isset( $headers['content-length'] ) && $filesize !== (int) $headers['content-length'] ) {
-				unlink( $upload['file'] );
-				return new WP_Error( 'import_file_error', __( 'Remote file is incorrect size', 'wordpress-importer' ) );
+				wp_delete_file( $upload['file'] );
+				return new WP_Error( 'import_file_error', __( 'Remote file is incorrect size', 'responsive-add-ons' ) );
 			}
 
 			if ( 0 === $filesize ) {
-				unlink( $upload['file'] );
-				return new WP_Error( 'import_file_error', __( 'Zero size file downloaded', 'wordpress-importer' ) );
+				wp_delete_file( $upload['file'] );
+				return new WP_Error( 'import_file_error', __( 'Zero size file downloaded', 'responsive-add-ons' ) );
 			}
 
 			$max_size = (int) $this->max_attachment_size();
 			if ( ! empty( $max_size ) && $filesize > $max_size ) {
-				unlink( $upload['file'] );
+				wp_delete_file( $upload['file'] );
 				$message = sprintf(
 					/* translators: 1: Max Size */
-					__( 'Remote file is too large, limit is %s', 'wordpress-importer' ),
+					__( 'Remote file is too large, limit is %s', 'responsive-add-ons' ),
 					size_format( $max_size )
 				);
 				return new WP_Error( 'import_file_error', $message );
@@ -2197,7 +2203,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 					// Note: title intentionally not used to skip extra processing.
 					// for when debug logging is off.
 					/* translators: 1: Post Id */
-						__( 'Running post-processing for post %d', 'wordpress-importer' ),
+						__( 'Running post-processing for post %d', 'responsive-add-ons' ),
 						$post_id
 					)
 				);
@@ -2213,7 +2219,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 						$this->logger->warning(
 							sprintf(
 								/* translators: 1: Title, 2: Post Id */
-								__( 'Could not find the post parent for "%1$s" (post #%2$d)', 'wordpress-importer' ),
+								__( 'Could not find the post parent for "%1$s" (post #%2$d)', 'responsive-add-ons' ),
 								get_the_title( $post_id ),
 								$post_id
 							)
@@ -2221,7 +2227,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 						$this->logger->debug(
 							sprintf(
 								/* translators: 1: Post Id, 2: Parent Id */
-								__( 'Post %1$d was imported with parent %2$d, but could not be found', 'wordpress-importer' ),
+								__( 'Post %1$d was imported with parent %2$d, but could not be found', 'responsive-add-ons' ),
 								$post_id,
 								$parent_id
 							)
@@ -2238,7 +2244,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 						$this->logger->warning(
 							sprintf(
 								/* translators: 1: Post Title, 2: Post Id */
-								__( 'Could not find the author for "%1$s" (post #%2$d)', 'wordpress-importer' ),
+								__( 'Could not find the author for "%1$s" (post #%2$d)', 'responsive-add-ons' ),
 								get_the_title( $post_id ),
 								$post_id
 							)
@@ -2246,7 +2252,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 						$this->logger->debug(
 							sprintf(
 								/* translators: 1: Post Id, 2: Author Slug */
-								__( 'Post %1$d was imported with author "%2$s", but could not be found', 'wordpress-importer' ),
+								__( 'Post %1$d was imported with author "%2$s", but could not be found', 'responsive-add-ons' ),
 								$post_id,
 								$author_slug
 							)
@@ -2275,7 +2281,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 					$this->logger->debug(
 						sprintf(
 							/* translators: 1: Post Id */
-							__( 'Post %d was marked for post-processing, but none was required.', 'wordpress-importer' ),
+							__( 'Post %d was marked for post-processing, but none was required.', 'responsive-add-ons' ),
 							$post_id
 						)
 					);
@@ -2289,7 +2295,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 					$this->logger->warning(
 						sprintf(
 							/* translators: 1: Post Title, 2: Post Id */
-							__( 'Could not update "%1$s" (post #%2$d) with mapped data', 'wordpress-importer' ),
+							__( 'Could not update "%1$s" (post #%2$d) with mapped data', 'responsive-add-ons' ),
 							get_the_title( $post_id ),
 							$post_id
 						)
@@ -2358,7 +2364,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 				$this->logger->warning(
 					sprintf(
 						/* translators: 1: Post Title, 2: Post Id */
-						__( 'Could not find the menu object for "%1$s" (post #%2$d)', 'wordpress-importer' ),
+						__( 'Could not find the menu object for "%1$s" (post #%2$d)', 'responsive-add-ons' ),
 						get_the_title( $post_id ),
 						$post_id
 					)
@@ -2366,7 +2372,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 				$this->logger->debug(
 					sprintf(
 						/* translators: 1: Post Id, 2: Menu Object Id, 3: Menu Item Type */
-						__( 'Post %1$d was imported with object "%2$d" of type "%3$s", but could not be found via mapping.', 'wordpress-importer' ),
+						__( 'Post %1$d was imported with object "%2$d" of type "%3$s", but could not be found via mapping.', 'responsive-add-ons' ),
 						$post_id,
 						$menu_object_id,
 						$menu_item_type
@@ -2400,14 +2406,14 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 						$this->logger->warning(
 							sprintf(
 								/* translators: 1: Comment Id */
-								__( 'Could not find the comment parent for comment #%d', 'wordpress-importer' ),
+								__( 'Could not find the comment parent for comment #%d', 'responsive-add-ons' ),
 								$comment_id
 							)
 						);
 						$this->logger->debug(
 							sprintf(
 								/* translators: 1: Comment Id, 2: Parent Id */
-								__( 'Comment %1$d was imported with parent %2$d, but could not be found', 'wordpress-importer' ),
+								__( 'Comment %1$d was imported with parent %2$d, but could not be found', 'responsive-add-ons' ),
 								$comment_id,
 								$parent_id
 							)
@@ -2424,14 +2430,14 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 						$this->logger->warning(
 							sprintf(
 								/* translators: 1: Comment Id */
-								__( 'Could not find the author for comment #%d', 'wordpress-importer' ),
+								__( 'Could not find the author for comment #%d', 'responsive-add-ons' ),
 								$comment_id
 							)
 						);
 						$this->logger->debug(
 							sprintf(
 								/* translators: 1: Comment Id, 2: Author Id */
-								__( 'Comment %1$d was imported with author %2$d, but could not be found', 'wordpress-importer' ),
+								__( 'Comment %1$d was imported with author %2$d, but could not be found', 'responsive-add-ons' ),
 								$comment_id,
 								$author_id
 							)
@@ -2451,7 +2457,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 					$this->logger->warning(
 						sprintf(
 							/* translators: 1: Comment Id */
-							__( 'Could not update comment #%d with mapped data', 'wordpress-importer' ),
+							__( 'Could not update comment #%d with mapped data', 'responsive-add-ons' ),
 							$comment_id
 						)
 					);
@@ -2611,8 +2617,7 @@ protected function prefill_existing_posts() {
 				// Check by slug manually if prefill is off.
 				if ( empty( $data['post_parent'] ) && ! empty( $data['post_name'] ) && ! empty( $data['post_type'] ) ) {
 					global $wpdb;
-					$query = $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s AND post_parent = 0 AND post_status NOT IN ('trash', 'auto-draft')", $data['post_name'], $data['post_type'] );
-					$id = $wpdb->get_var( $query );
+					$id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s AND post_parent = 0 AND post_status NOT IN ('trash', 'auto-draft')", $data['post_name'], $data['post_type'] ) );
 					if ( $id ) {
 						return $id;
 					}

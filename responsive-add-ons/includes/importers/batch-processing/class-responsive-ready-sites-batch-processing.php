@@ -6,6 +6,10 @@
  * @since 1.0.14
  */
 
+if( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 
 	/**

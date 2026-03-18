@@ -5,6 +5,9 @@
  * @package Responsive Addons pro
  */
 
+if( !defined ('ABSPATH') ) {
+	exit;
+}
 if ( ! function_exists( 'responsive_footer_elements_positioning' ) ) {
 	/**
 	 * Returns footer elements positioning
@@ -528,7 +531,7 @@ if ( ! function_exists( 'responsive_addons_woo_cart_items_count_function' ) ) {
 		// return if in elementor, avoid errors.
 		if ( class_exists( 'Elementor\Plugin' )
 				&& \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-			return esc_html__( 'This shortcode only works in front end', 'responsive_addons_pro' );
+			return esc_html__( 'This shortcode only works in front end', 'responsive-add-ons' );
 		}
 		$output  = '<span class="responsive-woo-cart-count">';
 		$output .= WC()->cart->get_cart_contents_count();
@@ -550,7 +553,7 @@ if ( ! function_exists( 'responsive_addons_woo_cart_total_function' ) ) {
 		// return if in elementor, avoid errors.
 		if ( class_exists( 'Elementor\Plugin' )
 				&& \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-			return esc_html__( 'This shortcode only works in front end', 'responsive_addons_pro' );
+			return esc_html__( 'This shortcode only works in front end', 'responsive-add-ons' );
 		}
 
 		$output  = '<span class="responsive-woo-total">';
@@ -587,11 +590,11 @@ if ( ! function_exists( 'woo_free_shipping_left' ) ) {
 		}
 
 		if ( empty( $content ) ) {
-			$content = esc_html__( 'Buy for %left_to_free% more and get free shipping', 'responsive_addons_pro' );
+			$content = esc_html__( 'Buy for %left_to_free% more and get free shipping', 'responsive-add-ons' );
 		}
 
 		if ( empty( $content_reached ) ) {
-			$content_reached = esc_html__( 'You have Free delivery!', 'responsive_addons_pro' );
+			$content_reached = esc_html__( 'You have Free delivery!', 'responsive-add-ons' );
 		}
 
 		$min_free_shipping_amount = 0;
@@ -677,8 +680,8 @@ if ( ! function_exists( 'woo_free_shipping_shortcode' ) ) {
 
 		$atts = shortcode_atts(
 			array(
-				'content'         => esc_html__( 'Buy for %left_to_free% more and get free shipping', 'responsive_addons_pro' ),
-				'content_reached' => esc_html__( 'You have Free delivery!', 'responsive_addons_pro' ),
+				'content'         => esc_html__( 'Buy for %left_to_free% more and get free shipping', 'responsive-add-ons' ),
+				'content_reached' => esc_html__( 'You have Free delivery!', 'responsive-add-ons' ),
 				'multiply_by'     => 1,
 			),
 			$atts
@@ -704,7 +707,7 @@ if ( ! function_exists( 'update_responsive_woo_free_shipping_left_shortcode' ) )
 		$atts = array();
 		
 		// Don't accept POST data from users 
-		$default_bottom_text = esc_html__( '[responsive_woo_free_shipping_left]', 'responsive-addons-pro' );
+		$default_bottom_text = esc_html__( '[responsive_woo_free_shipping_left]', 'responsive-add-ons' );
 		$custom_text = get_theme_mod( 'responsive_popup_bottom_text', $default_bottom_text );
 		
 		// Parse shortcode attributes from the stored value

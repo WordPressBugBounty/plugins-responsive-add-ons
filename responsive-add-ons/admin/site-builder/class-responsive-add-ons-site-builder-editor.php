@@ -61,7 +61,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Editor' ) ) {
             // Localize script to pass data to JavaScript.
             wp_localize_script( 'responsive-site-builder-editor-script', 'responsiveAddonsSiteBuilderEditor', array(
                 'ajax_url'      => admin_url( 'admin-ajax.php' ),
-                'title'         => __( 'Site Builder', 'responsive-addons' ),
+                'title'         => __( 'Site Builder', 'responsive-add-ons' ),
                 'layouts'       => $this->get_layout_type(),
 				'deviceOptions' => $this->get_device_type(),
 				'displayRules'  => Responsive_Add_Ons_Site_Builder_Display_Rules::get_location_selections(),
@@ -80,16 +80,16 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Editor' ) ) {
          */
         public function responsive_site_builder_post_type() {
             $labels = array(
-				'name'          => esc_html__( 'Site Builder', 'responsive-addons' ),
-				'singular_name' => esc_html__( 'Site Builder Layout', 'responsive-addons' ),
-				'search_items'  => esc_html__( 'Search Layout', 'responsive-addons' ),
-				'all_items'     => esc_html__( 'All Layouts', 'responsive-addons' ),
-				'edit_item'     => esc_html__( 'Edit Layout', 'responsive-addons' ),
-				'view_item'     => esc_html__( 'View Layout', 'responsive-addons' ),
-				'add_new'       => esc_html__( 'Add New', 'responsive-addons' ),
-				'update_item'   => esc_html__( 'Update Layout', 'responsive-addons' ),
-				'add_new_item'  => esc_html__( 'Add New', 'responsive-addons' ),
-				'new_item_name' => esc_html__( 'New Layout Name', 'responsive-addons' ),
+				'name'          => esc_html__( 'Site Builder', 'responsive-add-ons' ),
+				'singular_name' => esc_html__( 'Site Builder Layout', 'responsive-add-ons' ),
+				'search_items'  => esc_html__( 'Search Layout', 'responsive-add-ons' ),
+				'all_items'     => esc_html__( 'All Layouts', 'responsive-add-ons' ),
+				'edit_item'     => esc_html__( 'Edit Layout', 'responsive-add-ons' ),
+				'view_item'     => esc_html__( 'View Layout', 'responsive-add-ons' ),
+				'add_new'       => esc_html__( 'Add New', 'responsive-add-ons' ),
+				'update_item'   => esc_html__( 'Update Layout', 'responsive-add-ons' ),
+				'add_new_item'  => esc_html__( 'Add New', 'responsive-add-ons' ),
+				'new_item_name' => esc_html__( 'New Layout Name', 'responsive-add-ons' ),
 			);
 
 			$args = array(
@@ -117,12 +117,12 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Editor' ) ) {
 		 */
 		public function get_layout_type() {
 			return array(
-				'0'        => __( '— Select —', 'responsive-addons' ),
-				'header'   => __( 'Header', 'responsive-addons' ),
-				'footer'   => __( 'Footer', 'responsive-addons' ),
-				'404-page' => __( '404 Page', 'responsive-addons' ),
-				'single'   => __( 'Single', 'responsive-addons' ),
-				'archive'  => __( 'Archive', 'responsive-addons' ),
+				'0'        => __( '— Select —', 'responsive-add-ons' ),
+				'header'   => __( 'Header', 'responsive-add-ons' ),
+				'footer'   => __( 'Footer', 'responsive-add-ons' ),
+				'404-page' => __( '404 Page', 'responsive-add-ons' ),
+				'single'   => __( 'Single', 'responsive-add-ons' ),
+				'archive'  => __( 'Archive', 'responsive-add-ons' ),
 			);
 		}
 
@@ -133,9 +133,9 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder_Editor' ) ) {
 		 */
 		public function get_device_type() {
 			return array(
-				'desktop' => __( 'Desktop', 'responsive-addons' ),
-				'mobile'  => __( 'Mobile', 'responsive-addons' ),
-				'both'    => __( 'Desktop + Mobile', 'responsive-addons' ),
+				'desktop' => __( 'Desktop', 'responsive-add-ons' ),
+				'mobile'  => __( 'Mobile', 'responsive-add-ons' ),
+				'both'    => __( 'Desktop + Mobile', 'responsive-add-ons' ),
 			);
 		}
 

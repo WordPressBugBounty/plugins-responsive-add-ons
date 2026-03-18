@@ -382,7 +382,7 @@ if ( ! class_exists( 'WC_AM_Client_Addons' ) ) {
 			// show notice if external requests are blocked through the WP_HTTP_BLOCK_EXTERNAL constant.
 			if ( defined( 'WP_HTTP_BLOCK_EXTERNAL' ) && WP_HTTP_BLOCK_EXTERNAL === true ) {
 				// check if our API endpoint is in the allowed hosts.
-				$host = parse_url( $this->api_url, PHP_URL_HOST );
+				$host = wp_parse_url( $this->api_url, PHP_URL_HOST );
 
 				if ( ! defined( 'WP_ACCESSIBLE_HOSTS' ) || stristr( WP_ACCESSIBLE_HOSTS, $host ) === false ) {
 					?>

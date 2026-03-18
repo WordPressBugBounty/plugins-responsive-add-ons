@@ -90,7 +90,7 @@ class Responsive_Add_Ons_App_Auth {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( esc_html__( 'You do not have permissions to connect Responsive Addons to Cyberchimps.', 'responsive-addons' ) );
+			wp_send_json_error( esc_html__( 'You do not have permissions to connect Responsive Addons to Cyberchimps.', 'responsive-add-ons' ) );
 		}
 
 		$is_new_user = filter_input( INPUT_POST, 'is_new_user', FILTER_VALIDATE_BOOLEAN );
@@ -148,7 +148,7 @@ class Responsive_Add_Ons_App_Auth {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( esc_html__( 'You do not have permissions to connect Responsive Addons to Cyberchimps.', 'responsive-addons' ) );
+			wp_send_json_error( esc_html__( 'You do not have permissions to connect Responsive Addons to Cyberchimps.', 'responsive-add-ons' ) );
 		}
 		$data = array();
 		if ( isset( $_POST['response'] ) && is_array( $_POST['response'] ) ) {
@@ -168,8 +168,8 @@ class Responsive_Add_Ons_App_Auth {
 		set_transient( 'responsive_ready_sites_display_connect_success', true, 10 );
 		wp_send_json_success(
 			array(
-				'title' => __( 'Authentication successfully completed', 'responsive-addons' ),
-				'text'  => __( 'Reloading page, please wait.', 'responsive-addons' ),
+				'title' => __( 'Authentication successfully completed', 'responsive-add-ons' ),
+				'text'  => __( 'Reloading page, please wait.', 'responsive-add-ons' ),
 			)
 		);
 	}
@@ -201,7 +201,7 @@ class Responsive_Add_Ons_App_Auth {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( esc_html__( 'You do not have permissions to disconnect Responsive Addons to Cyberchimps Responsive Domain.', 'responsive-addons' ) );
+			wp_send_json_error( esc_html__( 'You do not have permissions to disconnect Responsive Addons to Cyberchimps Responsive Domain.', 'responsive-add-ons' ) );
 		}
 
 		$options = $this->settings->get_defaults();
@@ -374,7 +374,7 @@ class Responsive_Add_Ons_App_Auth {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( esc_html__( 'You do not have permission.', 'responsive-addons' ) );
+			wp_send_json_error( esc_html__( 'You do not have permission.', 'responsive-add-ons' ) );
 		}
 
 		$template     = isset( $_POST['site_name'] ) ? sanitize_text_field( wp_unslash( $_POST['site_name'] ) ) : null;
@@ -445,7 +445,7 @@ class Responsive_Add_Ons_App_Auth {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( esc_html__( 'You do not have permission.', 'responsive-addons' ) );
+			wp_send_json_error( esc_html__( 'You do not have permission.', 'responsive-add-ons' ) );
 		}
 
 		require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
@@ -532,7 +532,7 @@ class Responsive_Add_Ons_App_Auth {
 		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( esc_html__( 'You do not have permissions to check connection status.', 'responsive-addons' ) );
+			wp_send_json_error( esc_html__( 'You do not have permissions to check connection status.', 'responsive-add-ons' ) );
 		}
 
 		$is_connected = $this->has_auth() ? true : false;

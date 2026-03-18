@@ -50,7 +50,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 						$wp_customize,
 						'breadcrumbs_options',
 						array(
-							'label'    => __( 'Breadcrumbs', 'responsive' ),
+							'label'    => __( 'Breadcrumbs', 'responsive-add-ons' ),
 							'section'  => 'responsive_woocommerce_shop',
 							'settings' => 'breadcrumbs_options',
 							'priority' => 3,
@@ -71,7 +71,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 						$wp_customize,
 						'toolbar_options',
 						array(
-							'label'    => __( 'Toolbar', 'responsive' ),
+							'label'    => __( 'Toolbar', 'responsive-add-ons' ),
 							'section'  => 'responsive_woocommerce_shop',
 							'settings' => 'toolbar_options',
 						)
@@ -90,14 +90,14 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 						$wp_customize,
 						'content_alignment_options',
 						array(
-							'label'    => esc_html__( 'Content Alignment', 'responsive' ),
+							'label'    => esc_html__( 'Content Alignment', 'responsive-add-ons' ),
 							'section'  => 'responsive_woocommerce_shop',
 							'settings' => 'content_alignment_options',
 							'priority' => 10,
 							'choices'  => array(
-								'left'   => esc_html__( 'dashicons-editor-alignleft', 'responsive' ),
-								'center' => esc_html__( 'dashicons-editor-aligncenter', 'responsive' ),
-								'right'  => esc_html__( 'dashicons-editor-alignright', 'responsive' ),
+								'left'   => esc_html__( 'dashicons-editor-alignleft', 'responsive-add-ons' ),
+								'center' => esc_html__( 'dashicons-editor-aligncenter', 'responsive-add-ons' ),
+								'right'  => esc_html__( 'dashicons-editor-alignright', 'responsive-add-ons' ),
 							),
 						)
 					)
@@ -116,7 +116,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 						$wp_customize,
 						'box_shadow_options',
 						array(
-							'label'       => esc_html__( 'Box Shadow', 'responsive' ),
+							'label'       => esc_html__( 'Box Shadow', 'responsive-add-ons' ),
 							'section'     => 'responsive_woocommerce_shop',
 							'settings'    => 'box_shadow_options',
 							'priority'    => 10,
@@ -142,7 +142,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 						$wp_customize,
 						'box_shadow_hover_options',
 						array(
-							'label'       => esc_html__( 'Box Hover Shadow', 'responsive' ),
+							'label'       => esc_html__( 'Box Hover Shadow', 'responsive-add-ons' ),
 							'section'     => 'responsive_woocommerce_shop',
 							'settings'    => 'box_shadow_hover_options',
 							'priority'    => 10,
@@ -167,16 +167,16 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 						$wp_customize,
 						'product_image_hover_style_options',
 						array(
-							'label'    => esc_html__( 'Product Image Hover Style', 'responsive' ),
+							'label'    => esc_html__( 'Product Image Hover Style', 'responsive-add-ons' ),
 							'section'  => 'responsive_woocommerce_shop',
 							'settings' => 'product_image_hover_style_options',
 							'priority' => 10,
 							'choices'  => array(
-								'none'        => esc_html__( 'None', 'responsive' ),
-								'swap-images' => esc_html__( 'Swap Images', 'responsive' ),
-								'fade'        => esc_html__( 'Fade', 'responsive' ),
-								'zoom'        => esc_html__( 'Zoom', 'responsive' ),
-								'zoom-fade'   => esc_html__( 'Zoom Fade', 'responsive' ),
+								'none'        => esc_html__( 'None', 'responsive-add-ons' ),
+								'swap-images' => esc_html__( 'Swap Images', 'responsive-add-ons' ),
+								'fade'        => esc_html__( 'Fade', 'responsive-add-ons' ),
+								'zoom'        => esc_html__( 'Zoom', 'responsive-add-ons' ),
+								'zoom-fade'   => esc_html__( 'Zoom Fade', 'responsive-add-ons' ),
 							),
 						)
 					)
@@ -184,14 +184,14 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 				/**
 				 * Native Cart Popup
 				*/
-				$native_cart_popup_separator = esc_html__( 'Native Cart Popup', 'responsive-addons-pro' );
+				$native_cart_popup_separator = esc_html__( 'Native Cart Popup', 'responsive-add-ons' );
 				responsive_addons_separator_control( $wp_customize, 'native_cart_popup_separator', $native_cart_popup_separator, 'responsive_woocommerce_shop', 150 );
 
 				// Enable Popup.
-				$enable_popup = esc_html__( 'Enable Popup', 'responsive-addons-pro' );
+				$enable_popup = esc_html__( 'Enable Popup', 'responsive-add-ons' );
 				responsive_toggle_control( $wp_customize, 'enable_native_cart_popup', $enable_popup, 'responsive_woocommerce_shop', 150, 0, null, 'refresh' );
 				// Display Popup in customizer.
-				$display_popup = esc_html__( 'Preview Popup In Customizer', 'responsive-addons-pro' );
+				$display_popup = esc_html__( 'Preview Popup In Customizer', 'responsive-add-ons' );
 				$desc          = 'This checkbox is just to allow you to display the popup in the customizer preview.';
 				responsive_toggle_control( $wp_customize, 'native_cart_popup_display', $display_popup, 'responsive_woocommerce_shop', 150, 0, 'enable_native_cart_popup_check', 'postMessage', $desc );
 
@@ -199,10 +199,10 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 				$elements = apply_filters(
 					'responsive_popup_elements',
 					array(
-						'title'       => esc_html__( 'Title', 'responsive-addons-pro' ),
-						'content'     => esc_html__( 'Content', 'responsive-addons-pro' ),
-						'buttons'     => esc_html__( 'Buttons', 'responsive-addons-pro' ),
-						'bottom_text' => esc_html__( 'Bottom Text', 'responsive-addons-pro' ),
+						'title'       => esc_html__( 'Title', 'responsive-add-ons' ),
+						'content'     => esc_html__( 'Content', 'responsive-add-ons' ),
+						'buttons'     => esc_html__( 'Buttons', 'responsive-add-ons' ),
+						'bottom_text' => esc_html__( 'Bottom Text', 'responsive-add-ons' ),
 					)
 				);
 
@@ -219,7 +219,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 						$wp_customize,
 						'responsive_popup_elements_positioning',
 						array(
-							'label'    => esc_html__( 'Elements Positioning', 'responsive-addons-pro' ),
+							'label'    => esc_html__( 'Elements Positioning', 'responsive-add-ons' ),
 							'section'  => 'responsive_woocommerce_shop',
 							'settings' => 'responsive_popup_elements_positioning',
 							'priority' => 150,
@@ -230,145 +230,145 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) :
 				);
 
 				// Popup Title Text .
-				$popup_title_text = __( 'Title Text', 'responsive-addons-pro' );
+				$popup_title_text = __( 'Title Text', 'responsive-add-ons' );
 				responsive_addons_rst_text_control( $wp_customize, 'popup_title_text', $popup_title_text, 'responsive_woocommerce_shop', 150, 'Item added to your cart', 'enable_native_cart_popup_check', 'sanitize_text_field', 'text', 'postMessage' );
 
 				// Popup Content .
-				$default_content = esc_html__( '[responsive_woo_cart_items] items in the cart ([responsive_woo_total_cart])', 'responsive-addons-pro' );
-				$popup_content   = __( 'Content', 'responsive-addons-pro' );
+				$default_content = esc_html__( '[responsive_woo_cart_items] items in the cart ([responsive_woo_total_cart])', 'responsive-add-ons' );
+				$popup_content   = __( 'Content', 'responsive-add-ons' );
 				responsive_addons_rst_text_control( $wp_customize, 'popup_content', $popup_content, 'responsive_woocommerce_shop', 150, $default_content, 'enable_native_cart_popup_check', 'sanitize_text_field', 'textarea', 'postMessage' );
 
 				// Continue Button Text.
-				$popup_continue_btn_text = __( 'Continue Button Text', 'responsive-addons-pro' );
+				$popup_continue_btn_text = __( 'Continue Button Text', 'responsive-add-ons' );
 				responsive_addons_rst_text_control( $wp_customize, 'popup_continue_btn_text', $popup_continue_btn_text, 'responsive_woocommerce_shop', 150, 'Continue Shopping', 'enable_native_cart_popup_check', 'sanitize_text_field', 'text', 'postMessage' );
 
 				// Go cart Button Text.
-				$popup_cart_btn_text = __( 'Go Cart Button Text', 'responsive-addons-pro' );
+				$popup_cart_btn_text = __( 'Go Cart Button Text', 'responsive-add-ons' );
 				responsive_addons_rst_text_control( $wp_customize, 'popup_cart_btn_text', $popup_cart_btn_text, 'responsive_woocommerce_shop', 150, 'Go To The Cart', 'enable_native_cart_popup_check', 'sanitize_text_field', 'text', 'postMessage' );
 
 				// Bottom Text.
-				$default_bottom_text = esc_html__( '[responsive_woo_free_shipping_left]', 'responsive-addons-pro' );
-				$popup_bottom_text   = __( 'Bottom Text', 'responsive-addons-pro' );
+				$default_bottom_text = esc_html__( '[responsive_woo_free_shipping_left]', 'responsive-add-ons' );
+				$popup_bottom_text   = __( 'Bottom Text', 'responsive-add-ons' );
 				responsive_addons_rst_text_control( $wp_customize, 'popup_bottom_text', $popup_bottom_text, 'responsive_woocommerce_shop', 150, $default_bottom_text, 'enable_native_cart_popup_check', 'sanitize_text_field', 'text', 'postMessage' );
 
 				// Styling - Layout.
-				$native_cart_popup_styling_separator = esc_html__( 'Native Cart Popup Styling', 'responsive-addons-pro' );
+				$native_cart_popup_styling_separator = esc_html__( 'Native Cart Popup Styling', 'responsive-add-ons' );
 				responsive_addons_separator_control( $wp_customize, 'native_cart_popup_styling_separator', $native_cart_popup_styling_separator, 'responsive_woocommerce_shop', 160,'enable_native_cart_popup_check');
 
 				// Main Content Width.
 
 				// Desktop.
-				$popup_width = esc_html__( 'Popup Width (px)', 'responsive-addons-pro' );
+				$popup_width = esc_html__( 'Popup Width (px)', 'responsive-add-ons' );
 				responsive_drag_number_control( $wp_customize, 'popup_width', $popup_width, 'responsive_woocommerce_shop', 160, 600, 'enable_native_cart_popup_check', 5000, 20, 'postMessage' );
 
 				// Tablet.
-				$popup_width_tablet = esc_html__( 'Popup Tablet Width (px)', 'responsive-addons-pro' );
+				$popup_width_tablet = esc_html__( 'Popup Tablet Width (px)', 'responsive-add-ons' );
 				responsive_drag_number_control( $wp_customize, 'popup_width_tablet', $popup_width_tablet, 'responsive_woocommerce_shop', 160, 600, 'enable_native_cart_popup_check', 5000, 20, 'postMessage' );
 
 				// Mobile.
-				$popup_width_mobile = esc_html__( 'Popup Mobile Width (px)', 'responsive-addons-pro' );
+				$popup_width_mobile = esc_html__( 'Popup Mobile Width (px)', 'responsive-add-ons' );
 				responsive_drag_number_control( $wp_customize, 'popup_width_mobile', $popup_width_mobile, 'responsive_woocommerce_shop', 160, 600, 'enable_native_cart_popup_check', 5000, 20, 'postMessage' );
 
 				// Main Content Height.
 
 				// Desktop.
-				$popup_height = esc_html__( 'Popup Height (px)', 'responsive-addons-pro' );
+				$popup_height = esc_html__( 'Popup Height (px)', 'responsive-add-ons' );
 				responsive_drag_number_control( $wp_customize, 'popup_height', $popup_height, 'responsive_woocommerce_shop', 160, 600, 'enable_native_cart_popup_check', 5000, 20, 'postMessage' );
 
 				// Tablet.
-				$popup_height_tablet = esc_html__( 'Popup Tablet Height (px)', 'responsive-addons-pro' );
+				$popup_height_tablet = esc_html__( 'Popup Tablet Height (px)', 'responsive-add-ons' );
 				responsive_drag_number_control( $wp_customize, 'popup_height_tablet', $popup_height_tablet, 'responsive_woocommerce_shop', 160, 350, 'enable_native_cart_popup_check', 5000, 20, 'postMessage' );
 
 				// Mobile.
-				$popup_height_mobile = esc_html__( 'Popup Mobile Height (px)', 'responsive-addons-pro' );
+				$popup_height_mobile = esc_html__( 'Popup Mobile Height (px)', 'responsive-add-ons' );
 				responsive_drag_number_control( $wp_customize, 'popup_height_mobile', $popup_height_mobile, 'responsive_woocommerce_shop', 160, 450, 'enable_native_cart_popup_check', 5000, 20, 'postMessage' );
 
 				// Popup Padding.
-				$popup_padding = esc_html__( 'Popup Padding (px)', 'responsive-addons-pro' );
+				$popup_padding = esc_html__( 'Popup Padding (px)', 'responsive-add-ons' );
 				responsive_addons_padding_control( $wp_customize, 'popup', 'responsive_woocommerce_shop', 160, 50, 25, 'enable_native_cart_popup_check', $popup_padding );
 
 				// Popup radius.
-				$popup_radius = esc_html__( 'Popup Border Radius (px)', 'responsive-addons-pro' );
+				$popup_radius = esc_html__( 'Popup Border Radius (px)', 'responsive-add-ons' );
 				responsive_addons_padding_control( $wp_customize, 'popup_radius', 'responsive_woocommerce_shop', 160, 600, 600, 'enable_native_cart_popup_check', $popup_radius, 600 );
 
 				// Styling - Colors.
-				$native_cart_popup_styling_color_separator = esc_html__( 'Native Cart Popup', 'responsive-addons-pro' );
+				$native_cart_popup_styling_color_separator = esc_html__( 'Native Cart Popup', 'responsive-add-ons' );
 				responsive_addons_separator_control( $wp_customize, 'native_cart_popup_styling_color_separator', $native_cart_popup_styling_color_separator, 'responsive_woocommerce_shop', 165 , 'enable_native_cart_popup_check');
 
 				// Popup Background.
-				$popup_bg = __( 'Popup Background', 'responsive-addons-pro' );
+				$popup_bg = __( 'Popup Background', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_bg', $popup_bg, 'responsive_woocommerce_shop', 165, '#ffffff', 'enable_native_cart_popup_check');
 
 				// Popup overlay color.
-				$popup_overlay = __( 'Popup Overlay color', 'responsive-addons-pro' );
+				$popup_overlay = __( 'Popup Overlay color', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_overlay', $popup_overlay, 'responsive_woocommerce_shop', 165, 'rgba(0,0,0,0.7)', 'enable_native_cart_popup_check');
 
 				// Check Mark Background color.
-				$popup_checkmark_bg = __( 'Check Mark Background', 'responsive-addons-pro' );
+				$popup_checkmark_bg = __( 'Check Mark Background', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_checkmark_bg', $popup_checkmark_bg, 'responsive_woocommerce_shop', 165, '#5bc142', 'enable_native_cart_popup_check');
 
 				// Check Mark Color.
-				$popup_checkmark = __( 'Check Mark Color', 'responsive-addons-pro' );
+				$popup_checkmark = __( 'Check Mark Color', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_checkmark', $popup_checkmark, 'responsive_woocommerce_shop', 165, '#ffffff', 'enable_native_cart_popup_check');
 
 				// Title Color.
-				$popup_title_color = __( 'Title Color', 'responsive-addons-pro' );
+				$popup_title_color = __( 'Title Color', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_title', $popup_title_color, 'responsive_woocommerce_shop', 165, '#333333', 'enable_native_cart_popup_check');
 
 				// Content Color.
-				$popup_content = __( 'Content Color', 'responsive-addons-pro' );
+				$popup_content = __( 'Content Color', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_content', $popup_content, 'responsive_woocommerce_shop', 165, '#777777' ,'enable_native_cart_popup_check');
 
 				// Continue Button Background.
-				$popup_continue_btn_bg = __( 'Continue Button Background', 'responsive-addons-pro' );
+				$popup_continue_btn_bg = __( 'Continue Button Background', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_continue_btn_bg', $popup_continue_btn_bg, 'responsive_woocommerce_shop', 165, '#0066CC', 'enable_native_cart_popup_check');
 
 				// Continue Button Color.
-				$popup_continue_btn_color = __( 'Continue Button Color', 'responsive-addons-pro' );
+				$popup_continue_btn_color = __( 'Continue Button Color', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_continue_btn', $popup_continue_btn_color, 'responsive_woocommerce_shop', 165, '#ffffff', 'enable_native_cart_popup_check');
 
 				// Continue Button Border Color.
-				$popup_continue_btn_border = __( 'Continue Button Border Color', 'responsive-addons-pro' );
+				$popup_continue_btn_border = __( 'Continue Button Border Color', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_continue_btn_border', $popup_continue_btn_border, 'responsive_woocommerce_shop', 165, '#10659C' , 'enable_native_cart_popup_check');
 
 				// Continue Button Background: Hover.
-				$popup_continue_btn_hover_bg = __( 'Continue Button Background: Hover', 'responsive-addons-pro' );
+				$popup_continue_btn_hover_bg = __( 'Continue Button Background: Hover', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_continue_btn_hover_bg', $popup_continue_btn_hover_bg, 'responsive_woocommerce_shop', 165, '#10659C','enable_native_cart_popup_check' );
 
 				// Continue Button Color: Hover.
-				$popup_continue_btn_hover = __( 'Continue Button Color: Hover', 'responsive-addons-pro' );
+				$popup_continue_btn_hover = __( 'Continue Button Color: Hover', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_continue_btn_hover', $popup_continue_btn_hover, 'responsive_woocommerce_shop', 165, '#ffffff' , 'enable_native_cart_popup_check');
 
 				// Continue Button Border Color: Hover.
-				$popup_continue_btn_hover_border = __( 'Continue Button Border Color: Hover', 'responsive-addons-pro' );
+				$popup_continue_btn_hover_border = __( 'Continue Button Border Color: Hover', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_continue_btn_hover_border', $popup_continue_btn_hover_border, 'responsive_woocommerce_shop', 165, '#10659C' , 'enable_native_cart_popup_check');
 
 				// Cart Button Background.
-				$popup_cart_btn_bg = __( 'Cart Button Background', 'responsive-addons-pro' );
+				$popup_cart_btn_bg = __( 'Cart Button Background', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_cart_btn_bg', $popup_cart_btn_bg, 'responsive_woocommerce_shop', 165, '#0066CC', 'enable_native_cart_popup_check');
 
 				// Cart Button Color.
-				$popup_cart_btn = __( 'Cart Button Color', 'responsive-addons-pro' );
+				$popup_cart_btn = __( 'Cart Button Color', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_cart_btn', $popup_cart_btn, 'responsive_woocommerce_shop', 165, '#ffffff', 'enable_native_cart_popup_check');
 
 				// Cart Button Border Color.
-				$popup_cart_btn_border = __( 'Cart Button Border Color', 'responsive-addons-pro' );
+				$popup_cart_btn_border = __( 'Cart Button Border Color', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_cart_btn_border', $popup_cart_btn_border, 'responsive_woocommerce_shop', 165, '#10659C', 'enable_native_cart_popup_check');
 
 				// Cart Button Background: Hover.
-				$popup_cart_btn_hover_bg = __( 'Cart Button Background: Hover', 'responsive-addons-pro' );
+				$popup_cart_btn_hover_bg = __( 'Cart Button Background: Hover', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_cart_btn_hover_bg', $popup_cart_btn_hover_bg, 'responsive_woocommerce_shop', 165, '#10659C', 'enable_native_cart_popup_check');
 
 				// Cart Button Color: Hover.
-				$popup_cart_btn_hover = __( 'Cart Button Color: Hover', 'responsive-addons-pro' );
+				$popup_cart_btn_hover = __( 'Cart Button Color: Hover', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_cart_btn_hover', $popup_cart_btn_hover, 'responsive_woocommerce_shop', 165, '#ffffff', 'enable_native_cart_popup_check');
 
 				// Cart Button Border Color: Hover.
-				$popup_cart_btn_hover_border = __( 'Cart Button Border Color: Hover', 'responsive-addons-pro' );
+				$popup_cart_btn_hover_border = __( 'Cart Button Border Color: Hover', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_cart_btn_hover_border', $popup_cart_btn_hover_border, 'responsive_woocommerce_shop', 165, '#10659C', 'enable_native_cart_popup_check');
 
 				// Bottom Text Color.
-				$popup_text_color = __( 'Bottom Text Color', 'responsive-addons-pro' );
+				$popup_text_color = __( 'Bottom Text Color', 'responsive-add-ons' );
 				responsive_color_control( $wp_customize, 'popup_text', $popup_text_color, 'responsive_woocommerce_shop', 165, '#777777', 'enable_native_cart_popup_check');
 
 			}

@@ -6,6 +6,11 @@
  * @since 3.3.0
  */
 
+if( !defined( 'ABSPATH' ) )
+{
+	exit;
+}
+
 get_header();
 
 the_content();

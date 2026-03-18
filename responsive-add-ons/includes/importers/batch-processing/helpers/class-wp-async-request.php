@@ -6,6 +6,11 @@
  * @package WP-Background-Processing
  */
 
+
+if( !defined ( 'ABSPATH' ) ){
+	exit;
+}
+
 if ( ! class_exists( 'WP_Async_Request' ) ) {
 
 	/**

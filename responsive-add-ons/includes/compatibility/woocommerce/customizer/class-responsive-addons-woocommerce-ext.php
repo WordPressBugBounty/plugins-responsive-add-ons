@@ -6,6 +6,10 @@
  * @since 1.1.0
  */
 
+if( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 	/**
 	 * Responsive_Customizer_WooCommerce_Add_Ons initial setup.
@@ -179,7 +183,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 				'shop_quick_view_auto_height' => true,
 				'is_cart'                     => is_cart(),
 				'is_single_product'           => is_product(),
-				'view_cart'                   => esc_attr__( 'View cart', 'responsive-addons-pro' ),
+				'view_cart'                   => esc_attr__( 'View cart', 'responsive-add-ons' ),
 				'nonce'                       => wp_create_nonce( 'responsive_quick_view_nonce' ),
 			);
 
@@ -208,7 +212,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 
 			// load content template.
 			load_template( __DIR__ . '/template-parts/quick-view-product.php' );
-			echo ob_get_clean(); 
+			echo ob_get_clean(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			die();
 		}
 
@@ -297,7 +301,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 
 			$product_id = $product->get_id();
 			// Get label.
-			$label = __( 'Quick View', 'responsive-addons-pro' );
+			$label = __( 'Quick View', 'responsive-add-ons' );
 
 			$button  = '<div class="responsive-qv-button-wrap">';
 			$button .= '<a href="#" class="button responsive-quick-view-button" data-product_id="' . $product_id . '">' . $label . '</a>';
@@ -318,7 +322,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$product_id = $product->get_id();
 
 			// Get label.
-			$label = __( 'Quick View', 'responsive-addons-pro' );
+			$label = __( 'Quick View', 'responsive-add-ons' );
 
 			$button = '<div class="responsive-shop-thumbnail-wrap"><a href="#" class="responsive-quick-view-text" data-product_id="' . $product_id . '">' . $label . '</a></div>';
 			$button = apply_filters( 'responsive_woo_add_quick_view_text_html', $button, $label, $product );
@@ -432,10 +436,10 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$localize['shop_pagination']              = $shop_pagination;
 			$localize['shop_infinite_scroll_event']   = $shop_infinite_scroll_event;
 			$localize['shop_infinite_nonce']          = wp_create_nonce( 'responsive-shop-load-more-nonce' );
-			$localize['shop_no_more_product_message'] = apply_filters( 'responsive_shop_no_more_product', __( 'No more products to show.', 'responsive' ) );
+			$localize['shop_no_more_product_message'] = apply_filters( 'responsive_shop_no_more_product', __( 'No more products to show.', 'responsive-add-ons' ) );
 			$data['site_url']                         = get_site_url();
 
-			$localize['show_comments'] = __( 'Show Comments', 'responsive' );
+			$localize['show_comments'] = __( 'Show Comments', 'responsive-add-ons' );
 
 			wp_localize_script( 'responsive-shop-pagination-infinite', 'responsiveShopPaginationInfinite', $localize );
 		}
@@ -478,7 +482,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 			$load_more_text = get_theme_mod( 'shop-load-more-text', 'Load More' );
 			
 			if ( '' === $load_more_text ) {
-				$load_more_text = __( 'Load More', 'responsive-addons-pro' );
+				$load_more_text = __( 'Load More', 'responsive-add-ons' );
 			}
 
 			if ( $wp_query->max_num_pages > 1 ) {
@@ -544,7 +548,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
 				$add_to_cart = woocommerce_template_single_add_to_cart();
 			}
 
-			echo $add_to_cart; 
+			echo $add_to_cart; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 		/**
 		 * Update the cart fragments on AJAX.

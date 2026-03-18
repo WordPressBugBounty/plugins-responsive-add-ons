@@ -66,18 +66,18 @@ if ( ! class_exists( 'Responsive_Customizer_Typography_Control' ) ) :
 		 * @param array                $args    Default parent's arguments.
 		 */
 		public function __construct( $manager, $id, $args = array() ) {
-			$this->resp_inherit    = __( 'Inherit', 'responsive' );
+			$this->resp_inherit    = __( 'Inherit', 'responsive-add-ons' );
 			$this->all_font_weight = array(
-				''    => esc_html__( 'Default', 'responsive' ),
-				'100' => esc_html__( 'Thin: 100', 'responsive' ),
-				'200' => esc_html__( 'Light: 200', 'responsive' ),
-				'300' => esc_html__( 'Book: 300', 'responsive' ),
-				'400' => esc_html__( 'Normal: 400', 'responsive' ),
-				'500' => esc_html__( 'Medium: 500', 'responsive' ),
-				'600' => esc_html__( 'Semibold: 600', 'responsive' ),
-				'700' => esc_html__( 'Bold: 700', 'responsive' ),
-				'800' => esc_html__( 'Extra Bold: 800', 'responsive' ),
-				'900' => esc_html__( 'Black: 900', 'responsive' ),
+				''    => esc_html__( 'Default', 'responsive-add-ons' ),
+				'100' => esc_html__( 'Thin: 100', 'responsive-add-ons' ),
+				'200' => esc_html__( 'Light: 200', 'responsive-add-ons' ),
+				'300' => esc_html__( 'Book: 300', 'responsive-add-ons' ),
+				'400' => esc_html__( 'Normal: 400', 'responsive-add-ons' ),
+				'500' => esc_html__( 'Medium: 500', 'responsive-add-ons' ),
+				'600' => esc_html__( 'Semibold: 600', 'responsive-add-ons' ),
+				'700' => esc_html__( 'Bold: 700', 'responsive-add-ons' ),
+				'800' => esc_html__( 'Extra Bold: 800', 'responsive-add-ons' ),
+				'900' => esc_html__( 'Black: 900', 'responsive-add-ons' ),
 			);
 			parent::__construct( $manager, $id, $args );
 		}

@@ -80,18 +80,18 @@ if ( ! class_exists( 'Responsive_Add_Ons_Custom_Fonts_Taxonomy' ) ) :
 		public function create_custom_fonts_taxonomies() {
 			// Taxonomy: responsive_custom_fonts.
 			$labels = array(
-				'name'              => apply_filters( 'responsive_custom_fonts_menu_title', __( 'Custom Fonts', 'responsive' ) ),
-				'singular_name'     => __( 'Font', 'responsive' ),
-				'menu_name'         => _x( 'Custom Fonts', 'Admin menu name', 'responsive' ),
-				'search_items'      => __( 'Search Fonts', 'responsive' ),
-				'all_items'         => __( 'All Fonts', 'responsive' ),
-				'parent_item'       => __( 'Parent Font', 'responsive' ),
-				'parent_item_colon' => __( 'Parent Font:', 'responsive' ),
-				'edit_item'         => __( 'Edit Font', 'responsive' ),
-				'update_item'       => __( 'Update Font', 'responsive' ),
-				'add_new_item'      => __( 'Add New Font', 'responsive' ),
-				'new_item_name'     => __( 'New Font Name', 'responsive' ),
-				'not_found'         => __( 'No fonts found', 'responsive' ),
+				'name'              => apply_filters( 'responsive_custom_fonts_menu_title', __( 'Custom Fonts', 'responsive-add-ons' ) ),
+				'singular_name'     => __( 'Font', 'responsive-add-ons' ),
+				'menu_name'         => _x( 'Custom Fonts', 'Admin menu name', 'responsive-add-ons' ),
+				'search_items'      => __( 'Search Fonts', 'responsive-add-ons' ),
+				'all_items'         => __( 'All Fonts', 'responsive-add-ons' ),
+				'parent_item'       => __( 'Parent Font', 'responsive-add-ons' ),
+				'parent_item_colon' => __( 'Parent Font:', 'responsive-add-ons' ),
+				'edit_item'         => __( 'Edit Font', 'responsive-add-ons' ),
+				'update_item'       => __( 'Update Font', 'responsive-add-ons' ),
+				'add_new_item'      => __( 'Add New Font', 'responsive-add-ons' ),
+				'new_item_name'     => __( 'New Font Name', 'responsive-add-ons' ),
+				'not_found'         => __( 'No fonts found', 'responsive-add-ons' ),
 			);
 
 			$args = array(

@@ -86,7 +86,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
             // Localize script to pass data to JavaScript.
             wp_localize_script( 'responsive-site-builder-script', 'responsive_addons_site_builder', array(
                 'ajax_url'         => admin_url( 'admin-ajax.php' ),
-                'title'            => __( 'Site Builder', 'responsive-addons' ),
+                'title'            => __( 'Site Builder', 'responsive-add-ons' ),
                 'admin_url'        => admin_url(),
 				'res_dash_url'     => admin_url().'admin.php?page=responsive',
                 'nonce'            => wp_create_nonce( 'wp_rest' ),
@@ -174,7 +174,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
 		 */
         public function get_permissions_check( $request ) {
             if( ! current_user_can( 'manage_options' ) ) {
-                return new WP_Error( 'responsive_rest_cannot_view', __( 'Sorry, you cannot list layouts.', 'responsive-addons' ), array( 'status' => rest_authorization_required_code() ) );
+                return new WP_Error( 'responsive_rest_cannot_view', __( 'Sorry, you cannot list layouts.', 'responsive-add-ons' ), array( 'status' => rest_authorization_required_code() ) );
             }
             return true;
         }
@@ -230,7 +230,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
 						'post_title'     => $post->post_title,
 						'author_name'    => $author->display_name,
 						'author_image'   => $author_avatar_url,
-						'post_modified'  => date( 'F d, Y', strtotime( $post->post_modified ) ),
+						'post_modified'  => wp_date( 'F d, Y', strtotime( $post->post_modified ) ),
 						'post_name'      => $post->post_name,
 						'post_status'    => $post->post_status,
 						'post_link'      => $post_preview_link,
@@ -259,7 +259,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
 				if ( ! current_user_can( 'manage_options', $post_id ) ) {
 					return new WP_Error(
 						'rest_forbidden',
-						__( 'Sorry, you are not allowed to move this item to the Trash.', 'responsive-addons' ),
+						__( 'Sorry, you are not allowed to move this item to the Trash.', 'responsive-add-ons' ),
 						array( 'status' => 403 )
 					);
 
@@ -286,7 +286,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
 
 			return new WP_Error(
 				'rest_forbidden',
-				__( 'You do not have permission to delete this item.', 'responsive-addons' ),
+				__( 'You do not have permission to delete this item.', 'responsive-add-ons' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -395,7 +395,7 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
 			check_ajax_referer( 'responsive-addons-sb-childtheme-notice', 'nonce' );
 
 			if( ! current_user_can( 'manage_options' ) ) {
-				wp_send_json_error( esc_html__( 'You do not have permission to dismiss the notice', 'responsive-addons' ) );
+				wp_send_json_error( esc_html__( 'You do not have permission to dismiss the notice', 'responsive-add-ons' ) );
 			}
 
 			update_option( 'responsive_addons_sb_childtheme_warning_dismiss', true, false );
@@ -514,8 +514,8 @@ if ( ! class_exists( 'Responsive_Add_Ons_Site_Builder' ) ) {
 						} elseif ( 'special-date' === $display_rule || 'basic-archives' === $display_rule ) {
 
 							// URL for the Date Archive & All Archives
-							$year  = date( 'Y' );
-							$month = date( 'm' );
+							$year  = wp_date( 'Y' );
+							$month = wp_date( 'm' );
 							if ( isset( $year ) && isset( $month ) ) {
 								$post_preview_link = get_month_link( $year, $month );
 							} else {

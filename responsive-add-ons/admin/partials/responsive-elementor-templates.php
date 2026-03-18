@@ -10,6 +10,11 @@
  * @package    Responsive Ready Sites
  */
 
+if( !defined( 'ABSPATH' ) )
+{
+	exit;
+}
+
 ?>
 <?php
 $is_pro_greater = true;

@@ -6,6 +6,10 @@
  * @package WP-Background-Processing
  */
 
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! class_exists( 'WP_Background_Process' ) ) {
 
 	/**
@@ -437,7 +441,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 			$schedules[ $this->identifier . '_cron_interval' ] = array(
 				'interval' => MINUTE_IN_SECONDS * $interval,
 				/* translators: %d is minutes */
-				'display'  => sprintf( __( 'Every %d Minutes', 'responsive-addons' ), $interval ),
+				'display'  => sprintf( __( 'Every %d Minutes', 'responsive-add-ons' ), $interval ),
 			);
 
 			return $schedules;

@@ -78,7 +78,7 @@ class Responsive_Add_Ons_Api extends WP_REST_Controller {
 	public function create_items_permissions_check( $request ) {
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return new WP_Error( 'rest_forbidden', esc_html__( 'Invalid Authorization. You do not have permission to perform this action.', 'responsive-addons' ), array( 'status' => rest_authorization_required_code() ) );
+			return new WP_Error( 'rest_forbidden', esc_html__( 'Invalid Authorization. You do not have permission to perform this action.', 'responsive-add-ons' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;

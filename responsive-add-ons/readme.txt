@@ -1,11 +1,11 @@
-=== Responsive Plus – Elementor Templates & Starter Sites, Advanced Features and Customizer Settings for Responsive Theme. ===
+=== Responsive Plus – Elementor Templates & Starter Sites ===
 Contributors: cyberchimps
 Donate Link: https://cyberchimps.com
 Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 3.4.5
+Stable tag: 3.4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -242,6 +242,10 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 8. Responsive Plus advanced features.
 
 == Changelog ==
+
+= 3.4.6 - 18th March 2026 = 
+* New - Introducing the customization settings in Responsive Plus to select site logo, font pairs, and color palettes during site import.
+* Fix - Fixed an issue that was not allowing display conditions in Site Builder to get applied correctly on Elementor pages.
 
 = 3.4.5 - 12th March 2026 =
 * Fix - Minor bug fixes and improvements.

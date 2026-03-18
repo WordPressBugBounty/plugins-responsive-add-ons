@@ -191,11 +191,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer_Log' ) ) :
 
 			foreach ( $files as $file ) {
 				if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
-					$file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_read_fopen
-					if ( $file_handle ) {
-						fwrite( $file_handle, $file['content'] ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fwrite
-						fclose( $file_handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
-					}
+					self::get_filesystem()->put_contents( trailingslashit( $file['base'] ) . $file['file'], $file['content'], FS_CHMOD_FILE );
 				}
 			}
 
@@ -275,7 +271,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer_Log' ) ) :
 			if ( $memory_limit_in_bytes_current < $memory_limit_in_bytes_required ) {
 				return sprintf(
 				/* translators: %1$s Memory Limit, %2$s Recommended memory limit. */
-					_x( 'Current memory limit %1$s. We recommend setting memory to at least %2$s.', 'Recommended Memory Limit', 'responsive-addons' ),
+					_x( 'Current memory limit %1$s. We recommend setting memory to at least %2$s.', 'Recommended Memory Limit', 'responsive-add-ons' ),
 					WP_MEMORY_LIMIT,
 					$required_memory
 				);

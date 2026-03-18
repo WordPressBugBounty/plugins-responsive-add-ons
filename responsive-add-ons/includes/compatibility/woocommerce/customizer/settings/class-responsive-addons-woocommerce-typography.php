@@ -42,7 +42,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 				'responsive_typography_settings',
 				array(
 					'product_title'                  => array(
-						'label'    => esc_html__( 'Product Title', 'responsive-addons-pro' ),
+						'label'    => esc_html__( 'Product Title', 'responsive-add-ons' ),
 						'target'   => '.woocommerce ul.products li.product .woocommerce-loop-product__title, .woocommerce-page ul.products li.product .woocommerce-loop-product__title',
 						'priority' => 173,
 						'section'  => 'responsive_woocommerce_shop',
@@ -55,7 +55,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 						),
 					),
 					'single_product_title'           => array(
-						'label'    => esc_html__( 'Product Title', 'responsive-addons-pro' ),
+						'label'    => esc_html__( 'Product Title', 'responsive-add-ons' ),
 						'target'   => '.single-product div.product .entry-title',
 						'priority' => 79,
 						'type'     => 'control',
@@ -69,7 +69,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 						),
 					),
 					'product_price'                  => array(
-						'label'    => esc_html__( 'Product Price', 'responsive-addons-pro' ),
+						'label'    => esc_html__( 'Product Price', 'responsive-add-ons' ),
 						'target'   => '.woocommerce ul.products li.product .price, .woocommerce-page ul.products li.product .price',
 						'priority' => 175,
 						'section'  => 'responsive_woocommerce_shop',
@@ -82,7 +82,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 						),
 					),
 					'single_product_price'           => array(
-						'label'    => esc_html__( 'Product Price', 'responsive-addons-pro' ),
+						'label'    => esc_html__( 'Product Price', 'responsive-add-ons' ),
 						'target'   => '.single-product div.product p.price,.single-product div.product p.price ins',
 						'priority' => 81,
 						'exclude'  => array( 'text-transform' ),
@@ -96,7 +96,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 						),
 					),
 					'product_content'                => array(
-						'label'    => esc_html__( 'Product Content', 'responsive-addons-pro' ),
+						'label'    => esc_html__( 'Product Content', 'responsive-add-ons' ),
 						'target'   => '.responsive-shop-summary-wrap p, .responsive-shop-summary-wrap .responsive_woo_shop_parent_category ',
 						'priority' => 177,
 						'section'  => 'responsive_woocommerce_shop',
@@ -109,7 +109,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 						),
 					),
 					'single_product_content'         => array(
-						'label'    => esc_html__( 'Product Content', 'responsive-addons-pro' ),
+						'label'    => esc_html__( 'Product Content', 'responsive-add-ons' ),
 						'target'   => '.single-product .woocommerce-product-details__short-description, .single-product .woocommerce-Tabs-panel--description',
 						'priority' => 83,
 						'type'     => 'control',
@@ -122,7 +122,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 						),
 					),
 					'shop_page_title'                => array(
-						'label'    => esc_html__( 'Shop Page Title', 'responsive-addons-pro' ),
+						'label'    => esc_html__( 'Shop Page Title', 'responsive-add-ons' ),
 						'target'   => '.woocommerce-products-header h1, .woocommerce-products-header .woocommerce-products-header__title',
 						'priority' => 171,
 						'section'  => 'responsive_woocommerce_shop',
@@ -135,7 +135,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 						),
 					),
 					'single_product_page_breadcrumb' => array(
-						'label'    => esc_html__( 'Breadcrumb', 'responsive-addons-pro' ),
+						'label'    => esc_html__( 'Breadcrumb', 'responsive-add-ons' ),
 						'target'   => '.single-product .woocommerce-breadcrumb, .single-product .woocommerce-breadcrumb a',
 						'priority' => 85,
 						'type'     => 'control',
@@ -240,13 +240,13 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$element . '_shop_typography[font-family]',
 									array(
 										'name'            => $element . '_shop_typography[font-family]',
-										'label'           => esc_html__( 'Family', 'responsive' ),
+										'label'           => esc_html__( 'Family', 'responsive-add-ons' ),
 										'section'         => $section,
 										'responsive_setting_id' => 'responsive_font_family',
 										'settings'        => $element . '_shop_typography[font-family]',
 										'priority'        => $priority,
 										'active_callback' => $active_callback,
-										'resp_inherit'    => __( 'Default', 'responsive' ),
+										'resp_inherit'    => __( 'Default', 'responsive-add-ons' ),
 										'connect'         => $element . '_shop_typography[font-weight]',
 									)
 								)
@@ -274,26 +274,26 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$element . '_shop_typography[font-weight]',
 									array(
 										'name'            => $element . '_shop_typography[font-weight]',
-										'label'           => esc_html__( 'Font Weight', 'responsive' ),
-										'description'     => esc_html__( 'Important: Not all fonts support every font-weight.', 'responsive' ),
+										'label'           => esc_html__( 'Font Weight', 'responsive-add-ons' ),
+										'description'     => esc_html__( 'Important: Not all fonts support every font-weight.', 'responsive-add-ons' ),
 										'section'         => $section,
 										'responsive_setting_id' => 'responsive_font_weight',
 										'settings'        => $element . '_shop_typography[font-weight]',
-										'resp_inherit'    => __( 'Default', 'responsive' ),
+										'resp_inherit'    => __( 'Default', 'responsive-add-ons' ),
 										'connect'         => $element . '_shop_typography[font-family]',
 										'priority'        => $priority,
 										'active_callback' => $active_callback,
 										'choices'         => array(
-											''    => esc_html__( 'Default', 'responsive' ),
-											'100' => esc_html__( 'Thin: 100', 'responsive' ),
-											'200' => esc_html__( 'Light: 200', 'responsive' ),
-											'300' => esc_html__( 'Book: 300', 'responsive' ),
-											'400' => esc_html__( 'Normal: 400', 'responsive' ),
-											'500' => esc_html__( 'Medium: 500', 'responsive' ),
-											'600' => esc_html__( 'Semibold: 600', 'responsive' ),
-											'700' => esc_html__( 'Bold: 700', 'responsive' ),
-											'800' => esc_html__( 'Extra Bold: 800', 'responsive' ),
-											'900' => esc_html__( 'Black: 900', 'responsive' ),
+											''    => esc_html__( 'Default', 'responsive-add-ons' ),
+											'100' => esc_html__( 'Thin: 100', 'responsive-add-ons' ),
+											'200' => esc_html__( 'Light: 200', 'responsive-add-ons' ),
+											'300' => esc_html__( 'Book: 300', 'responsive-add-ons' ),
+											'400' => esc_html__( 'Normal: 400', 'responsive-add-ons' ),
+											'500' => esc_html__( 'Medium: 500', 'responsive-add-ons' ),
+											'600' => esc_html__( 'Semibold: 600', 'responsive-add-ons' ),
+											'700' => esc_html__( 'Bold: 700', 'responsive-add-ons' ),
+											'800' => esc_html__( 'Extra Bold: 800', 'responsive-add-ons' ),
+											'900' => esc_html__( 'Black: 900', 'responsive-add-ons' ),
 										),
 									)
 								)
@@ -320,14 +320,14 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$wp_customize,
 									$element . '_shop_typography[font-style]',
 									array(
-										'label'           => esc_html__( 'Font Style', 'responsive' ),
+										'label'           => esc_html__( 'Font Style', 'responsive-add-ons' ),
 										'section'         => $section,
 										'settings'        => $element . '_shop_typography[font-style]',
 										'priority'        => $priority,
 										'active_callback' => $active_callback,
 										'choices'         => array(
-											'italic' => esc_html__( 'T', 'responsive' ),
-											'normal' => esc_html__( 'T', 'responsive' ),
+											'italic' => esc_html__( 'T', 'responsive-add-ons' ),
+											'normal' => esc_html__( 'T', 'responsive-add-ons' ),
 										),
 									)
 								)
@@ -354,15 +354,15 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$wp_customize,
 									$element . '_shop_typography[text-transform]',
 									array(
-										'label'           => esc_html__( 'Text Transform', 'responsive' ),
+										'label'           => esc_html__( 'Text Transform', 'responsive-add-ons' ),
 										'section'         => $section,
 										'settings'        => $element . '_shop_typography[text-transform]',
 										'priority'        => $priority,
 										'active_callback' => $active_callback,
 										'choices'         => array(
-											'capitalize' => esc_html__( 'Aa', 'responsive' ),
-											'lowercase'  => esc_html__( 'aa', 'responsive' ),
-											'uppercase'  => esc_html__( 'AA', 'responsive' ),
+											'capitalize' => esc_html__( 'Aa', 'responsive-add-ons' ),
+											'lowercase'  => esc_html__( 'aa', 'responsive-add-ons' ),
+											'uppercase'  => esc_html__( 'AA', 'responsive-add-ons' ),
 										),
 									)
 								)
@@ -458,8 +458,8 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$wp_customize,
 									$element . '_shop_typography[font-size]',
 									array(
-										'label'           => esc_html__( 'Size', 'responsive' ),
-										'description'     => esc_html__( 'You can add: px-em-%', 'responsive' ),
+										'label'           => esc_html__( 'Size', 'responsive-add-ons' ),
+										'description'     => esc_html__( 'You can add: px-em-%', 'responsive-add-ons' ),
 										'section'         => $section,
 										'settings'        => array(
 											'desktop'      => $element . '_shop_typography[font-size]',
@@ -518,7 +518,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$wp_customize,
 									$element . '_shop_typography[line-height]',
 									array(
-										'label'           => esc_html__( 'Line Height', 'responsive' ),
+										'label'           => esc_html__( 'Line Height', 'responsive-add-ons' ),
 										'section'         => $section,
 										'priority'        => $priority,
 										'settings'        => $element . '_shop_typography[line-height]',
@@ -554,7 +554,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$wp_customize,
 									$element . '_shop_typography[letter-spacing]',
 									array(
-										'label'           => esc_html__( 'Letter Spacing (px)', 'responsive' ),
+										'label'           => esc_html__( 'Letter Spacing (px)', 'responsive-add-ons' ),
 										'section'         => $section,
 										'settings'        => $element . '_shop_typography[letter-spacing]',
 										'priority'        => $priority,
@@ -592,7 +592,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$wp_customize,
 									$element . '_shop_typography[color]',
 									array(
-										'label'           => esc_html__( 'Font Color', 'responsive' ),
+										'label'           => esc_html__( 'Font Color', 'responsive-add-ons' ),
 										'section'         => $section,
 										'is_hover_required' => false,
 										'settings'        => $element . '_shop_typography[color]',

@@ -5,6 +5,11 @@
  * @package Responsive_Addons
  */
 
+if( !defined('ABSPATH') )
+{
+	exit;
+}
+
 ?>
 <div class="responsive-options-tabs">
 	<div id="responsive-add-ons-go-pro" class="tab-content active">

@@ -5,6 +5,10 @@
  * @package Responsive Addon
  */
 
+if( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 while ( have_posts() ) :
 	the_post(); ?>
 <div class="responsive-woo-product">

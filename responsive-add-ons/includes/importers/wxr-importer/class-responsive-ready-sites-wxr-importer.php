@@ -129,7 +129,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_WXR_Importer' ) ) :
 			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
 			if ( ! current_user_can( 'install_plugins' ) ) {
-				wp_send_json_error( __( 'User does not have permission!', 'responsive-addons' ) );
+				wp_send_json_error( __( 'User does not have permission!', 'responsive-add-ons' ) );
 			}
 			// Start the event stream.
 			header( 'Content-Type: text/event-stream, charset=UTF-8' );
@@ -246,7 +246,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_WXR_Importer' ) ) :
 				),
 				'url'     => $url,
 				'strings' => array(
-					'complete' => __( 'Import complete!', 'responsive-addons' ),
+					'complete' => __( 'Import complete!', 'responsive-add-ons' ),
 				),
 			);
 		}
