@@ -723,7 +723,7 @@ class Responsive_Add_Ons {
 	 * @since  1.0.0
 	 */
 	public static function set_api_url() {
-		self::$api_url = apply_filters( 'responsive_ready_sites_api_url', 'https://ccreadysites.cyberchimps.com/wp-json/wp/v2/' );
+		self::$api_url = apply_filters( 'responsive_ready_sites_api_url', CCRS_URL . '/wp-json/wp/v2/' );
 	}
 
 	/**
@@ -732,7 +732,7 @@ class Responsive_Add_Ons {
 	 * @since  2.9.1
 	 */
 	public static function set_rst_blocks_api_url() {
-		self::$rst_blocks_api_url = apply_filters( 'rst_blocks_api_url', 'https://ccreadysites.cyberchimps.com/ccblocks/wp-json/wp/v2/' );
+		self::$rst_blocks_api_url = apply_filters( 'rst_blocks_api_url', CCRS_URL . '/ccblocks/wp-json/wp/v2/' );
 	}
 
 	/**
@@ -743,6 +743,17 @@ class Responsive_Add_Ons {
 	 */
 	public function admin_init( $options ) {
 		$this->init_settings();
+
+		// Check for plugin update and schedule cron.
+		$stored_version  = get_option( 'responsive_ready_sites_version' );
+		$current_version = RESPONSIVE_ADDONS_VER;
+
+		if ( version_compare( $stored_version, $current_version, '<' ) ) {
+			if ( class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) {
+				Responsive_Ready_Sites_Batch_Processing::get_instance()->schedule_library_sync();
+			}
+			update_option( 'responsive_ready_sites_version', $current_version );
+		}
 	}
 
 	/**

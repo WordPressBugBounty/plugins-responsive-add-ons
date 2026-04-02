@@ -126,7 +126,11 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 
 			add_action( 'wp_ajax_rst-import-blocks', array( $this, 'import_blocks' ) );
 
+			add_filter( 'cron_schedules', array( $this, 'add_daily_cron_schedule' ) );
+
 			add_action( 'admin_head', array( $this, 'initialize_ready_sites_templates_importer' ) );
+
+			add_action( 'responsive_ready_sites_library_sync', array( $this, 'handle_library_sync' ) );
 
 			self::set_api_url();
 		}
@@ -258,7 +262,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 			$page_no = isset( $_POST['page_no'] ) ? absint( $_POST['page_no'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( $page_no ) {
 				$sites_and_pages = Responsive_Ready_Sites_Batch_Processing_Importer::get_instance()->import_sites( $page_no );
-
 				wp_send_json_success( $sites_and_pages );
 			}
 
@@ -413,7 +416,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @since  2.5.0
 		 */
 		public static function set_api_url() {
-			self::$api_url = apply_filters( 'responsive_ready_sites_api_url', 'https://ccreadysites.cyberchimps.com/wp-json/wp/v2/' );
+			self::$api_url = apply_filters( 'responsive_ready_sites_api_url', CCRS_URL . '/wp-json/wp/v2/' );
 		}
 
 		/**
@@ -601,6 +604,99 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 			}
 
 			delete_site_option( 'responsive-ready-sites-batch-status' );
+		}
+
+		/**
+		 * Schedule Daily Sync
+		 *
+		 * @since 3.4.7
+		 * @return void
+		 */
+		public function schedule_library_sync() {
+			$hook     = 'responsive_ready_sites_library_sync';
+			$schedule = wp_get_schedule( $hook );
+
+			if ( $schedule && $schedule !== 'daily_sync' ) {
+				wp_clear_scheduled_hook( $hook );
+				$schedule = false;
+			}
+
+			if ( ! $schedule ) {
+				wp_schedule_event( time(), 'daily_sync', $hook );
+			}
+		}
+
+		/**
+		 * Handle Library Sync
+		 *
+		 * @since 3.4.7
+		 * @return void
+		 */
+		public function handle_library_sync() {
+			$lock_key = 'responsive_sync_in_progress';
+
+			if ( get_transient( $lock_key ) ) {
+				return;
+			}
+
+			set_transient( $lock_key, 1, 15 * MINUTE_IN_SECONDS );
+
+			try {
+				$this->perform_full_sync();
+			} catch ( \Throwable $e ) {
+				// Silence error.
+			} finally {
+				delete_transient( $lock_key );
+			}
+		}
+
+		/**
+		 * Perform Full Sync
+		 *
+		 * @since 3.4.7
+		 * @return void
+		 */
+		public function perform_full_sync() {
+			// 1. Check checksums.
+			if ( 'no' === $this->get_last_export_checksums() ) {
+				return;
+			}
+
+			// 2. Sync Sites.
+			$total_sites_requests = $this->get_total_requests();
+			if ( $total_sites_requests ) {
+				for ( $page = 1; $page <= $total_sites_requests; $page ++ ) {
+					Responsive_Ready_Sites_Batch_Processing_Importer::get_instance()->import_sites( $page, true );
+				}
+			}
+
+			// 3. Sync Blocks.
+			$total_blocks_requests = $this->get_total_rst_blocks_requests();
+			if ( $total_blocks_requests ) {
+				for ( $page = 1; $page <= $total_blocks_requests; $page ++ ) {
+					Responsive_Ready_Sites_Batch_Processing_Importer::get_instance()->import_blocks( $page, true );
+				}
+			}
+
+			// 4. Update checksums.
+			$this->update_latest_checksums();
+		}
+
+		/**
+		 * Add Daily Cron Schedule
+		 *
+		 * Reason for creating a custom schedule is to allow for more granular control over the timing of the sync process.
+		 * 
+		 * @param array $schedules Schedules.
+		 * @since 3.4.7
+		 * @return array
+		 */
+		public function add_daily_cron_schedule( $schedules ) {
+			$schedules['daily_sync'] = array(
+				'interval' => DAY_IN_SECONDS,
+				'display'  => esc_html__( 'Once Daily', 'responsive-add-ons' ),
+			);
+			return $schedules;
 		}
 	}
 

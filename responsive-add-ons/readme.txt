@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 3.4.6
+Stable tag: 3.4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -242,6 +242,13 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 8. Responsive Plus advanced features.
 
 == Changelog ==
+
+= 3.4.7 - 2 April 2026 =
+* Fix = Fixed an issue where secondary menus were not appearing after template import.
+* Fix = Fixed an issue where the global container width from Responsive Block Editor Addons was not applied after template import.
+* Fix = Fixed an issue where Elementor global typography and system colors were not imported correctly during template import.
+* Fix = Fixed an issue where featured images were not appearing on some blog posts after template import.
+
 
 = 3.4.6 - 18th March 2026 = 
 * New - Introducing the customization settings in Responsive Plus to select site logo, font pairs, and color palettes during site import.

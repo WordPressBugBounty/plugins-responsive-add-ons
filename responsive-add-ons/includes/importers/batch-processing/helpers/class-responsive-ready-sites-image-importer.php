@@ -235,7 +235,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Image_Importer' ) ) :
 				return false;
 			}
 
-			if ( preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|svg|gif|jpeg)\/?$/i', $url ) ) {
+			if ( preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|svg|gif|jpeg|webp)\/?$/i', $url ) ) {
 				return true;
 			}
 

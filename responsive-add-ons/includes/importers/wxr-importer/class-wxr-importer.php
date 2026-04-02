@@ -598,7 +598,7 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 			if ( $this->options['aggressive_url_search'] ) {
 				$this->replace_attachment_urls_in_content();
 			}
-			// $this->remap_featured_images();
+			$this->remap_featured_images(); //only remap for courses featured images
 			$this->import_end();
 		}
 
@@ -1340,6 +1340,12 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 						$value = $child->textContent;
 						break;
 				}
+			}
+
+			// Bypass empty check for required keys that can have 0 as a valid value.
+			$allow_zero_value_keys = array( 'total_sales' );
+			if ( isset( $key ) && in_array( $key, $allow_zero_value_keys ) ) {
+				return compact( 'key', 'value' );
 			}
 
 			if ( empty( $key ) || empty( $value ) ) {
@@ -2500,13 +2506,19 @@ if ( ! class_exists( 'WXR_Importer' ) && class_exists( 'WP_Importer' ) ) :
 		 */
 		protected function remap_featured_images() {
 			// Cycle through posts that have a featured image.
-			foreach ( $this->featured_images as $post_id => $value ) {
-				if ( isset( $this->processed_posts[ $value ] ) ) {
-					$new_id = $this->processed_posts[ $value ];
+			foreach ( $this->featured_images as $post_id => $old_attachment_id ) {
+				// Only remap featured images for course post type
+				if ( 'course' !== get_post_type( $post_id ) ) {
+					continue;
+				}
 
-					// Only update if there's a difference.
-					if ( $new_id !== $value ) {
-						update_post_meta( $post_id, '_thumbnail_id', $new_id );
+				// Check if the old attachment ID has been remapped
+				if ( isset( $this->mapping['post'][ $old_attachment_id ] ) ) {
+					$new_attachment_id = (int) $this->mapping['post'][ $old_attachment_id ];
+
+					// Only update if IDs actually changed and new ID is valid attachment
+					if ( $new_attachment_id !== (int) $old_attachment_id && 'attachment' === get_post_type( $new_attachment_id ) ) {
+						update_post_meta( $post_id, '_thumbnail_id', $new_attachment_id );
 					}
 				}
 			}
@@ -2624,8 +2636,14 @@ protected function prefill_existing_posts() {
 				}
 			}
 
-			// Still nothing, try post_exists, and cache it.
-			$exists                              = post_exists( $data['post_title'], $data['post_content'], $data['post_date'] );
+			// For attachments, we rely on GUID/URL instead of title/date to avoid deduplicating different images with same metadata.
+			if ( 'attachment' === $data['post_type'] ) {
+				global $wpdb;
+				$exists = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE guid = %s AND post_type = 'attachment'", $data['guid'] ) );
+			} else {
+				// Still nothing, try post_exists, and cache it.
+				$exists = post_exists( $data['post_title'], $data['post_content'], $data['post_date'] );
+			}
 			$this->exists['post'][ $exists_key ] = $exists;
 
 			return $exists;

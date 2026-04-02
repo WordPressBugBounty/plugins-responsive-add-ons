@@ -95,6 +95,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 			add_action( 'responsive_ready_sites_import_complete', array( $this, 'clear_cache' ) );
 			add_action( 'responsive_ready_sites_import_complete', array( $this, 'set_elementor_content_width' ) );
+			add_action( 'init', array( $this, 'responsive_ready_sites_flush_rewrite_rules' ), 99 );
 
 			include_once $responsive_ready_sites_importers_dir . 'batch-processing/class-responsive-ready-sites-batch-processing.php';
 
@@ -132,6 +133,13 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				Elementor\Plugin::$instance->files_manager->clear_cache();
 			}
 			Responsive_Ready_Sites_Importer_Log::add( 'Complete ' );
+		}
+
+		public function responsive_ready_sites_flush_rewrite_rules() {
+			if ( '1' === get_option( 'responsive_ready_sites_flush_rewrite_pending', '0' ) ) {
+				delete_option( 'responsive_ready_sites_flush_rewrite_pending' );
+				flush_rewrite_rules();
+			}
 		}
 
 		/**
@@ -238,13 +246,33 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				}
 			}
 
+			// Update Elementor Global Typography (system & custom)
+			$system_typography = get_transient( '_rst_elementor_global_system_typography' );
+			if ( false !== $system_typography ) {
+				$current_settings['system_typography'] = $system_typography;
+				delete_transient( '_rst_elementor_global_system_typography' );
+			}
+
+			$custom_typography = get_transient( '_rst_elementor_global_custom_typography' );
+			if ( false !== $custom_typography ) {
+				$current_settings['custom_typography'] = $custom_typography;
+				delete_transient( '_rst_elementor_global_custom_typography' );
+			}
+
+			// Update Elementor Global Custom Colors
+			$custom_colors = get_transient( '_rst_elementor_global_custom_colors' );
+			if ( false !== $custom_colors ) {
+				$current_settings['custom_colors'] = $custom_colors;
+				delete_transient( '_rst_elementor_global_custom_colors' );
+			}
+
 			$kit->save( array( 'settings' => $current_settings ) );
 		}
 
 		/**
 		 * Set the timeout for the HTTP request by request URL.
 		 *
-		 * E.g. If URL is images (jpg|png|gif|jpeg) are from the domain `https://websitedemos.net` then we have set the timeout by 30 seconds. Default 5 seconds.
+		 * E.g. If URL is images (jpg|png|gif|jpeg|webp|svg) are from the domain `https://websitedemos.net` then we have set the timeout by 30 seconds. Default 5 seconds.
 		 *
 		 * @since 2.0.3
 		 *
@@ -254,7 +282,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 		public function set_timeout_for_images( $timeout_value, $url ) {
 
 			// URL not contain `https://ccreadysites.cyberchimps.com` then return $timeout_value.
-			if ( strpos( $url, 'ccreadysites.cyberchimps.com' ) === false ) {
+			if ( strpos( $url, parse_url( CCRS_URL, PHP_URL_HOST ) ) === false ) {
 				return $timeout_value;
 			}
 
@@ -301,7 +329,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				return false;
 			}
 
-			if ( preg_match( '/^((http?:\/\/)|(https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|svg|gif|jpeg)\/?$/i', $url ) ) {
+			if ( preg_match( '/^((http?:\/\/)|(https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|svg|gif|jpeg|webp)\/?$/i', $url ) ) {
 				return true;
 			}
 
@@ -766,6 +794,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			update_option( 'responsive_current_active_site', $current_active_site_data, 'no' );
 			// Set permalink structure to use post name.
 			update_option( 'permalink_structure', '/%postname%/' );
+			update_option( 'responsive_ready_sites_flush_rewrite_pending', '1' );
 
 			// Map WooCommerce pages automatically based on standard slugs if WooCommerce is active.
 			if ( class_exists( 'WooCommerce' ) ) {

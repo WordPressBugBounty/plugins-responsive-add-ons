@@ -174,7 +174,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Gutenberg' ) ) :
 			$other_links  = array();
 
 			foreach ( $all_links as $key => $link ) {
-				if ( preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|jpeg)\/?$/i', $link ) ) {
+				if ( preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|jpeg|webp|svg)\/?$/i', $link ) ) {
 
 					// Get all image links except *-150x, *-300x and *-1024x.
 					if (

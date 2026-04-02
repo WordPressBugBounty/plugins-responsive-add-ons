@@ -104,6 +104,11 @@ class Responsive_Ready_Sites_Options_Importer {
 			// Plugin: Responsive Block Editor Addons.
 			'rbea_global_inherit_from_theme',
 			'rbea_global_inherit_from_theme_last_changed',
+			'rbea_auto_block_recovery',
+			'rbea_default_content_width',
+			'rbea_default_container_padding',
+			'rbea_default_container_gap',
+			'rbea_template_library_button_on',
 
 			// Products per row.
 			'woocommerce_catalog_columns',
@@ -126,6 +131,11 @@ class Responsive_Ready_Sites_Options_Importer {
 			'elementor_global_color_secondary',
 			'elementor_global_color_text',
 			'elementor_global_color_accent',
+			// Elementor Global Typography
+			'elementor_global_system_typography',
+			'elementor_global_custom_typography',
+			// Elementor Global Custom Colors
+			'elementor_global_custom_colors',
 		);
 	}
 
@@ -159,8 +169,7 @@ class Responsive_Ready_Sites_Options_Importer {
 
 						// insert logo.
 						case 'custom_logo':
-							$post_guid = get_post_field( 'guid', $option_value );
-							$this->insert_logo( $post_guid );
+							$this->insert_logo( $option_value );
 							break;
 
 						// Set WooCommerce page ID by page Title.
@@ -197,6 +206,12 @@ class Responsive_Ready_Sites_Options_Importer {
 						case 'elementor_global_color_accent':
 							$color_id = str_replace( 'elementor_global_color_', '', $option_name );
 							set_transient( '_rst_elementor_global_color_' . $color_id, $option_value, HOUR_IN_SECONDS );
+							break;
+
+						case 'elementor_global_system_typography':
+						case 'elementor_global_custom_typography':
+						case 'elementor_global_custom_colors':
+							set_transient( '_rst_' . $option_name, $option_value, HOUR_IN_SECONDS );
 							break;
 
 						// Site Title - Handle with try-catch

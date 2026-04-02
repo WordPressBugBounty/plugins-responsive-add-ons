@@ -28,5 +28,7 @@ class Responsive_Add_Ons_Deactivator {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function deactivate() {}
+	public static function deactivate() {
+		wp_clear_scheduled_hook( 'responsive_ready_sites_library_sync' );
+	}
 }

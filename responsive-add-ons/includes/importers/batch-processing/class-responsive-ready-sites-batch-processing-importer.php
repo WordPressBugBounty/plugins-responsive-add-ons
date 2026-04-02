@@ -63,8 +63,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 		 * @param  integer $page Page number.
 		 * @return array
 		 */
-		public function import_sites( $page = 1 ) {
-			if ( current_user_can( 'manage_options' ) ) {
+		public function import_sites( $page = 1, $is_internal = false ) {
+			if ( $is_internal || current_user_can( 'manage_options' ) ) {
 				$api_args        = array(
 					'timeout' => 60,
 				);
@@ -114,9 +114,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 		 * @param  integer $page Page number.
 		 * @return array
 		 */
-		public function import_blocks( $page = 1 ) {
+		public function import_blocks( $page = 1, $is_internal = false ) {	
 			// Check if the user has the 'administrator' role.
-			if ( current_user_can( 'manage_options' ) ) {
+			if ( $is_internal || current_user_can( 'manage_options' ) ) {
 				$api_args = array(
 					'timeout' => 60,
 				);
@@ -179,7 +179,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 		 * @since  2.5.0
 		 */
 		public static function set_api_url() {
-			self::$api_url = apply_filters( 'responsive_ready_sites_api_url', 'https://ccreadysites.cyberchimps.com/wp-json/wp/v2/' );
+			self::$api_url = apply_filters( 'responsive_ready_sites_api_url', CCRS_URL . '/wp-json/wp/v2/' );
 		}
 	}
 

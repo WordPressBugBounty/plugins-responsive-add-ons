@@ -69,8 +69,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Menu' ) ) :
 
 			$footer_menu_term_id = term_exists( 'menu2' );
 			if ( $footer_menu_term_id ) {
-				$theme_nav_menu_locations                = get_theme_mod( 'nav_menu_locations' );
-				$theme_nav_menu_locations['footer-menu'] = $footer_menu_term_id;
+				$theme_nav_menu_locations                   = get_theme_mod( 'nav_menu_locations' );
+				$theme_nav_menu_locations['footer-menu']    = $footer_menu_term_id;
+				$theme_nav_menu_locations['secondary-menu'] = $footer_menu_term_id;
 				set_theme_mod( 'nav_menu_locations', $theme_nav_menu_locations );
 			}
 		}
