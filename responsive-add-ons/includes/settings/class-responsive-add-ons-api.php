@@ -64,7 +64,6 @@ class Responsive_Add_Ons_Api extends WP_REST_Controller {
 		require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
 		$settings = new Responsive_Add_Ons_Settings();
 		$data     = $request->get_param( 'data' );
-
 		$settings->update( $data );
 		return rest_ensure_response( array( 'success' => true ) );
 	}

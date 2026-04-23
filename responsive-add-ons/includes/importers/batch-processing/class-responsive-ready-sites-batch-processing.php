@@ -37,14 +37,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 */
 		public static $process_all;
 
-		/**
-		 * Process Single Page
-		 *
-		 * @since 2.0.8
-		 * @var object Class object.
-		 * @access public
-		 */
-		public static $process_single;
 
 		/**
 		 * API Url
@@ -62,6 +54,15 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @access public
 		 */
 		public $last_xml_export_checksums;
+
+		/**
+		 * Last Blocks Export Checksums
+		 *
+		 * @since 1.0.2
+		 * @var object Class object.
+		 * @access public
+		 */
+		public $last_blocks_export_checksums;
 
 		/**
 		 * Initiator
@@ -94,7 +95,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 			require_once $responsive_ready_sites_batch_processing . 'helpers/class-wp-async-request.php';
 			require_once $responsive_ready_sites_batch_processing . 'helpers/class-wp-background-process.php';
 			require_once $responsive_ready_sites_batch_processing . 'helpers/class-wp-background-process-responsive.php';
-			require_once $responsive_ready_sites_batch_processing . 'helpers/class-wp-background-process-responsive-single.php';
+
 
 			// Prepare Page Builders.
 			require_once $responsive_ready_sites_batch_processing . 'class-responsive-ready-sites-batch-processing-elementor.php';
@@ -107,12 +108,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 			require_once $responsive_ready_sites_batch_processing . 'class-responsive-ready-sites-batch-processing-menu.php';
 
 			self::$process_all    = new WP_Background_Process_Responsive();
-			self::$process_single = new WP_Background_Process_Responsive_Single();
-
 			// Start image importing after site import complete.
 			add_action( 'responsive_ready_sites_import_complete', array( $this, 'start_process' ) );
 
-			add_action( 'responsive_ready_sites_process_template', array( $this, 'start_process_page' ) );
 
 			add_action( 'wp_ajax_responsive-ready-sites-import-sites', array( $this, 'import_sites' ) );
 
@@ -165,38 +163,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 			self::$process_all->save()->dispatch();
 		}
 
-		/**
-		 * Start Single Page Import
-		 *
-		 * @param  int $page_id Page ID .
-		 * @since 2.0.8
-		 * @return void
-		 */
-		public function start_process_page( $page_id ) {
 
-			// Add "gutenberg" in import queue.
-			self::$process_single->push_to_queue(
-				array(
-					'page_id'  => $page_id,
-					'instance' => Responsive_Ready_Sites_Batch_Processing_Gutenberg::get_instance(),
-				)
-			);
-
-			if ( is_plugin_active( 'elementor/elementor.php' ) ) {
-				\Elementor\Plugin::$instance->files_manager->clear_cache();
-
-				$import = new \Elementor\TemplateLibrary\Responsive_Ready_Sites_Batch_Processing_Elementor();
-				self::$process_single->push_to_queue(
-					array(
-						'page_id'  => $page_id,
-						'instance' => $import,
-					)
-				);
-			}
-
-			// Dispatch Queue.
-			self::$process_single->save()->dispatch();
-		}
 
 		/**
 		 * Get all post id's
@@ -310,6 +277,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		public function update_latest_checksums() {
 			$latest_checksums = get_site_option( 'responsive-ready-sites-last-xml-export-checksums-latest', '' );
 			update_site_option( 'responsive-ready-sites-last-xml-export-checksums', $latest_checksums );
+
+			$latest_blocks_checksums = get_site_option( 'rst-blocks-last-export-checksums-latest', '' );
+			update_site_option( 'rst-blocks-last-export-checksums', $latest_blocks_checksums );
 		}
 
 		/**
@@ -328,7 +298,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 
 			$response = wp_safe_remote_get( $api_url, $api_args );
 
-			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
+			if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
 
 				$total_requests = json_decode( wp_remote_retrieve_body( $response ), true );
 
@@ -347,7 +317,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @since 2.9.1
 		 * @return integer
 		 */
-		public function get_total_rst_blocks_requests() {
+		public function get_total_rst_blocks_requests( $retry = 0 ) {
 
 			$api_args = array(
 				'timeout' => 60,
@@ -357,7 +327,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 
 			$response = wp_safe_remote_get( $api_url, $api_args );
 
-			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
+			if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
 
 				$total_requests = json_decode( wp_remote_retrieve_body( $response ), true );
 
@@ -369,7 +339,11 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 				}
 			}
 
-			$this->get_total_rst_blocks_requests();
+			if ( $retry < 3 ) {
+				return $this->get_total_rst_blocks_requests( $retry + 1 );
+			}
+
+			return 0;
 		}
 
 		/**
@@ -429,7 +403,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 			// Verify Nonce.
 			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
-			if ( 'no' === $this->get_last_export_checksums() ) {
+			if ( 'no' === $this->get_last_export_checksums() && 'no' === $this->get_last_blocks_export_checksums() ) {
 				wp_send_json_success( 'updated' );
 			}
 
@@ -471,8 +445,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 */
 		public function set_last_export_checksums() {
 
-			if ( ! empty( $this->last_export_checksums ) ) {
-				return $this->last_export_checksums;
+			if ( ! empty( $this->last_xml_export_checksums ) ) {
+				return $this->last_xml_export_checksums;
 			}
 
 			$api_args = array(
@@ -493,6 +467,63 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 			}
 
 			return $this->last_xml_export_checksums;
+		}
+
+		/**
+		 * Get Last Blocks Exported Checksum Status
+		 *
+		 * @since 1.0.2
+		 * @return string Checksums Status.
+		 */
+		public function get_last_blocks_export_checksums() {
+
+			$old_last_export_checksums = get_site_option( 'rst-blocks-last-export-checksums', '' );
+
+			$new_last_export_checksums = $this->set_last_blocks_export_checksums();
+
+			$checksums_status = 'no';
+
+			if ( empty( $old_last_export_checksums ) ) {
+				$checksums_status = 'yes';
+			}
+
+			if ( $new_last_export_checksums !== $old_last_export_checksums ) {
+				$checksums_status = 'yes';
+			}
+
+			return apply_filters( 'rst_blocks_checksums_status', $checksums_status );
+		}
+
+		/**
+		 * Set Last Blocks Exported Checksum
+		 *
+		 * @since 1.0.2
+		 * @return string Checksums Status.
+		 */
+		public function set_last_blocks_export_checksums() {
+
+			if ( ! empty( $this->last_blocks_export_checksums ) ) {
+				return $this->last_blocks_export_checksums;
+			}
+
+			$api_args = array(
+				'timeout' => 60,
+			);
+
+			$response = wp_safe_remote_get( self::$api_url . 'get-last-blocks-export-checksum2', $api_args );
+
+			if ( ! is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) === 200 ) {
+				$result = json_decode( wp_remote_retrieve_body( $response ), true );
+
+				// Set last export checksums.
+				if ( ! empty( $result['last_blocks_export_checksums'] ) ) {
+					update_site_option( 'rst-blocks-last-export-checksums-latest', $result['last_blocks_export_checksums'] );
+
+					$this->last_blocks_export_checksums = $result['last_blocks_export_checksums'];
+				}
+			}
+
+			return $this->last_blocks_export_checksums;
 		}
 
 		/**
@@ -563,13 +594,16 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 */
 		public function process_batch() {
 
-			if ( 'no' === $this->get_last_export_checksums() ) {
+			$checksums_sites  = $this->get_last_export_checksums();
+			$checksums_blocks = $this->get_last_blocks_export_checksums();
+
+			if ( 'no' === $checksums_sites && 'no' === $checksums_blocks ) {
 				return;
 			}
 
 			$dir = RESPONSIVE_ADDONS_DIR . 'includes/json/';
 
-			if ( file_exists( $dir . 'responsive-sites-request.json' ) ) {
+			if ( 'yes' === $checksums_sites && file_exists( $dir . 'responsive-sites-request.json' ) ) {
 				$responsive_sites_request = (int) trim( file_get_contents( $dir . 'responsive-sites-request.json' ) );
 				if ( 16 < (int) trim( $responsive_sites_request ) ) {
 					return;
@@ -588,7 +622,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 				}
 			}
 
-			if ( file_exists( $dir . 'rst-blocks-requests.json' ) ) {
+			if ( 'yes' === $checksums_blocks && file_exists( $dir . 'rst-blocks-requests.json' ) ) {
 				$responsive_blocks_request = (int) trim( file_get_contents( $dir . 'rst-blocks-requests.json' ) );
 				if ( $responsive_blocks_request ) {
 					update_site_option( 'rst-blocks-requests', $responsive_blocks_request );
@@ -657,28 +691,27 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 * @return void
 		 */
 		public function perform_full_sync() {
-			// 1. Check checksums.
-			if ( 'no' === $this->get_last_export_checksums() ) {
-				return;
-			}
-
-			// 2. Sync Sites.
-			$total_sites_requests = $this->get_total_requests();
-			if ( $total_sites_requests ) {
-				for ( $page = 1; $page <= $total_sites_requests; $page ++ ) {
-					Responsive_Ready_Sites_Batch_Processing_Importer::get_instance()->import_sites( $page, true );
+			// 1. Sync Sites if checksum changed.
+			if ( 'yes' === $this->get_last_export_checksums() ) {
+				$total_sites_requests = $this->get_total_requests();
+				if ( $total_sites_requests ) {
+					for ( $page = 1; $page <= $total_sites_requests; $page ++ ) {
+						Responsive_Ready_Sites_Batch_Processing_Importer::get_instance()->import_sites( $page, true );
+					}
 				}
 			}
 
-			// 3. Sync Blocks.
-			$total_blocks_requests = $this->get_total_rst_blocks_requests();
-			if ( $total_blocks_requests ) {
-				for ( $page = 1; $page <= $total_blocks_requests; $page ++ ) {
-					Responsive_Ready_Sites_Batch_Processing_Importer::get_instance()->import_blocks( $page, true );
+			// 2. Sync Blocks if checksum changed.
+			if ( 'yes' === $this->get_last_blocks_export_checksums() ) {
+				$total_blocks_requests = $this->get_total_rst_blocks_requests();
+				if ( $total_blocks_requests ) {
+					for ( $page = 1; $page <= $total_blocks_requests; $page ++ ) {
+						Responsive_Ready_Sites_Batch_Processing_Importer::get_instance()->import_blocks( $page, true );
+					}
 				}
 			}
 
-			// 4. Update checksums.
+			// 3. Update checksums.
 			$this->update_latest_checksums();
 		}
 
@@ -693,8 +726,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 */
 		public function add_daily_cron_schedule( $schedules ) {
 			$schedules['daily_sync'] = array(
-				'interval' => DAY_IN_SECONDS,
-				'display'  => esc_html__( 'Once Daily', 'responsive-add-ons' ),
+				'interval' => 2 * DAY_IN_SECONDS,
+				'display'  => esc_html__( 'Every 48 Hours', 'responsive-add-ons' ),
 			);
 			return $schedules;
 		}

@@ -74,9 +74,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				add_action( 'wp_ajax_responsive-ready-sites-delete-posts', array( $this, 'delete_imported_posts' ) );
 				add_action( 'wp_ajax_responsive-ready-sites-delete-terms-wp-forms', array( $this, 'delete_imported_terms_wp_forms' ) );
 
-				// Import single page.
-				add_action( 'wp_ajax_responsive-sites-page-required-plugins', array( $this, 'prepare_page_required_plugins' ) );
-				add_action( 'wp_ajax_responsive-sites-create-page', array( $this, 'import_single_page' ) );
 
 				if ( ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.0.0', '>=' ) ) ) {
 					remove_filter( 'wp_import_post_meta', array( 'Elementor\Compatibility', 'on_wp_import_post_meta' ) );
@@ -1041,171 +1038,8 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			wp_send_json_success();
 		}
 
-		/**
-		 * Import Single Page.
-		 *
-		 * @since  2.3.0
-		 */
-		public function import_single_page() {
 
-			// Verify Nonce.
-			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
-			if ( ! current_user_can( 'install_plugins' ) ) {
-				wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-add-ons' ) );
-			}
-			if ( isset( $_POST['data'] ) && empty( $_POST['data'] ) ) {
-				wp_send_json_error( 'Page Data is empty.' );
-			}
-
-			$current_page_api = isset( $_POST['current_page_api'] ) ? sanitize_text_field( wp_unslash( $_POST['current_page_api'] ) ) : '';
-			global $wpdb;
-
-			update_option( 'current_page_api', $current_page_api );
-
-			$page_id = isset( $_POST['data']['id'] ) ? sanitize_key( wp_unslash( $_POST['data']['id'] ) ) : '';
-			$title   = isset( $_POST['data']['title']['rendered'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['title'] )['rendered'] ) : '';
-			$excerpt = isset( $_POST['data']['excerpt']['rendered'] ) ? wp_kses_post( wp_unslash( $_POST['data']['excerpt'] )['rendered'] ) : '';
-			$content = isset( $_POST['data']['original_content'] ) ? wp_kses_post( wp_unslash( $_POST['data']['original_content'] ) ) : ( isset( $_POST['data']['content']['rendered'] ) ? wp_kses_post( wp_unslash( $_POST['data']['content']['rendered'] ) ) : '' );
-			$template = isset( $_POST['current_site'] ) ? sanitize_text_field( wp_unslash( $_POST['current_site'] ) ) : '';
-			$page_builder = isset( $_POST['page_builder'] ) ? sanitize_text_field( wp_unslash( $_POST['page_builder'] ) ) : '';
-
-			$post_args = array(
-				'post_type'    => 'page',
-				'post_status'  => 'draft',
-				'post_title'   => $title,
-				'post_content' => $content,
-				'post_excerpt' => $excerpt,
-			);
-
-			$new_page_id = wp_insert_post( $post_args );
-
-			$wp_page_template         = isset( $_POST['data']['post-meta']['_wp_page_template'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['post-meta']['_wp_page_template'] ) ) : '';
-			$elementor_edit_mode      = isset( $_POST['data']['post-meta']['_elementor_edit_mode'] ) ? sanitize_key( wp_unslash( $_POST['data']['post-meta']['_elementor_edit_mode'] ) ) : '';
-			$elementor_template_type  = isset( $_POST['data']['post-meta']['_elementor_template_type'] ) ? sanitize_key( wp_unslash( $_POST['data']['post-meta']['_elementor_template_type'] ) ) : '';
-			$elementor_version        = isset( $_POST['data']['post-meta']['_elementor_version'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['post-meta']['_elementor_version'] ) ) : '';
-			$elementor_css            = isset( $_POST['data']['post-meta']['_elementor_css'] ) ? wp_kses_post( wp_unslash( $_POST['data']['post-meta']['_elementor_css'] ) ) : '';
-			$elementor_css            = str_replace( '&gt;', '>', $elementor_css );
-			$elementor_data           = isset( $_POST['data']['post-meta']['_elementor_data'] ) ? wp_kses_post( $_POST['data']['post-meta']['_elementor_data'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-			$elementor_controls_usage = isset( $_POST['data']['post-meta']['_elementor_controls_usage'] ) ? wp_kses_post( wp_unslash( $_POST['data']['post-meta']['_elementor_controls_usage'] ) ) : '';
-			$post_original_content    = isset( $_POST['data']['original_content'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['original_content'] ) ) : '';
-
-			$post_meta = array(
-				'_wp_page_template'         => $wp_page_template,
-				'_elementor_edit_mode'      => $elementor_edit_mode,
-				'_elementor_template_type'  => $elementor_template_type,
-				'_elementor_version'        => $elementor_version,
-				'_elementor_css'            => $elementor_css,
-				'_elementor_data'           => $elementor_data,
-				'_elementor_controls_usage' => $elementor_controls_usage,
-			);
-
-			if ( ! empty( $post_meta ) ) {
-				$this->import_post_meta( $new_page_id, $post_meta );
-			}
-
-			do_action( 'responsive_ready_sites_process_template', $new_page_id );
-
-			if ( strpos( $post_original_content, 'give_form' ) !== false ) {
-
-				$giveform_title                  = sanitize_text_field( 'Donate' );
-				$giveformpost_type               = sanitize_text_field( 'give_forms' );
-				$new_giveid                      = post_exists( $giveform_title, '', '', $giveformpost_type );
-				$give_formmeta_template_settings = addslashes( 'a:6:{s:17:"visual_appearance";a:10:{s:13:"primary_color";s:7:"#f57b7a";s:15:"container_style";s:5:"boxed";s:12:"primary_font";s:9:"Noto Sans";s:14:"display_header";s:8:"disabled";s:12:"main_heading";s:17:"Support Our Cause";s:11:"description";s:104:"Help our organization by donating today! All donations go directly to making a difference for our cause.";s:23:"header_background_image";s:0:"";s:23:"header_background_color";s:7:"#1E8CBE";s:12:"secure_badge";s:7:"enabled";s:17:"secure_badge_text";s:20:"100% Secure Donation";}s:15:"donation_amount";a:2:{s:8:"headline";s:40:"How much would you like to donate today?";s:11:"description";s:79:"All donations directly impact our organization and help us further our mission.";}s:17:"donor_information";a:2:{s:8:"headline";s:19:"Who\'s giving today?";s:11:"description";s:49:"We’ll never share this information with anyone.";}s:19:"payment_information";a:5:{s:8:"headline";s:32:"How would you like to pay today?";s:11:"description";s:48:"This donation is a secure and encrypted payment.";s:24:"donation_summary_enabled";s:7:"enabled";s:24:"donation_summary_heading";s:35:"Here\'s what you\'re about to donate:";s:25:"donation_summary_location";s:32:"give_donation_form_before_submit";}s:16:"donation_receipt";a:5:{s:8:"headline";s:37:"Hey {name}, thanks for your donation!";s:11:"description";s:142:"{name}, your contribution means a lot and will be put to good use in making a difference. We’ve sent your donation receipt to {donor_email}.";s:14:"social_sharing";s:7:"enabled";s:20:"sharing_instructions";s:77:"Help spread the word by sharing your support with your friends and followers!";s:15:"twitter_message";s:77:"Help spread the word by sharing your support with your friends and followers!";}s:12:"introduction";a:1:{s:13:"primary_color";s:7:"#1E8CBE";}}' );
-				$give_donation_levels            = addslashes( 'a:5:{i:0;a:3:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"0";}s:12:"_give_amount";s:9:"10.000000";s:10:"_give_text";s:0:"";}i:1;a:3:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"1";}s:12:"_give_amount";s:9:"25.000000";s:10:"_give_text";s:0:"";}i:2;a:3:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"2";}s:12:"_give_amount";s:9:"50.000000";s:10:"_give_text";s:0:"";}i:3;a:4:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"3";}s:12:"_give_amount";s:10:"100.000000";s:10:"_give_text";s:0:"";s:13:"_give_default";s:7:"default";}i:4;a:3:{s:8:"_give_id";a:1:{s:8:"level_id";s:1:"5";}s:12:"_give_amount";s:10:"250.000000";s:10:"_give_text";s:0:"";}}' );
-
-				if ( ! $new_giveid ) {
-					$new_giveid = wp_insert_post(
-						array(
-							'post_type'   => 'give_forms',
-							'post_status' => 'publish',
-							'post_title'  => $giveform_title,
-							'post_author' => 1,
-						)
-					);
-
-				}
-				if ( $new_giveid ) {
-					$giveformmeta_table_name = esc_sql( $wpdb->prefix . 'give_formmeta' );
-					$formresults             = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %s WHERE form_id= %d ', $giveformmeta_table_name, $new_giveid ), ARRAY_A );
-					if ( ! empty( $formresults ) ) {
-
-						foreach ( $formresults as $formresult ) {
-							$form_metakey .= ',' . $formresult['meta_key'];
-						}
-
-						if ( strpos( $form_metakey, '_give_form_template' ) === false ) {
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_form_template', 'classic' ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_classic_form_template_settings', $give_formmeta_template_settings ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_price_option', 'multi' ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_custom_amount', 'enabled' ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_display_style', 'buttons' ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_payment_display', 'button' ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_custom_amount_text', 'Custom Amount' ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_levels_minimum_amount', '10.000000' ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_levels_maximum_amount', '250.000000' ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_donation_levels', $give_donation_levels ) );
-							$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_show_register_form', 'none' ) );
-						} else {
-							$wpdb->query( $wpdb->prepare( "UPDATE %s SET meta_value='classic' WHERE form_id=%d AND meta_key='_give_form_template'", $giveformmeta_table_name, $new_giveid ) );
-							$wpdb->query( $wpdb->prepare( "UPDATE %s SET meta_value=%s WHERE form_id=%d AND meta_key='_give_classic_form_template_settings'", $giveformmeta_table_name, $give_formmeta_template_settings, $new_giveid ) );
-						}
-					} else {
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_form_template', 'classic' ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_classic_form_template_settings', $give_formmeta_template_settings ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_price_option', 'multi' ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_custom_amount', 'enabled' ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_display_style', 'buttons' ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_payment_display', 'button' ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_custom_amount_text', 'Custom Amount' ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_levels_minimum_amount', '10.000000' ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_levels_maximum_amount', '250.000000' ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_donation_levels', $give_donation_levels ) );
-						$wpdb->query( $wpdb->prepare( 'INSERT INTO %s (form_id, meta_key, meta_value) VALUES (%d, %s, %s)', $giveformmeta_table_name, $new_giveid, '_give_show_register_form', 'none' ) );
-					}
-
-					$datagivewp = get_post_meta( $new_page_id, '_elementor_data', true );
-					$old_id     = 450;
-
-					$datagivewp = str_replace( '[give_form id=\"' . $old_id, '[give_form id=\"' . $new_giveid, $datagivewp );
-					if ( ! is_array( $datagivewp ) ) {
-						$datagivewp = json_decode( $datagivewp, true );
-					}
-					update_metadata( 'post', $new_page_id, '_elementor_data', $datagivewp );
-				}
-			}
-
-			if( 'yes' === get_option( 'responsive_addons_contribution_consent', 'yes' ) ) {
-				// Send data to Mixpanel.
-				$event = array(
-					'event' => 'Single Page Import',
-					'properties' => array(
-						'token'                => 'f8fbbc680f8f9d9b80a50e8c030a3605',
-						'distinct_id'          => substr( hash( 'sha256', get_site_url() ), 0, 16 ),
-						'Template Name'        => $template,
-						'Single Page Imported' => $title,
-						'Page Builder'         => $page_builder,
-						'User Site URL'        => get_site_url(),
-					),
-				);
-	
-				$encoded_data = base64_encode( wp_json_encode( $event ) );
-	
-				$response = wp_remote_post( 'https://api.mixpanel.com/track?ip=1', array(
-					'body' => array(
-						'data' => $encoded_data,
-					),
-				));
-			}
-
-			wp_send_json_success(
-				array(
-					'remove-page-id' => $page_id,
-					'id'             => $new_page_id,
-					'link'           => get_permalink( $new_page_id ),
-				)
-			);
-		}
 
 		/**
 		 * Import Post Meta
@@ -1315,8 +1149,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			$time_taken   = isset( $_POST['time_taken'] ) ? sanitize_text_field( wp_unslash( $_POST['time_taken'] ) ) : '';
 			$template     = isset( $_POST['current_site'] ) ? sanitize_text_field( wp_unslash( $_POST['current_site'] ) ) : '';
 			$page_builder = isset( $_POST['page_builder'] ) ? sanitize_text_field( wp_unslash( $_POST['page_builder'] ) ) : '';
-			$import_type  = isset( $_POST['import_type'] ) ? sanitize_text_field( wp_unslash( $_POST['import_type'] ) ) : '';
-			$title        = isset( $_POST['page_title'] ) ? sanitize_text_field( wp_unslash( $_POST['page_title'] ) ) : '';
 
 			$properties = array(
 				'token'                => 'f8fbbc680f8f9d9b80a50e8c030a3605',
@@ -1328,17 +1160,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			);
 
 			$event = array(
-				'event'      => 'Single Page Import time',
+				'event'      => 'Template Import time',
 				'properties' => $properties,
 			);
-
-			if ( 'full_site' !== $import_type ) {
-				$event['properties']['Single Page Imported'] = $title;
-			}
-
-			if ( 'full_site' === $import_type ) {
-				$event['event'] = 'Template Import time';
-			}
 
 			$encoded_data = base64_encode( wp_json_encode( $event ) );
 
@@ -1909,19 +1733,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 		/**
 		 * Prepare required plugins for a page.
 		 */
-		public function prepare_page_required_plugins() {
 
-			// Verify Nonce.
-			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
-			if ( ! current_user_can( 'install_plugins' ) ) {
-				wp_send_json_error( __( 'User does not have permission!', 'responsive-add-ons' ) );
-			}
-
-			$required_plugins     = isset( $_POST['required_plugins'] ) ? json_decode( wp_unslash( $_POST['required_plugins'] ), true ) : array();
-			$processedPluginsList = self::prepare_template_required_plugins( $required_plugins );
-
-			wp_send_json_success( $processedPluginsList );
-		}
 
 	}
 

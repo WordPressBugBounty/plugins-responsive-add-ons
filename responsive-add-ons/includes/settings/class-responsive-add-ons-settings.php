@@ -106,7 +106,13 @@ class Responsive_Add_Ons_Settings {
 			$settings = $this->data;
 		}
 		$settings = $data;
-		update_option( 'reads_app_settings', $settings );
+		global $wcam_lib_responsive_addons;
+		if (isset($settings['account']['activation_status']) && 'success' === $settings['account']['activation_status']) {
+			update_option( $wcam_lib_responsive_addons->wc_am_activated_key, $settings['account']['activated_key'] );
+			update_option( $wcam_lib_responsive_addons->wc_am_deactivate_checkbox_key, $settings['account']['deactivate_checkbox_key'] );
+
+		}
+
 	}
 
 	// Getter Functions.

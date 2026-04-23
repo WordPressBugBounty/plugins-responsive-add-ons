@@ -318,14 +318,25 @@ if ( ! class_exists( 'WC_AM_Client_Addons' ) ) {
 		 */
 		public function activation() {
 			$instance_exists = get_option( $this->wc_am_instance_key );
+			$app_settings    = get_option( $this->data_key );
 
-			if ( false === get_option( $this->data_key ) || false === $instance_exists ) {
+			// ✅ Prevent override if SaaS is connected
+			if ( ! empty( $app_settings['account']['connected'] ) ) {
+				return;
+			}
+
+			if ( false === $app_settings || false === $instance_exists ) {
+
 				if ( false === $instance_exists ) {
 					update_option( $this->wc_am_instance_key, wp_generate_password( 12, false ) );
 				}
 
 				update_option( $this->wc_am_deactivate_checkbox_key, 'on' );
-				update_option( $this->wc_am_activated_key, 'Deactivated' );
+
+				// ✅ Only deactivate if not already activated
+				if ( get_option( $this->wc_am_activated_key ) !== 'Activated' ) {
+					update_option( $this->wc_am_activated_key, 'Deactivated' );
+				}
 			}
 		}
 
@@ -451,7 +462,6 @@ if ( ! class_exists( 'WC_AM_Client_Addons' ) ) {
 		public function deactivate( $args, $target_url, $header, $id ) {
 			$defaults = array(
 				'wc_am_action' => 'deactivate',
-				'product_id'   => $this->product_id,
 				'instance'     => $this->wc_am_instance_id,
 				'object'       => $this->wc_am_domain,
 			);

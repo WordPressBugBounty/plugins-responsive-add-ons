@@ -497,7 +497,7 @@ class Responsive_Add_Ons {
 
 		$theme_status = 'responsive-sites-theme-' . $this->get_theme_status();
 
-		$image_path = RESPONSIVE_ADDONS_URI . 'admin/images/responsive-starter-templates-thumbnail.jpg';
+		$image_path = RESPONSIVE_ADDONS_URI . 'admin/images/responsive-starter-templates-thumbnail.png';
 		?>
 			<div id="responsive-theme-activation" class="<?php echo esc_attr( $class ); ?>">
 				<div class="responsive-addons-message-inner">
@@ -927,6 +927,12 @@ class Responsive_Add_Ons {
 			wp_enqueue_style( 'toastr-css', RESPONSIVE_ADDONS_URI .'/admin/css/toastr.min.css', array(), RESPONSIVE_ADDONS_VER );
 			wp_enqueue_script( 'toastr-js', RESPONSIVE_ADDONS_URI . '/admin/js/toastr.min.js', array( 'jquery' ), RESPONSIVE_ADDONS_VER, true );
 
+			global $wcam_lib_responsive_addons;
+			$instance_key = '';
+			if ( ! empty( $wcam_lib_responsive_addons ) && isset( $wcam_lib_responsive_addons->wc_am_instance_id ) ) {
+				$instance_key = $wcam_lib_responsive_addons->wc_am_instance_id;
+			}
+
 			$data = apply_filters(
 				'responsive_sites_localize_vars',
 				array(
@@ -965,6 +971,8 @@ class Responsive_Add_Ons {
 					'elementorActive'                 => is_plugin_active('elementor/elementor.php'),
 					'elementorSettingsURL'            => esc_url( admin_url( 'admin.php?page=elementor-settings#tab-experiments' ) ),
 					'themeStatus'                     => $this->get_theme_status(),
+					'instance'                        => $instance_key,
+					'version'						  => RESPONSIVE_ADDONS_VER,
 					// 'responsiveTemplatesURL'          => esc_url( admin_url( 'admin.php?page=responsive_add_ons' ) ),
 				)
 			);
@@ -1093,7 +1101,7 @@ class Responsive_Add_Ons {
 				'isREAActivated'              => $this->is_rea_activated(),
 				'blockSiteURL'                => self::$rst_blocks_api_url,
 				'blockCategories'             => $this->block_categories(),
-				'rstHasBlocksCount'           => $this->rst_add_blocks_data(),
+				'rstHasBlocksCount'           => $this->rst_add_blocks_data(),				  
 			)
 		);
 
@@ -2807,6 +2815,13 @@ class Responsive_Add_Ons {
 				true
 			);
 
+			global $wcam_lib_responsive_addons;
+			$instance_key = '';
+			if ( ! empty( $wcam_lib_responsive_addons ) && isset( $wcam_lib_responsive_addons->wc_am_instance_id ) ) {
+				$instance_key = $wcam_lib_responsive_addons->wc_am_instance_id;
+			}
+
+			
 			$data = array(
 				'ajaxurl'     => admin_url( 'admin-ajax.php' ),
 				'ccAppURL'    => CC_APP_URL,
@@ -2814,7 +2829,10 @@ class Responsive_Add_Ons {
 				'_nonce'      => wp_create_nonce( 'wp_rest' ),
 				'site_url'    => rawurlencode( get_site_url() ),
 				'cookies'     => $_COOKIE,
+				'instance'    => $instance_key,
+				'version'	  => RESPONSIVE_ADDONS_VER,
 			);
+
 
 			wp_localize_script( 'responsive-add-ons-getting-started-jsfile', 'responsiveAddonsGettingStarted', $data );
 

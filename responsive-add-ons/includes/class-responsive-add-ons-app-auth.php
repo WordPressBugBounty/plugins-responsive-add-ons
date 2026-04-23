@@ -94,7 +94,7 @@ class Responsive_Add_Ons_App_Auth {
 		}
 
 		$is_new_user = filter_input( INPUT_POST, 'is_new_user', FILTER_VALIDATE_BOOLEAN );
-
+		$user_instance = get_option( 'wc_am_client_responsive_add_ons_instance' );
 		$site_address = rawurlencode( get_site_url() );
 		$rest_url     = rawurlencode( get_rest_url() );
 
@@ -107,6 +107,8 @@ class Responsive_Add_Ons_App_Auth {
 				'site'        => $site_address,
 				'rest_url'    => $rest_url,
 				'rplus_nonce' => wp_create_nonce( 'wp_rest' ),
+				'instance'    => $user_instance,
+				'version'     => RESPONSIVE_ADDONS_VER,
 			),
 			$api_auth_url
 		);
@@ -144,35 +146,50 @@ class Responsive_Add_Ons_App_Auth {
 	 *
 	 * @return void
 	 */
-	public function store_app_auth() {
-		check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
+		public function store_app_auth() {
+			check_ajax_referer( 'responsive-addons', '_ajax_nonce' );
 
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( esc_html__( 'You do not have permissions to connect Responsive Addons to Cyberchimps.', 'responsive-add-ons' ) );
-		}
-		$data = array();
-		if ( isset( $_POST['response'] ) && is_array( $_POST['response'] ) ) {
-			// Pre-sanitizing the response using a custom function to ensure all values are cleaned.
-			// PHPCS incorrectly flags this as unsanitized, so the warning is suppressed.
-			// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			$data = $this->recursive_sanitize_text_field( wp_unslash( $_POST['response'] ) );
-			// phpcs:enable
-		}
-		$origin = ! empty( $_POST['origin'] ) ? esc_url_raw( wp_unslash( $_POST['origin'] ) ) : false;
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( esc_html__( 'You do not have permissions to connect Responsive Addons to Cyberchimps.', 'responsive-add-ons' ) );
+			}
+			$data = array();
+			if ( isset( $_POST['response'] ) && is_array( $_POST['response'] ) ) {
+				// Pre-sanitizing the response using a custom function to ensure all values are cleaned.
+				// PHPCS incorrectly flags this as unsanitized, so the warning is suppressed.
+				// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$data = $this->recursive_sanitize_text_field( wp_unslash( $_POST['response'] ) );
+				// phpcs:enable
+			}
+			$origin = ! empty( $_POST['origin'] ) ? esc_url_raw( wp_unslash( $_POST['origin'] ) ) : false;
 
-		if ( empty( $data ) || CC_APP_URL !== $origin ) {
-			wp_send_json_error();
+			if ( empty( $data ) || CC_APP_URL !== $origin ) {
+				wp_send_json_error();
+			}
+		
+			update_option( 'reads_app_settings', $data );
+
+			$update_options = isset( $_POST['update_options'] ) ? sanitize_text_field( wp_unslash( $_POST['update_options'] ) ) : '';
+			$activated_key  = isset( $_POST['activated_key'] ) ? sanitize_text_field( wp_unslash( $_POST['activated_key'] ) ) : '';
+
+			if ( 'success' === $update_options || 'fail_1' === $update_options ) {
+				global $wcam_lib_responsive_addons;
+				if ( ! empty( $wcam_lib_responsive_addons ) ) {
+					update_option( $wcam_lib_responsive_addons->wc_am_activated_key, $activated_key );
+					update_option( 'wc_am_client_responsive_add_ons_activated', 'Activated' );
+					if ( isset( $data['account']['deactivate_checkbox_key'] ) ) {
+						update_option( $wcam_lib_responsive_addons->wc_am_deactivate_checkbox_key, $data['account']['deactivate_checkbox_key'] );
+					}
+				}
+			}
+			$this->auth_data = $data;
+			set_transient( 'responsive_ready_sites_display_connect_success', true, 10 );
+			wp_send_json_success(
+				array(
+					'title' => __( 'Authentication successfully completed', 'responsive-add-ons' ),
+					'text'  => __( 'Reloading page, please wait.', 'responsive-add-ons' ),
+				)
+			);
 		}
-		update_option( 'reads_app_settings', $data );
-		$this->auth_data = $data;
-		set_transient( 'responsive_ready_sites_display_connect_success', true, 10 );
-		wp_send_json_success(
-			array(
-				'title' => __( 'Authentication successfully completed', 'responsive-add-ons' ),
-				'text'  => __( 'Reloading page, please wait.', 'responsive-add-ons' ),
-			)
-		);
-	}
 
 	/**
 	 * Recursively sanitize the response fields from $_POST.
@@ -210,16 +227,33 @@ class Responsive_Add_Ons_App_Auth {
 			'Authorization' => 'Bearer ' . $this->get_auth_key(),
 			'Content-Type'  => 'application/json',
 		);
-		update_option( 'reads_app_settings', $options );
 
 		global $wcam_lib_responsive_addons;
 		$activation_status = get_option( $wcam_lib_responsive_addons->wc_am_activated_key );
 
+		$app_settings = get_option('reads_app_settings');
+
+
+		$wcam_lib_responsive_addons->data = [
+			$wcam_lib_responsive_addons->wc_am_api_key_key => $app_settings['api']['token'] ?? '',
+			'product_id' => $app_settings['account']['product_id'] ?? '',
+			'instance'   => get_option($wcam_lib_responsive_addons->wc_am_instance_key),
+			'object'     => parse_url( site_url(), PHP_URL_HOST ),
+		];
+
+		$api_key = '';
+
+		if ( ! empty($app_settings['api']['token']) ) {
+			$api_key = $app_settings['api']['token'];
+		}
+
 		$args = array(
-			'api_key' => ( is_array( $wcam_lib_responsive_addons->data ) && isset( $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] ) ) ? $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] : '',
+			'api_key' => $api_key,
+			'product_id' => $app_settings['account']['product_id'] ?? '',
 		);
 
-		if ( 'Activated' === $activation_status && '' !== $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_api_key_key ] ) {
+
+		if ( 'Activated' === $activation_status && ! empty( $api_key ) ) {
 			// deactivates API Key activation.
 			$deactivate_results= json_decode(
 				json_decode($wcam_lib_responsive_addons->deactivate(
@@ -232,9 +266,11 @@ class Responsive_Add_Ons_App_Auth {
 			);
 
 			if ( isset( $deactivate_results['success'] ) && true === $deactivate_results['success'] && isset( $deactivate_results['deactivated'] ) && true === $deactivate_results['deactivated'] ) {
+				
 				if ( ! empty( $wcam_lib_responsive_addons->wc_am_activated_key ) ) {
 					update_option( $wcam_lib_responsive_addons->wc_am_activated_key, 'Deactivated' );
 				}
+				update_option( 'reads_app_settings', $options );
 
 				wp_send_json_success(
 					array(
@@ -249,6 +285,8 @@ class Responsive_Add_Ons_App_Auth {
 				if ( isset( $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_activated_key ] ) ) {
 					update_option( $wcam_lib_responsive_addons->data[ $wcam_lib_responsive_addons->wc_am_activated_key ], 'Deactivated' );
 				}
+				update_option( 'reads_app_settings', $options );
+
 				wp_send_json_error(
 					array(
 						'deactivate_results' => $deactivate_results,
@@ -379,6 +417,7 @@ class Responsive_Add_Ons_App_Auth {
 
 		$template     = isset( $_POST['site_name'] ) ? sanitize_text_field( wp_unslash( $_POST['site_name'] ) ) : null;
 		$page_builder = isset( $_POST['site_builder'] ) ? sanitize_text_field( wp_unslash( $_POST['site_builder'] ) ) : null;
+		$user_instance = isset( $_POST['instance'] ) ? sanitize_text_field( wp_unslash( $_POST['instance'] ) ) : '';
 		$site_address = rawurlencode( get_site_url() );
 		$rest_url     = rawurlencode( get_rest_url() );
 
@@ -390,6 +429,7 @@ class Responsive_Add_Ons_App_Auth {
 				'site'        => $site_address,
 				'rest_url'    => $rest_url,
 				'rplus_nonce' => wp_create_nonce( 'wp_rest' ),
+				'instance'    => $user_instance,
 			),
 			$api_auth_url
 		);
