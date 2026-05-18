@@ -180,7 +180,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_WXR_Importer' ) ) :
 
 			// Keep track of our progress.
 			add_action( 'wxr_importer.processed.post', array( $this, 'track_post' ) );
-			add_action( 'wxr_importer.processed.term', array( $this, 'track_term' ) );
+			add_action( 'wxr_importer.processed.term', array( $this, 'track_term' ), 10, 2 );
 
 			// Flush once more.
 			flush();
@@ -400,12 +400,16 @@ if ( ! class_exists( 'Responsive_Ready_Sites_WXR_Importer' ) ) :
 		 * @param  int $term_id Term ID.
 		 * @return void
 		 */
-		public function track_term( $term_id ) {
+		public function track_term( $term_id, $data = array() ) {
 			$term = get_term( $term_id );
 			if ( $term ) {
 				Responsive_Ready_Sites_Importer_Log::add( 'Inserted - Term ' . $term_id . ' - ' . wp_json_encode( $term ) );
 			}
 			update_term_meta( $term_id, '_responsive_ready_sites_imported_term', true );
+
+			if ( ! empty( $data['id'] ) ) {
+				update_term_meta( $term_id, '_responsive_ready_sites_source_id', (int) $data['id'] );
+			}
 		}
 	}
 

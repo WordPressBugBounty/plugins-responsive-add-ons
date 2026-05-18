@@ -172,6 +172,10 @@ class Responsive_Ready_Sites_Options_Importer {
 							$this->insert_logo( $option_value );
 							break;
 
+						case 'nav_menu_locations':
+							$this->set_nav_menu_locations( $option_value );
+							break;
+
 						// Set WooCommerce page ID by page Title.
 						case 'woocommerce_shop_page_title':
 						case 'woocommerce_cart_page_title':
@@ -261,7 +265,7 @@ class Responsive_Ready_Sites_Options_Importer {
 		$menu_locations = array();
 
 		// Update menu locations.
-		if ( isset( $nav_menu_locations ) ) {
+		if ( isset( $nav_menu_locations ) && is_array( $nav_menu_locations ) ) {
 
 			foreach ( $nav_menu_locations as $menu => $value ) {
 

@@ -80,7 +80,7 @@ jQuery( document ).ready(
 			} else {
 				$('.rst-start-auth-exist #loader').css('display', 'inline-block');
 			}
-		
+
 			$.ajax({
 				url: responsiveAddonsGettingStarted.ajaxurl,
 				type: 'POST',
@@ -88,6 +88,8 @@ jQuery( document ).ready(
 					action: 'cyberchimps_app_start_auth',
 					_ajax_nonce: responsiveAddonsGettingStarted._ajax_nonce,
 					is_new_user: is_new_user,
+					instance: responsiveAddonsGettingStarted.instance,
+					version: responsiveAddonsGettingStarted.version,
 				},
 			})
 			.done(function (response) {
@@ -99,14 +101,14 @@ jQuery( document ).ready(
 		
 				let leftPosition = (viewportWidth - popupWidth) / 2;
 				let topPosition = (viewportHeight - popupHeight) / 2;
-		
 				let popup = window.open(
 					response.data.url,
 					"saas_auth_popup",
 					"location=no,width=" + popupWidth + ",height=" + popupHeight +
 					",left=" + leftPosition + ",top=" + topPosition + ",scrollbars=0"
 				);
-		
+				
+				
 				window.saasAuthPopup = popup;
 		
 				// Setup listener BEFORE popup loads
@@ -120,7 +122,9 @@ jQuery( document ).ready(
 							type: "auth_data",
 							cookies: responsiveAddonsGettingStarted.cookies,
 							wp_nonce: responsiveAddonsGettingStarted._nonce,
-							site_url: responsiveAddonsGettingStarted.site_url
+							site_url: responsiveAddonsGettingStarted.site_url,
+							instance: responsiveAddonsGettingStarted.instance,
+							version: responsiveAddonsGettingStarted.version,
 						}, responsiveAddonsGettingStarted.ccAppURL);
 					}
 				});
@@ -144,6 +148,8 @@ jQuery( document ).ready(
 						_ajax_nonce : responsiveAddonsGettingStarted._ajax_nonce,
 						response: data.response,
 						origin: data.origin,
+						activated_key: data.activated_key,
+						update_options: data.update_options,
 					},
 					success: function (response) {
 						const params = new URLSearchParams(window.location.search);
@@ -198,7 +204,8 @@ jQuery( document ).ready(
 			let site_builder = $(this).closest('.responsive-ready-site-preview').data('page-builder');
 			$( $_this ).addClass( 'disable' );
 			$( $_this ).find( '#loader' ).css( 'display', 'inline-block' );
-		
+
+
 			$.ajax({
 				url  : responsiveAddonsGettingStarted.ajaxurl,
 				type : 'POST',
@@ -207,6 +214,8 @@ jQuery( document ).ready(
 					_ajax_nonce : responsiveAddonsGettingStarted._ajax_nonce,
 					site_name   : site_name,
 					site_builder: site_builder,
+					instance: responsiveAddonsGettingStarted.instance,
+					version: responsiveAddonsGettingStarted.version,
 				},
 			})
 			.done(function (response) {
@@ -237,7 +246,9 @@ jQuery( document ).ready(
 							type: "auth_data",
 							cookies: responsiveAddonsGettingStarted.cookies,
 							wp_nonce: responsiveAddonsGettingStarted._nonce,
-							site_url: responsiveAddonsGettingStarted.site_url
+							site_url: responsiveAddonsGettingStarted.site_url,
+							instance: responsiveAddonsGettingStarted.instance,
+							version: responsiveAddonsGettingStarted.version,
 						}, responsiveAddonsGettingStarted.ccAppURL);
 					}
 				});
