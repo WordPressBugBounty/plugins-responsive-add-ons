@@ -1142,6 +1142,9 @@
 						$( '.res-addon-cart-wrap svg path' ).css( 'fill', color );
 					} else if (cartIconStyle === 'fill') {
 						$( '.res-addon-cart-wrap' ).css( 'background-color', color );
+					} else if (cartIconStyle === 'none') {
+						$( '.res-addon-cart-wrap' ).css( 'color', color );
+						$( '.res-addon-cart-wrap svg path' ).css( 'fill', color );
 					}
 				}
 			);
@@ -1166,6 +1169,13 @@
 						jQuery( 'head' ).append(
 							'<style id="responsive-cart-hover-color">'
 							+ '.res-addon-cart-wrap:hover { background-color: ' + color + '!important; }'
+							+ '</style>'
+						);
+					} else if (cartIconStyle === 'none') {
+						jQuery( 'head' ).append(
+							'<style id="responsive-cart-hover-color">'
+							+ '.res-addon-cart-wrap:hover { color: ' + color + '!important; }'
+							+ '.res-addon-cart-wrap:hover svg path { fill: ' + color + '!important; }'
 							+ '</style>'
 						);
 					}

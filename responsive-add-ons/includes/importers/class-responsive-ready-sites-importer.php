@@ -809,6 +809,63 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				}
 			}
 
+			/**
+			 * WPForms front-page fix (synchronous).
+			 *
+			 * Elementor pages store the form reference inside `_elementor_data` (JSON/meta).
+			 * The background batch usually rewrites these IDs, but that can race with the
+			 * user's first page view. Doing it here guarantees the front page references
+			 * the new WPForms IDs before "Import Completed" is shown.
+			 */
+			$ids_mapping = get_option( 'responsive_sites_wpforms_ids_mapping', array() );
+			$front_page_id = (int) get_option( 'page_on_front' );
+
+			if ( $front_page_id && ! empty( $ids_mapping ) ) {
+				$is_elementor = get_post_meta( $front_page_id, '_elementor_version', true );
+
+				if ( $is_elementor ) {
+					$data = get_post_meta( $front_page_id, '_elementor_data', true );
+
+					if ( ! empty( $data ) ) {
+						if ( ! is_array( $data ) ) {
+							$data = json_decode( $data, true );
+						}
+
+						$json = wp_json_encode( $data );
+						foreach ( $ids_mapping as $old_id => $new_id ) {
+							$json = str_replace( '[wpforms id=\"' . $old_id, '[wpforms id=\"' . $new_id, $json );
+							$json = str_replace( '"select_form":"' . $old_id, '"select_form":"' . $new_id, $json );
+						}
+						$data = json_decode( $json, true );
+
+						$encoded = wp_json_encode( $data );
+						if ( false !== $encoded ) {
+							update_metadata( 'post', $front_page_id, '_elementor_data', wp_slash( $encoded ) );
+
+							// Clear Elementor caches so the updated data is reflected immediately.
+							if ( class_exists( '\Elementor\Plugin' ) ) {
+								Elementor\Plugin::$instance->files_manager->clear_cache();
+								Elementor\Plugin::$instance->posts_css_manager->clear_cache();
+							}
+						}
+					}
+				} else {
+					$content = get_post_field( 'post_content', $front_page_id );
+					if ( is_string( $content ) && '' !== $content ) {
+						foreach ( $ids_mapping as $old_id => $new_id ) {
+							$content = str_replace( '[wpforms id="' . $old_id, '[wpforms id="' . $new_id, $content );
+						}
+
+						wp_update_post(
+							array(
+								'ID'           => $front_page_id,
+								'post_content' => $content,
+							)
+						);
+					}
+				}
+			}
+
 			do_action( 'responsive_ready_sites_regenerate_product_lookup' );
 
 			do_action( 'responsive_ready_sites_import_complete' );

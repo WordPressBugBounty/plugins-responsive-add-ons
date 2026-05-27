@@ -524,8 +524,8 @@ class Responsive_Add_Ons {
 		global $pagenow;
 		if ( ( 'index.php' === $pagenow ) && ! get_transient( 'responsive_ready_sites_welcome_banner_dismissed_notice' ) ) {
 			$image_path_close     = RESPONSIVE_ADDONS_URI . 'admin/images/close_icon.png';
-			$image_path_logo      = RESPONSIVE_ADDONS_URI . 'admin/images/' . rawurlencode( 'Group 22.svg' );
-			$image_path_frame_9   = RESPONSIVE_ADDONS_URI . 'admin/images/' . rawurlencode( 'Frame 9.png' );
+			$image_path_logo      = RESPONSIVE_ADDONS_URI . 'admin/images/' . rawurlencode( 'group-22.svg' );
+			$image_path_frame_9   = RESPONSIVE_ADDONS_URI . 'admin/images/' . rawurlencode( 'frame-9.png' );
 
 			$features = array(
 				__( 'Loads Blazing Fast', 'responsive-add-ons' ),

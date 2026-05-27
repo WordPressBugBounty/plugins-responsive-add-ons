@@ -6,10 +6,6 @@
  * @since 0.2
  */
 
-if( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 if ( ! function_exists( 'check_is_pro_version_greater' ) ) {
 	/**
 	 * Verify if the version of responsive pro is greater or not.
@@ -792,6 +788,22 @@ if ( ! function_exists( 'responsive_addons_custom_theme_styles' ) ) {
 				}
 				.res-addon-cart-wrap:hover {
 					background-color: {$cart_hover_color};
+				}
+			";
+			}
+			if ( 'none' === $cart_style ) {
+				$custom_css .= "
+				.res-addon-cart-wrap {
+					color: {$cart_color};
+				}
+				.res-addon-cart-wrap svg path {
+					fill: {$cart_color};
+				}
+				.res-addon-cart-wrap:hover {
+					color: {$cart_hover_color};
+				}
+				.res-addon-cart-wrap:hover svg path {
+					fill: {$cart_hover_color};
 				}
 			";
 			}
