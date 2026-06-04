@@ -275,7 +275,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									array(
 										'name'            => $element . '_shop_typography[font-weight]',
 										'label'           => esc_html__( 'Font Weight', 'responsive-add-ons' ),
-										'description'     => esc_html__( 'Important: Not all fonts support every font-weight.', 'responsive-add-ons' ),
+										'description'     => esc_html__( '', 'responsive-add-ons' ),
 										'section'         => $section,
 										'responsive_setting_id' => 'responsive_font_weight',
 										'settings'        => $element . '_shop_typography[font-weight]',
@@ -320,7 +320,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$wp_customize,
 									$element . '_shop_typography[font-style]',
 									array(
-										'label'           => esc_html__( 'Font Style', 'responsive-add-ons' ),
+										'label'           => esc_html__( '', 'responsive-add-ons' ),
 										'section'         => $section,
 										'settings'        => $element . '_shop_typography[font-style]',
 										'priority'        => $priority,
@@ -354,7 +354,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$wp_customize,
 									$element . '_shop_typography[text-transform]',
 									array(
-										'label'           => esc_html__( 'Text Transform', 'responsive-add-ons' ),
+										'label'           => esc_html__( '', 'responsive-add-ons' ),
 										'section'         => $section,
 										'settings'        => $element . '_shop_typography[text-transform]',
 										'priority'        => $priority,
@@ -459,7 +459,7 @@ if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) :
 									$element . '_shop_typography[font-size]',
 									array(
 										'label'           => esc_html__( 'Size', 'responsive-add-ons' ),
-										'description'     => esc_html__( 'You can add: px-em-%', 'responsive-add-ons' ),
+										'description'     => esc_html__( '', 'responsive-add-ons' ),
 										'section'         => $section,
 										'settings'        => array(
 											'desktop'      => $element . '_shop_typography[font-size]',

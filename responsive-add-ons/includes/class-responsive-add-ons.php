@@ -1149,6 +1149,11 @@ class Responsive_Add_Ons {
 			__( 'Testimonial', 'responsive-add-ons' ),
 			__( 'Hero', 'responsive-add-ons' ),
 			__( 'Call to Action', 'responsive-add-ons' ),
+			__( 'Features', 'responsive-add-ons' ),
+			__( 'Images and text', 'responsive-add-ons' ),
+			__( 'Heading', 'responsive-add-ons' ),
+			__( 'Location and Hours', 'responsive-add-ons' ),
+			__( 'FAQ', 'responsive-add-ons' ),
 		);
 	}
 
@@ -1158,7 +1163,7 @@ class Responsive_Add_Ons {
 	 * @since 2.7.3
 	 */
 	public function is_rea_activated() {
-		$rea_slug = 'responsive-elementor-addons/responsive-elementor-addons.php';
+		$rea_slug = 'responsive-addons-for-elementor/responsive-addons-for-elementor.php';
 		if ( is_plugin_active( $rea_slug ) ) {
 			return true;
 		} else {

@@ -442,6 +442,13 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 	var action_str = 'Template';
 	if ( 'pages' != ResponsiveElementorSitesAdmin.type ) {
 		action_str = 'Block';
+		var blockRequiredPlugins = data['required_plugins'];
+		var requiredPluginsFlag = false;
+		var filteredRequiredPlugins = blockRequiredPlugins.forEach((item) => {
+			if ( item?.slug === 'responsive-addons-for-elementor' && !responsiveElementorSites.isREAActivated ) {
+				requiredPluginsFlag = true;
+			}
+		});
 	}
 	#>
 	<div class="responsive-preview-actions-wrap">
@@ -539,10 +546,16 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 								}
 							} else {
 								if ( responsiveElementorSites.ccAppAuth) {
-								#>
-									<div type="button" class="button button-hero button-primary rst-library-template-insert rst-library-block-insert disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
-									<div type="button" class="button button-hero button-primary rst-import-elementor-template disabled"><?php esc_html_e( 'Save ', 'responsive-add-ons' ); ?>{{action_str}}</div>
-								<#
+									if ( requiredPluginsFlag ) {
+										#>
+										<div type="button" class="button button-hero button-primary rst-install-plugins"><?php esc_html_e( 'Install Required Plugins ', 'responsive-add-ons' ); ?></div>
+										<#
+									} else {
+										#>
+										<div type="button" class="button button-hero button-primary rst-library-template-insert rst-library-block-insert disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>
+										<div type="button" class="button button-hero button-primary rst-import-elementor-template disabled"><?php esc_html_e( 'Save ', 'responsive-add-ons' ); ?>{{action_str}}</div>
+										<#
+									}
 								} else {
 								#>
 									<div type="button" class="button button-hero button-primary rst-library-template-no-auth disabled"><?php esc_html_e( 'Import ', 'responsive-add-ons' ); ?>{{action_str}}</div>

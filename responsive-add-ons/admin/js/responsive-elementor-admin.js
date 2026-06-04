@@ -134,6 +134,7 @@ var ResponsiveSitesAjaxQueue = (function () {
 		demo_type: '',
 		per_page: 20,
 		syncBlocks: false,
+		blockImporting: false,
 
 		init: function () {
 			this._bind();
@@ -191,6 +192,8 @@ var ResponsiveSitesAjaxQueue = (function () {
 						$('body').on("click", "#rst-sites-modal .back-to-layout", ResponsiveElementorSitesAdmin._goBack);
 
 						$(document).on("click", "#rst-sites-modal .rst-library-template-insert", ResponsiveElementorSitesAdmin._insert);
+
+						$(document).on("click", ".rst-install-plugins", ResponsiveElementorSitesAdmin._installPluginsForBlocks);
 
 						$(document).on("click", ".rst-import-elementor-template", ResponsiveElementorSitesAdmin._importTemplate);
 
@@ -1221,6 +1224,10 @@ var ResponsiveSitesAjaxQueue = (function () {
 
 		_enableImport: function () {
 			console.groupEnd();
+			if ( ResponsiveElementorSitesAdmin.blockImporting === true ) {
+				window.location.reload();
+				return;
+			}
 			let id = ResponsiveElementorSitesAdmin.block_id;
 			let url = responsiveElementorSites.blockSiteURL + 'pages/';
 			if ( 'pages' == ResponsiveElementorSitesAdmin.type ) {
@@ -1690,6 +1697,13 @@ var ResponsiveSitesAjaxQueue = (function () {
 					}
 				);	
 		},
+		_installPluginsForBlocks: function () {
+			$(".rst-install-plugins").addClass('installing');
+			$(".rst-install-plugins").text('Installing... ');
+			ResponsiveElementorSitesAdmin.blockImporting = true;
+			ResponsiveElementorSitesAdmin._bulkPluginInstallActivate( true );
+		},
+		
 	};
 
 	/**

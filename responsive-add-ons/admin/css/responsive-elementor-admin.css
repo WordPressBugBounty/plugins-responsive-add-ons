@@ -774,7 +774,8 @@
 }
 
 #rst-sites-modal .rst-library-template-insert.installing:before,
-#rst-sites-modal .rst-import-elementor-template.installing:before {
+#rst-sites-modal .rst-import-elementor-template.installing:before,
+#rst-sites-modal .rst-install-plugins.installing:before {
 	content: "\f463";
 	display: inline-block;
 	margin-right: 10px;
