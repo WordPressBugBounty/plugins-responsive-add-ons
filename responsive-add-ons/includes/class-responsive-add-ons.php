@@ -3445,7 +3445,10 @@ class Responsive_Add_Ons {
 		$status_args   = $wcam_lib_responsive_addons->status( $args, $product_id );
 		$ready_site_subscribe_checkbox = isset( $_POST['ready_sites_subscripiton_checkbox'] ) ? sanitize_key( wp_unslash( $_POST['ready_sites_subscripiton_checkbox'] ) ) : '';
 		$userEmail = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
-
+		$template_category_post = isset( $_POST['template_category'] ) ? json_decode( wp_unslash( $_POST['template_category'] ), true ) : array();
+		if ( ! is_array( $template_category_post ) ) {
+			$template_category_post = array();
+		}
 		$response      = $this->cc_app_auth->post(
 			'plugin/importcaps',
 			wp_json_encode(
@@ -3453,6 +3456,7 @@ class Responsive_Add_Ons {
 					'id'                  => $settings->get_user_id(),
 					'platform'            => 'wordpress',
 					'demo_type'           => isset( $_POST['demo_type'] ) ? sanitize_text_field( wp_unslash( $_POST['demo_type'] ) ) : '',
+					'template_category'   => $template_category_post,
 					'status_args'         => $status_args,
 					'activate_args'       => $activate_args,
 					'wc_am_activated_key' => $wcam_lib_responsive_addons->data,
@@ -3490,12 +3494,23 @@ class Responsive_Add_Ons {
 		}
 
 		if ( isset( $response_body->allow_import ) && ! $response_body->allow_import ) {
-			wp_send_json_error(
-				array(
-					'message' => "You don't have an active membership of Cyberchimps Responsive Domain.",
-					'error'   => true,
-				),
-			);
+
+			if( isset( $response_body->required_plan_present) && ! $response_body->required_plan_present ) {
+				wp_send_json_error(
+					array(
+						'message' => $response_body->message,
+						'error'   => true,
+						'required_plan_present' => false,
+					),
+				);
+			} else {
+				wp_send_json_error(
+						array(
+							'message' => "You don't have an active membership of Cyberchimps Responsive Domain.",
+							'error'   => true,
+						),
+				);
+			}
 		}
 		if ( isset( $response_body->update_options ) ) {
 			if ( 'success' === $response_body->update_options ) {

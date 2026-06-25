@@ -1649,6 +1649,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				'site_options_data'    => '',
 				'pages'                => '',
 				'page_builder'         => '',
+				'template_category'    => array(),
 			);
 
 			// Ensure the RBEA plugin is listed.
@@ -1685,6 +1686,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				'title'                => $data['title']['rendered'] ?? '',
 				'success'              => true,
 				'page_builder'         => $data['page_builder'] ?? '',
+				'template_category'    => $data['template_category'] ?? array(),
 				'site-url'             => $data['site_url'] ?? '',
 				'allow-pages'          => $data['allow_pages'] ?? false,
 				'notInstalledPlugins'  => $processedPluginsList['notinstalled'] ?? array(),
