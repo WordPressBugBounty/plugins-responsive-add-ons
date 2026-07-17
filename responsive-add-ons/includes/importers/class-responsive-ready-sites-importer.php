@@ -1576,6 +1576,11 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				wp_send_json_error( __( 'Data not found for the selected template.', 'responsive-add-ons' ) );
 			}
 
+			// Securely inject the site file location into raw template data so it can be preserved and passed correctly.
+			if ( is_array( $raw_site_data ) ) {
+				$raw_site_data['site_file_location'] = $site_location;
+			}
+
 			$current_site_data = self::prepare_site_data_for_import( $raw_site_data );
 
 			if ( is_wp_error( $current_site_data ) ) {
@@ -1689,8 +1694,11 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				'template_category'    => $data['template_category'] ?? array(),
 				'site-url'             => $data['site_url'] ?? '',
 				'allow-pages'          => $data['allow_pages'] ?? false,
+				'ai_ready'             => ! empty( $data['ai_ready'] ),
 				'notInstalledPlugins'  => $processedPluginsList['notinstalled'] ?? array(),
 				'notActivePlugins'     => $processedPluginsList['inactive'] ?? array(),
+				'site_file_location'   => $data['site_file_location'] ?? '',
+				'demo_type'            => $data['demo_type'] ?? 'pro',
 			);
 
 			return wp_parse_args( $prepared, $defaults );

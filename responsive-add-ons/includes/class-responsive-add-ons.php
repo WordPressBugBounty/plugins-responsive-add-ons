@@ -91,13 +91,13 @@ class Responsive_Add_Ons {
 		$plugin = plugin_basename( __FILE__ );
 		add_filter( "plugin_action_links_$plugin", array( $this, 'plugin_settings_link' ) );
 
-		$settings = self::raddons_get_white_label_settings();
 		if ( ! function_exists( 'is_plugin_active' ) ) {
 			include_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
-		if ( ! is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) ) {
-			$this->load_responsive_addons_nav_walkers();
-		}
+		//Include legacy files for backward compatibility for ResponsivePro
+		require_once RESPONSIVE_ADDONS_DIR . 'admin/site-builder/class-responsive-site-builder-legacy.php';
+		require_once RESPONSIVE_ADDONS_DIR . 'includes/compatibility/megamenu/class-responsive-megamenu-legacy.php';
+
 		$this->load_responsive_customizer_settings();
 
 		if ( ! get_option( 'rplus_custom_fonts_enable' ) ) {
@@ -117,8 +117,6 @@ class Responsive_Add_Ons {
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'responsive_ready_sites_admin_enqueue_styles' ) );
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'responsive_addons_admin_enqueue_getting_started_scripts_styles' ) );
-
 		add_action( 'elementor/editor/footer', array( $this, 'responsive_ready_sites_insert_templates' ) );
 
 		add_action( 'elementor/editor/footer', array( $this, 'responsive_ready_sites_register_widget_scripts' ), 99 );
@@ -127,37 +125,9 @@ class Responsive_Add_Ons {
 
 		add_action( 'elementor/preview/enqueue_styles', array( $this, 'responsive_ready_sites_elementor_styles' ) );
 
-		if ( ! is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) && 'on' === get_option( 'rplus_custom_fonts_enable' ) && $this->responsive_activated ) {
-
-			require_once plugin_dir_path( __DIR__ ) . 'includes/custom-fonts/class-responsive-add-ons-custom-fonts-taxonomy.php';
-
-			add_action( 'admin_enqueue_scripts', array( $this, 'responsive_addons_enqueue_custom_fonts' ) );
-
-			add_action( 'admin_menu', array( $this, 'responsive_addons_register_custom_fonts_menu' ), 101 );
-
-			add_action( 'admin_head', array( $this, 'responsive_addons_custom_fonts_menu_highlight' ) );
-
-			add_filter( 'manage_edit-' . Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug . '_columns', array( $this, 'responsive_addons_manage_columns' ) );
-
-			add_action( Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug . '_add_form_fields', array( $this, 'responsive_addons_add_new_taxonomy_data' ) );
-
-			add_action( Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug . '_edit_form_fields', array( $this, 'responsive_addons_edit_taxonomy_data' ) );
-
-			add_action( 'edited_' . Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug, array( $this, 'responsive_addons_save_metadata' ) );
-			add_action( 'create_' . Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug, array( $this, 'responsive_addons_save_metadata' ) );
-
-			add_filter( 'upload_mimes', array( $this, 'responsive_addons_add_fonts_to_allowed_mimes' ) );
-			add_filter( 'wp_check_filetype_and_ext', array( $this, 'responsive_addons_update_mime_types' ), 10, 3 );
-
-			add_action( 'responsive_render_fonts', array( $this, 'responsive_addons_render_fonts' ) );
-			add_action( 'responsive_customizer_font_list', array( $this, 'responsive_addons_add_customizer_font_list' ) );
-			add_action( 'wp_head', array( $this, 'responsive_addons_add_style' ) );
-		}
 
 		if ( is_admin() ) {
-			if ( ! is_plugin_active( 'responsive-addons-pro/responsive-addons-pro.php' ) && 'on' === get_option( 'rplus_custom_fonts_enable' ) && $this->responsive_activated ) {
-				add_action( 'enqueue_block_assets', array( $this, 'responsive_addons_add_style' ) );
-			}
+
 			add_action( 'wp_ajax_responsive-ready-sites-activate-theme', array( $this, 'activate_theme' ) );
 			add_action( 'wp_ajax_responsive-ready-sites-required-plugins', array( $this, 'required_plugin' ) );
 			add_action( 'wp_ajax_responsive-ready-sites-install-required-pro-plugins', array( $this, 'install_pro_plugin' ) );
@@ -187,22 +157,13 @@ class Responsive_Add_Ons {
 			add_action( 'wp_ajax_responsive-sites-favorite', array( $this, 'add_to_favorite' ) );
 			add_action( 'wp_ajax_responsive-favorite-site-details', array( $this, 'get_favorite_template_site_details' ) );
 			add_action( 'wp_ajax_responsive-update_all_sites_fav_status', array( $this, 'update_all_sites_fav_status' ) );
-			add_filter( 'wp_prepare_themes_for_js', __CLASS__ . '::responsive_theme_white_label_update_branding' );
-			add_filter( 'update_right_now_text', array( $this, 'admin_dashboard_page' ) );
-			add_filter( 'gettext', array( $this, 'theme_gettext' ), 20, 3 );
 
 			if ( ! empty( $settings['theme_icon_url'] ) ) {
 				add_filter( 'responsive_admin_menu_icon', array( $this, 'update_admin_brand_logo' ) );
 				add_filter( 'responsive_admin_menu_footer_icon', array( $this, 'update_admin_brand_logo' ) );
 			}
 
-			add_action( 'responsive_addons_getting_started_settings_tab', array( $this, 'responsive_addons_getting_started_settings_tab' ) );
-			add_action( 'responsive_addons_getting_started_settings_tab_content', array( $this, 'responsive_addons_getting_started_settings_tab_content' ) );
-			add_action( 'responsive_add_ons_white_label_section', array( $this, 'responsive_add_ons_white_label_section' ) );
-			add_action( 'wp_ajax_responsive-pro-white-label-settings', array( $this, 'responsive_pro_white_label_settings' ) );
-			add_action( 'wp_ajax_responsive-pro-enable-megamenu', array( $this, 'responsive_pro_enable_megamenu' ) );
 			add_action( 'wp_ajax_responsive-pro-enable-woocommerce', array( $this, 'responsive_pro_enable_woocommerce' ) );
-			add_action( 'wp_ajax_responsive-plus-enable-custom-fonts', array( $this, 'responsive_plus_enable_custom_fonts' ) );
 			add_action( 'wp_ajax_responsive-plus-enable-site-builder', array( $this, 'responsive_plus_enable_site_builder' ) );
 
 			// Get current installation import permissions.
@@ -240,16 +201,11 @@ class Responsive_Add_Ons {
 		add_filter( 'plugin_action_links_responsive-add-ons/responsive-add-ons.php', array( $this, 'responsive_add_view_library_btn' ) );
 		$theme = wp_get_theme();
 
-		// Theme installed and activate.
-		if ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) {
-			add_filter( 'plugin_action_links_responsive-add-ons/responsive-add-ons.php', array( $this, 'responsive_add_view_settings_btn' ) );
-		}
-
 		add_action( 'init', array( $this, 'app_output_buffer' ) );
 
-		add_action( 'responsive_theme_setting_item', array( $this, 'responsive_theme_app_connection_setting_item' ) );
+		// add_action( 'responsive_theme_setting_item', array( $this, 'responsive_theme_app_connection_setting_item' ) );
 
-		add_action( 'responsive_add_ons_app_connection_setting', array( $this, 'responsive_add_ons_app_connection_setting_content' ) );
+		// add_action( 'responsive_add_ons_app_connection_setting', array( $this, 'responsive_add_ons_app_connection_setting_content' ) );
 		if ( ! function_exists( 'responsive_pro_css' ) ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'responsive_pro_css' ) );
 		}
@@ -266,10 +222,6 @@ class Responsive_Add_Ons {
 		self::set_api_url();
 		self::set_rst_blocks_api_url();
 
-		// Load class early in the plugin lifecycle
-		if ( $this->responsive_addons_is_theme_site_builder_compatible() && 'on' === get_option( 'rplus_site_builder_enable' ) ) {
-			require_once RESPONSIVE_ADDONS_DIR . 'admin/site-builder/class-responsive-add-ons-site-builder.php';
-		}
 		// Update user consent.
 		add_action( 'wp_ajax_responsive-addons-update-user-consent', array( $this, 'responsive_addons_update_user_consent' ) );
 
@@ -277,6 +229,9 @@ class Responsive_Add_Ons {
 		add_action( 'admin_body_class', array( $this, 'admin_body_class' ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'responsive_addons_enqueue_preview_script' ) );
+
+		add_action( 'init', array( $this, 'responsive_site_builder_post_type' ) );
+
 	}
 
 	/**
@@ -404,16 +359,6 @@ class Responsive_Add_Ons {
 	 */
 	public function update_first_time_activation_variable() {
 		update_option( 'ra_first_time_activation', false );
-	}
-
-	/**
-	 * Loads Responsive Nav Walkers.
-	 */
-	public function load_responsive_addons_nav_walkers() {
-		if ( ! class_exists( 'Responsive_Addons_Custom_Nav_Walker' ) ) {
-			require_once plugin_dir_path( __DIR__ ) . '/includes/megamenu/class-responsive-addons-nav-walker.php';
-			require_once plugin_dir_path( __DIR__ ) . '/includes/megamenu/class-responsive-addons-custom-nav-walker.php';
-		}
 	}
 
 	/**
@@ -548,13 +493,13 @@ class Responsive_Add_Ons {
 				</div>
 				<div class="reponsive-welcome_banner-welcome-section-content">
 					<div class="rst-banner-logo-section">
-						<img class="rst-banner-logo" src="<?php echo esc_attr( $image_path_logo ); ?>" alt="<?php echo esc_attr__( 'Responsive Plus', 'responsive-add-ons' ); ?>">
+						<img class="rst-banner-logo" src="<?php echo esc_attr( $image_path_logo ); ?>" alt="<?php echo esc_attr__( 'Responsive Starter Templates', 'responsive-add-ons' ); ?>">
 					</div>
 
 					<div class="rst-banner-text-section">
 						<div class="rst-banner-top-text-section">
 							<div class="rst-banner-heading-section">
-								<h1 class="reponsive-welcome_banner-welcome-section-text"><?php echo esc_html__( 'Welcome To Responsive Plus - Starter Templates', 'responsive-add-ons' ); ?></h1>
+								<h1 class="reponsive-welcome_banner-welcome-section-text"><?php echo esc_html__( 'Welcome To Responsive Starter Templates', 'responsive-add-ons' ); ?></h1>
 								<p class="reponsive-welcome_banner-welcome-section-tag"><?php echo esc_html__( 'Create professionally designed pixel-perfect websites in minutes.', 'responsive-add-ons' ); ?></p>
 							</div>
 
@@ -943,6 +888,12 @@ class Responsive_Add_Ons {
 				$instance_key = $wcam_lib_responsive_addons->wc_am_instance_id;
 			}
 
+			$is_ai_supported = false;
+			if ( class_exists( 'Responsive_AI_Content_Client' ) ) {
+				$is_ai_supported = Responsive_AI_Content_Client::is_available();
+			}
+			$connectors_url = ( function_exists( 'is_multisite' ) && is_multisite() ) ? network_admin_url( 'options-connectors.php' ) : admin_url( 'options-connectors.php' );
+
 			$data = apply_filters(
 				'responsive_sites_localize_vars',
 				array(
@@ -983,6 +934,9 @@ class Responsive_Add_Ons {
 					'themeStatus'                     => $this->get_theme_status(),
 					'instance'                        => $instance_key,
 					'version'						  => RESPONSIVE_ADDONS_VER,
+					'aiBusinessDetails'               => get_option( 'responsive_addons_ai_business_details', array() ),
+					'aiSupported'                     => $is_ai_supported,
+					'connectorsUrl'                   => esc_url( $connectors_url ),
 					// 'responsiveTemplatesURL'          => esc_url( admin_url( 'admin.php?page=responsive_add_ons' ) ),
 				)
 			);
@@ -1117,24 +1071,6 @@ class Responsive_Add_Ons {
 
 		wp_localize_script( 'responsive-elementor-admin', 'responsiveElementorSites', $data );
 
-		wp_enqueue_script(
-			'responsive-add-ons-getting-started-jsfile',
-			RESPONSIVE_ADDONS_URI . 'admin/js/responsive-add-ons-getting-started.js',
-			array( 'jquery' ),
-			RESPONSIVE_ADDONS_VER,
-			true
-		);
-
-		$data = array(
-			'ajaxurl'     => admin_url( 'admin-ajax.php' ),
-			'ccAppURL'    => CC_APP_URL,
-			'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
-			'_nonce'      => wp_create_nonce( 'wp_rest' ),
-			'site_url'    => rawurlencode( get_site_url() ),
-			'cookies'     => $_COOKIE,
-		);
-
-		wp_localize_script( 'responsive-add-ons-getting-started-jsfile', 'responsiveAddonsGettingStarted', $data );
 	}
 
 	/**
@@ -1946,6 +1882,12 @@ class Responsive_Add_Ons {
 				'label' => 'Gutenberg',
 				'icon'  => esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/gutenberg.svg' ),
 			),
+			array(
+				'id'    => 4,
+				'value' => 'ai',
+				'label' => 'AI',
+				'icon'  => esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/ai.svg' ),
+			),
 		);
 	}
 
@@ -2630,16 +2572,6 @@ class Responsive_Add_Ons {
 			array( $this, 'responsive_add_ons_templates' ),
 		);
 		$theme = wp_get_theme();
-		if ( $this->responsive_addons_is_theme_site_builder_compatible() && 'on' === get_option( 'rplus_site_builder_enable' ) && ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) ) {
-			add_submenu_page(
-				$slug,
-				__( 'Site Builder', 'responsive-add-ons' ),
-				__( 'Site Builder', 'responsive-add-ons' ),
-				'manage_options',
-				'responsive-site-builder',
-				array( $this, 'responsive_site_builder' ),
-			);
-		}
 	}
 
 	/**
@@ -2659,203 +2591,7 @@ class Responsive_Add_Ons {
 		}
 	}
 
-	/**
-	 * Get plugin settings.
-	 *
-	 * @since 2.9.2
-	 * @return array
-	 */
-	public static function raddons_get_white_label_settings() {
-		$default_settings = array(
-			'plugin_name'          => '',
-			'plugin_short_name'    => '',
-			'plugin_desc'          => '',
-			'plugin_author'        => '',
-			'plugin_uri'           => '',
-			'admin_label'          => '',
-			'support_link'         => '',
-			'hide_support'         => 'off',
-			'hide_wl_settings'     => 'off',
-			'theme_name'           => '',
-			'theme_desc'           => '',
-			'theme_screenshot_url' => '',
-			'theme_icon_url'       => '',
-		);
 
-		$settings = get_option( 'rpro_elementor_settings' );
-
-		if ( ! is_array( $settings ) || empty( $settings ) ) {
-			$settings = $default_settings;
-		}
-
-		if ( is_array( $settings ) && ! empty( $settings ) ) {
-			$settings = array_merge( $default_settings, $settings );
-		}
-
-		return apply_filters( 'rpro_elements_admin_settings', $settings );
-	}
-
-	/**
-	 * Set the White Label branding data to theme.
-	 *
-	 * @param array $all_themes Contains Theme Attributes.
-	 * @since 2.9.2
-	 * @return array
-	 */
-	public static function responsive_theme_white_label_update_branding( $all_themes ) {
-
-		$settings = self::raddons_get_white_label_settings();
-
-		$theme_slug = 'responsive';
-		// Check if the theme exists.
-		if ( isset( $all_themes[ $theme_slug ] ) ) {
-
-			// Update theme details.
-			if ( ! empty( $settings['theme_name'] ) ) {
-
-				$all_themes['responsive']['name'] = $settings['theme_name'];
-
-				foreach ( $all_themes as $key => $theme ) {
-					if ( isset( $theme['parent'] ) && 'Responsive' === $theme['parent'] ) {
-						$all_themes[ $key ]['parent'] = $settings['theme_name'];
-					}
-				}
-			}
-
-			$all_themes['responsive']['description'] = ! empty( $settings['theme_desc'] ) ? $settings['theme_desc'] : $all_themes['responsive']['description'];
-
-			if ( ! empty( $settings['plugin_author'] ) ) {
-				$all_themes['responsive']['author']       = $settings['plugin_author'];
-				$author_url                               = ( ! empty( $settings['plugin_website_uri'] ) ? $settings['plugin_website_uri'] : '#' );
-				$all_themes['responsive']['authorAndUri'] = '<a href="' . esc_url( $author_url ) . '">' . $all_themes['responsive']['author'] . '</a>';
-			}
-			$all_themes['responsive']['screenshot'] = ! empty( $settings['theme_screenshot_url'] ) ? array( $settings['theme_screenshot_url'] ) : $all_themes['responsive']['screenshot'];
-
-		}
-
-		return $all_themes;
-	}
-
-	/**
-	 * White labels the theme on the dashboard 'At a Glance' metabox
-	 *
-	 * @param mixed $content Content.
-	 * @return array
-	 */
-	public function admin_dashboard_page( $content ) {
-		$settings = self::raddons_get_white_label_settings();
-		if ( is_admin() && 'Responsive' === wp_get_theme() && ! empty( $settings['theme_name'] ) ) {
-			return sprintf( $content, get_bloginfo( 'version', 'display' ), '<a href="themes.php">' . $settings['theme_name'] . '</a>' );
-		}
-		return $content;
-	}
-
-	/**
-	 * White labels the theme using the gettext filter
-	 * to cover areas that we can't access like the Customizer.
-	 *
-	 * @param string $text  Translated text.
-	 * @param string $original         Text to translate.
-	 * @param string $domain       Text domain. Unique identifier for retrieving translated strings.
-	 * @return string
-	 */
-	public function theme_gettext( $text, $original, $domain ) {
-		$settings = self::raddons_get_white_label_settings();
-		if ( ! empty( $settings['theme_name'] ) ) {
-			if ( 'Responsive' === $original && 'responsive' === $domain ) {
-				$text = $settings['theme_name'];
-			}
-		}
-		return $text;
-	}
-
-	/**
-	 * Get whitelabelled icon for admin dashboard.
-	 *
-	 * @since 2.9.2
-	 * @param string $logo Default icon.
-	 * @return string URL for updated whitelabelled icon.
-	 */
-	public function update_admin_brand_logo( $logo ) {
-
-		$settings = self::raddons_get_white_label_settings();
-
-		$logo = $settings['theme_icon_url'];
-
-		return esc_url( $logo );
-	}
-
-	/**
-	 * Renders the Settings tab.
-	 *
-	 * @since 2.9.3
-	 * @access public
-	 */
-	public function responsive_addons_getting_started_settings_tab() {
-		if ( ! $this->is_responsive_addons_pro_is_active() ) {
-			echo wp_kses_post( '<div class="responsive-theme-tab responsive-theme-raddons-settings-tab" data-tab="raddons-settings"><p class="responsive-theme-tab-name">Settings</p></div>' );
-		}
-	}
-
-	/**
-	 * Renders the Settings tab Content.
-	 *
-	 * @since 2.9.3
-	 * @access public
-	 */
-	public function responsive_addons_getting_started_settings_tab_content() {
-		if ( ! $this->is_responsive_addons_pro_is_active() ) {
-			?>
-		<div class="responsive-theme-settings-content responsive-theme-tab-content" id="responsive_raddons-settings">
-			<?php require_once RESPONSIVE_ADDONS_DIR . '/admin/partials/getting-started/responsive-getting-started.php'; ?>
-		</div>
-			<?php
-		}
-	}
-
-	/**
-	 * Enqueue js file responsible to handle events on getting started page.
-	 *
-	 * @since 2.9.3
-	 * @access public
-	 */
-	public function responsive_addons_admin_enqueue_getting_started_scripts_styles() {
-
-		if ( isset( $_GET['page'] ) && 'responsive' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			wp_enqueue_script(
-				'responsive-add-ons-getting-started-jsfile',
-				RESPONSIVE_ADDONS_URI . 'admin/js/responsive-add-ons-getting-started.js',
-				array( 'jquery' ),
-				RESPONSIVE_ADDONS_VER,
-				true
-			);
-
-			global $wcam_lib_responsive_addons;
-			$instance_key = '';
-			if ( ! empty( $wcam_lib_responsive_addons ) && isset( $wcam_lib_responsive_addons->wc_am_instance_id ) ) {
-				$instance_key = $wcam_lib_responsive_addons->wc_am_instance_id;
-			}
-
-			
-			$data = array(
-				'ajaxurl'     => admin_url( 'admin-ajax.php' ),
-				'ccAppURL'    => CC_APP_URL,
-				'_ajax_nonce' => wp_create_nonce( 'responsive-addons' ),
-				'_nonce'      => wp_create_nonce( 'wp_rest' ),
-				'site_url'    => rawurlencode( get_site_url() ),
-				'cookies'     => $_COOKIE,
-				'instance'    => $instance_key,
-				'version'	  => RESPONSIVE_ADDONS_VER,
-			);
-
-
-			wp_localize_script( 'responsive-add-ons-getting-started-jsfile', 'responsiveAddonsGettingStarted', $data );
-
-			// Responsive Getting Started admin styles.
-			wp_register_style( 'responsive-add-ons-getting-started-csfile', RESPONSIVE_ADDONS_URI . 'admin/css/responsive-add-ons-getting-started.css', false, RESPONSIVE_ADDONS_VER );
-			wp_enqueue_style( 'responsive-add-ons-getting-started-csfile' );
-		}
-	}
 
 	/**
 	 * Adds API Connection Tab inside themes settings tab.
@@ -2871,12 +2607,7 @@ class Responsive_Add_Ons {
 		);
 	}
 
-	/**
-	 * Render App Connection Settings tab content.
-	 */
-	public function responsive_add_ons_app_connection_setting_content() {
-		require_once RESPONSIVE_ADDONS_DIR . 'admin/partials/getting-started/responsive-app-connection-setting.php';
-	}
+
 
 	/**
 	 * Save White Label Settings.
@@ -2907,49 +2638,6 @@ class Responsive_Add_Ons {
 	}
 
 	/**
-	 * Get whitelabelled website url for footer.
-	 *
-	 * @since 3.0.0
-	 * @param string $link Default url.
-	 * @return string URL for updated whitelabelled icon.
-	 */
-	public function white_label_theme_powered_by_link( $link ) {
-		$settings = self::raddons_get_white_label_settings();
-		$link     = $settings['plugin_website_uri'];
-		return esc_url( $link );
-	}
-
-	/**
-	 * Get whitelabelled theme name for footer.
-	 *
-	 * @since 3.0.0
-	 * @param string $text Default text.
-	 * @return string text for updated whitelabelled theme name.
-	 */
-	public function white_label_theme_powered_by_text( $text ) {
-		$settings = self::raddons_get_white_label_settings();
-		$text     = $settings['theme_name'];
-		return $text;
-	}
-
-	/**
-	 * Enable/Disables the MegaMenu Feature on switch toggle.
-	 *
-	 * @since 3.0.0
-	 * @access public
-	 */
-	public function responsive_pro_enable_megamenu() {
-
-		check_ajax_referer( 'rpro_toggle_megamenu', '_nonce' );
-
-		$value = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
-
-		update_option( 'rpo_megamenu_enable', $value );
-
-		wp_send_json_success();
-	}
-
-	/**
 	 * Enable/Disables the Woocommerce customizer settings on switch toggle.
 	 *
 	 * @since 3.0.0
@@ -2966,22 +2654,6 @@ class Responsive_Add_Ons {
 		wp_send_json_success();
 	}
 
-	/**
-	 * Enable/Disables the Custom Fonts Feature on switch toggle.
-	 *
-	 * @since 3.2.1
-	 * @access public
-	 */
-	public function responsive_plus_enable_custom_fonts() {
-
-		check_ajax_referer( 'rplus_toggle_custom_fonts', '_nonce' );
-
-		$value = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
-
-		update_option( 'rplus_custom_fonts_enable', $value );
-
-		wp_send_json_success();
-	}
 
 	/**
 	 * Enable/Disables the Site Builder Feature on Switch toggle.
@@ -3001,402 +2673,6 @@ class Responsive_Add_Ons {
 		
 	}
 
-	/**
-	 * Enqueue Custom Fonts.
-	 *
-	 * @since 3.0.2
-	 * @access public
-	 */
-	public function responsive_addons_enqueue_custom_fonts() {
-		wp_enqueue_script( 'responsive-add-ons-custom-fonts-js', RESPONSIVE_ADDONS_URI . 'includes/custom-fonts/assets/js/responsive-add-ons-custom-fonts.js', array(), RESPONSIVE_ADDONS_VER, true );
-		wp_enqueue_style( 'responsive-add-ons-custom-fonts-css', RESPONSIVE_ADDONS_URI . 'includes/custom-fonts/assets/css/responsive-add-ons-custom-fonts.css', array(), RESPONSIVE_ADDONS_VER );
-	}
-
-	/**
-	 * Register custom font menu.
-	 *
-	 * @since 3.0.2
-	 */
-	public function responsive_addons_register_custom_fonts_menu() {
-
-		$title = apply_filters( 'responsive_custom_fonts_menu_title', __( 'Custom Fonts', 'responsive-add-ons' ) );
-		add_submenu_page(
-			'themes.php',
-			$title,
-			$title,
-			Responsive_Add_Ons_Custom_Fonts_Taxonomy::$capability,
-			'edit-tags.php?taxonomy=' . Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug
-		);
-	}
-
-	/**
-	 * Highlight custom font menu.
-	 *
-	 * @since 3.0.2
-	 */
-	public function responsive_addons_custom_fonts_menu_highlight() {
-		global $parent_file, $submenu_file;
-
-		if ( 'edit-tags.php?taxonomy=' . Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug === $submenu_file ) {
-			$parent_file = 'themes.php'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		}
-		if ( get_current_screen()->id != 'edit-' . Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ) {
-			return;
-		}
-
-		?>
-		<style>#addtag div.form-field.term-slug-wrap, #edittag tr.form-field.term-slug-wrap { display: none; }
-			#addtag div.form-field.term-description-wrap, #edittag tr.form-field.term-description-wrap { display: none; }</style><script>jQuery( document ).ready( function( $ ) {
-				var $wrapper = $( '#addtag, #edittag' );
-				$wrapper.find( 'tr.form-field.term-name-wrap p, div.form-field.term-name-wrap > p' ).text( '<?php esc_html_e( 'The name of the font as it appears in the customizer options.', 'responsive-add-ons' ); ?>' );
-			} );</script>
-			<?php
-	}
-
-	/**
-	 * Manage Columns
-	 *
-	 * @since 3.0.2
-	 * @param array $columns default columns.
-	 * @return array $columns updated columns.
-	 */
-	public function responsive_addons_manage_columns( $columns ) {
-
-		$screen = get_current_screen();
-		// If current screen is add new custom fonts screen.
-		if ( isset( $screen->base ) && 'edit-tags' == $screen->base ) {
-
-			$old_columns = $columns;
-			$columns     = array(
-				'cb'   => $old_columns['cb'],
-				'name' => $old_columns['name'],
-			);
-
-		}
-		return $columns;
-	}
-
-	/**
-	 * Add new Taxonomy data
-	 *
-	 * @since 3.0.2
-	 */
-	public function responsive_addons_add_new_taxonomy_data() {
-		$this->responsive_addons_font_file_new_field( 'font_woff_2', __( 'Upload Font', 'responsive-add-ons' ), __( 'Allowed Font types are .woff2, .woff, .ttf, .eot, .svg, .otf', 'responsive-add-ons' ) );
-
-		$this->responsive_addons_select_new_field(
-			'font-display',
-			__( 'Font Display', 'responsive-add-ons' ),
-			__( 'Select font-display property for this font', 'responsive-add-ons' ),
-			array(
-				'auto'     => 'auto',
-				'block'    => 'block',
-				'swap'     => 'swap',
-				'fallback' => 'fallback',
-				'optional' => 'optional',
-			)
-		);
-	}
-
-	/**
-	 * Edit Taxonomy data
-	 *
-	 * @since 3.0.2
-	 * @param object $term taxonomy terms.
-	 */
-	public function responsive_addons_edit_taxonomy_data( $term ) {
-
-		$data = Responsive_Add_Ons_Custom_Fonts_Taxonomy::get_font_links( $term->term_id );
-		$this->responsive_addons_font_file_edit_field( 'font_woff_2', __( 'Upload Font', 'responsive-add-ons' ), $data['font_woff_2'], __( 'Allowed Font types are .woff2, .woff, .ttf, .eot, .svg, .otf', 'responsive-add-ons' ) );
-
-		$this->responsive_addons_select_edit_field(
-			'font-display',
-			__( 'Font Display', 'responsive-add-ons' ),
-			$data['font-display'],
-			__( 'Select font-display property for this font', 'responsive-add-ons' ),
-			array(
-				'auto'     => 'Auto',
-				'block'    => 'Block',
-				'swap'     => 'Swap',
-				'fallback' => 'Fallback',
-				'optional' => 'Optional',
-			)
-		);
-	}
-
-	/**
-	 * Save Taxonomy meta data value
-	 *
-	 * @since 3.0.2
-	 * @param int $term_id current term id.
-	 */
-	public function responsive_addons_save_metadata( $term_id ) {
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
-		// Check if custom fonts taxonomy POST data is set.
-		// Check for nonce to verify the request's authenticity.
-		if (
-			! isset( $_POST['_custom_fonts_nonce'] ) ||
-			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_custom_fonts_nonce'] ) ), 'save_custom_fonts' )
-		) {
-			wp_die( esc_html__( 'Security check failed. Please try again.', 'responsive-add-ons' ) );
-		}
-
-		// Check if custom fonts taxonomy POST data is set.
-		if ( isset( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) ) {
-			// Sanitize and process input values.
-			$value = array_map( 'sanitize_text_field', wp_unslash( $_POST[ Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ] ) );
-			Responsive_Add_Ons_Custom_Fonts_Taxonomy::update_font_links( $value, $term_id );
-		}
-	}
-
-	/**
-	 * Allowed mime types and file extensions
-	 *
-	 * @since 3.0.2
-	 * @param array $mimes Current array of mime types.
-	 * @return array $mimes Updated array of mime types.
-	 */
-	public function responsive_addons_add_fonts_to_allowed_mimes( $mimes ) {
-		$mimes['woff']  = 'application/x-font-woff';
-		$mimes['woff2'] = 'application/x-font-woff2';
-		$mimes['ttf']   = 'application/x-font-ttf';
-		$mimes['eot']   = 'application/vnd.ms-fontobject';
-		$mimes['otf']   = 'font/otf';
-
-		return $mimes;
-	}
-
-	/**
-	 * Correct the mome types and extension for the font types.
-	 *
-	 * @param array  $defaults File data array containing 'ext', 'type', and
-	 *                                          'proper_filename' keys.
-	 * @param string $file                      Full path to the file.
-	 * @param string $filename                  The name of the file (may differ from $file due to
-	 *                                          $file being in a tmp directory).
-	 * @return Array File data array containing 'ext', 'type', and
-	 */
-	public function responsive_addons_update_mime_types( $defaults, $file, $filename ) {
-		if ( 'ttf' === pathinfo( $filename, PATHINFO_EXTENSION ) ) {
-			$defaults['type'] = 'application/x-font-ttf';
-			$defaults['ext']  = 'ttf';
-		}
-
-		if ( 'otf' === pathinfo( $filename, PATHINFO_EXTENSION ) ) {
-			$defaults['type'] = 'application/x-font-otf';
-			$defaults['ext']  = 'otf';
-		}
-
-		return $defaults;
-	}
-
-	/**
-	 * Enqueue Render Fonts
-	 *
-	 * @since 3.0.2
-	 * @param array $load_fonts fonts.
-	 */
-	public function responsive_addons_render_fonts( $load_fonts ) {
-
-		$fonts = Responsive_Add_Ons_Custom_Fonts_Taxonomy::get_fonts();
-
-		foreach ( $load_fonts  as $load_font_name => $load_font ) {
-			if ( array_key_exists( $load_font_name, $fonts ) ) {
-				unset( $load_fonts[ $load_font_name ] );
-			}
-		}
-		return $load_fonts;
-	}
-
-	/**
-	 * Add Custom Font list into customizer.
-	 *
-	 * @since  3.0.2
-	 * @param string $value selected font family.
-	 */
-	public function responsive_addons_add_customizer_font_list( $value ) {
-
-		$fonts = Responsive_Add_Ons_Custom_Fonts_Taxonomy::get_fonts();
-
-		echo '<optgroup label="' . esc_attr( 'Custom Fonts' ) . '">';
-
-		foreach ( $fonts as $font => $links ) {
-			echo '<option value="' . esc_attr( $font ) . '" ' . selected( $font, $value, false ) . '>' . esc_attr( $font ) . '</option>';
-		}
-	}
-
-	/**
-	 * Enqueue Scripts
-	 *
-	 * @since 3.0.2
-	 */
-	public function responsive_addons_add_style() {
-		$fonts = Responsive_Add_Ons_Custom_Fonts_Taxonomy::get_fonts();
-		if ( ! empty( $fonts ) ) {
-			foreach ( $fonts  as $load_font_name => $load_font ) {
-				$this->render_font_css( $load_font_name );
-			}
-			?>
-			<style type="text/css">
-				<?php echo wp_strip_all_tags( $this->font_css ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-			</style>
-			<?php
-		}
-	}
-
-	/**
-	 * Create css for font-face
-	 *
-	 * @since 3.0.2
-	 * @param array $font selected font from custom font list.
-	 */
-	private function render_font_css( $font ) {
-		$fonts = Responsive_Add_Ons_Custom_Fonts_Taxonomy::get_links_by_name( $font );
-
-		foreach ( $fonts as $font => $links ) :
-			$css  = '@font-face { font-family:' . esc_attr( $font ) . ';';
-			$css .= 'src:';
-			$arr  = array();
-			if ( $links['font_woff_2'] ) {
-				$arr[] = 'url(' . esc_url( $links['font_woff_2'] ) . ") format('woff2')";
-			}
-			if ( $links['font_woff'] ) {
-				$arr[] = 'url(' . esc_url( $links['font_woff'] ) . ") format('woff')";
-			}
-			if ( $links['font_ttf'] ) {
-				$arr[] = 'url(' . esc_url( $links['font_ttf'] ) . ") format('truetype')";
-			}
-			if ( $links['font_otf'] ) {
-				$arr[] = 'url(' . esc_url( $links['font_otf'] ) . ") format('opentype')";
-			}
-			if ( $links['font_svg'] ) {
-				$arr[] = 'url(' . esc_url( $links['font_svg'] ) . '#' . esc_attr( strtolower( str_replace( ' ', '_', $font ) ) ) . ") format('svg')";
-			}
-			$css .= join( ', ', $arr );
-			$css .= ';';
-			$css .= 'font-display: ' . esc_attr( $links['font-display'] ) . ';';
-			$css .= '}';
-		endforeach;
-
-		$this->font_css .= $css;
-	}
-
-	/**
-	 * Add Taxonomy data field
-	 *
-	 * @since 3.0.2
-	 * @param int    $id current term id.
-	 * @param string $title font type title.
-	 * @param string $description title font type description.
-	 * @param string $value title font type meta values.
-	 */
-	protected function responsive_addons_font_file_new_field( $id, $title, $description, $value = '' ) {
-		?>
-		<div class="responsive-custom-fonts-file-wrap form-field term-<?php echo esc_attr( $id ); ?>-wrap" >
-
-			<label for="font-<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $title ); ?></label>
-			<input type="text" id="font-<?php echo esc_attr( $id ); ?>" class="responsive-custom-fonts-link <?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ); ?>[<?php echo esc_attr( $id ); ?>]" value="<?php echo esc_attr( $value ); ?>" />
-			<a href="#" class="responsive-custom-fonts-upload button" data-upload-type="<?php echo esc_attr( $id ); ?>">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
-				<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-				<path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
-			</svg>
-			</a>
-			<p><?php echo esc_html( $description ); ?></p>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Render select field for the new font screen.
-	 *
-	 * @param String $id Field ID.
-	 * @param String $title Field Title.
-	 * @param String $description Field Description.
-	 * @param Array  $select_fields Select fields as Array.
-	 * @return void
-	 */
-	protected function responsive_addons_select_new_field( $id, $title, $description, $select_fields ) {
-		?>
-		<div class="responsive-custom-fonts-file-wrap form-field term-<?php echo esc_attr( $id ); ?>-wrap" >
-			<label for="font-<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $title ); ?></label>
-			<select type="select" id="font-<?php echo esc_attr( $id ); ?>" class="responsive-custom-font-select-field <?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ); ?>[<?php echo esc_attr( $id ); ?>]" />
-				<?php
-				foreach ( $select_fields as $key => $value ) {
-					?>
-					<option value="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $value ); ?></option>;
-				<?php } ?>
-			</select>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Add Taxonomy data field
-	 *
-	 * @since 3.0.2
-	 * @param int    $id current term id.
-	 * @param string $title font type title.
-	 * @param string $value title font type meta values.
-	 * @param string $description title font type description.
-	 */
-	protected function responsive_addons_font_file_edit_field( $id, $title, $value, $description ) {
-		?>
-		<tr class="responsive-custom-fonts-file-wrap form-field term-<?php echo esc_attr( $id ); ?>-wrap ">
-			<th scope="row">
-				<label for="metadata-<?php echo esc_attr( $id ); ?>">
-					<?php echo esc_html( $title ); ?>
-				</label>
-			</th>
-			<td>
-				<input id="metadata-<?php echo esc_attr( $id ); ?>" type="text" class="responsive-custom-fonts-link <?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ); ?>[<?php echo esc_attr( $id ); ?>]" value="<?php echo esc_attr( $value ); ?>" />
-				<a href="#" class="responsive-custom-fonts-upload button" data-upload-type="<?php echo esc_attr( $id ); ?>">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
-						<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-						<path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
-					</svg>
-				</a>
-				<p><?php echo esc_html( $description ); ?></p>
-			</td>
-		</tr>
-		<?php
-	}
-
-	/**
-	 * Render select field for the edit font screen.
-	 *
-	 * @param String $id Field ID.
-	 * @param String $title Field Title.
-	 * @param String $saved_val Field Value.
-	 * @param String $description Field Description.
-	 * @param Array  $select_fields Select fields as Array.
-	 * @return void
-	 */
-	private function responsive_addons_select_edit_field( $id, $title, $saved_val, $description, $select_fields ) {
-		?>
-		<tr class="responsive-custom-fonts-file-wrap form-field term-<?php echo esc_attr( $id ); ?>-wrap ">
-			<th scope="row">
-				<label for="metadata-<?php echo esc_attr( $id ); ?>">
-					<?php echo esc_html( $title ); ?>
-				</label>
-			</th>
-			<td>
-			<select type="select" id="font-<?php echo esc_attr( $id ); ?>" class="responsive-custom-font-select-field <?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( Responsive_Add_Ons_Custom_Fonts_Taxonomy::$register_taxonomy_slug ); ?>[<?php echo esc_attr( $id ); ?>]" />
-				<?php
-				foreach ( $select_fields as $key => $value ) {
-					?>
-					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $saved_val ); ?>><?php echo esc_html( $value ); ?></option>;
-				<?php } ?>
-			</select>
-				<p><?php echo esc_html( $description ); ?></p>
-			</td>
-		</tr>
-		<?php
-	}
 
 	/**
 	 * Get current installation import capabilities
@@ -3411,6 +2687,7 @@ class Responsive_Add_Ons {
 			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-add-ons' ) );
 		}
 
+		if ( false ) {
 		require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
 		$settings = new Responsive_Add_Ons_Settings();
 
@@ -3550,6 +2827,96 @@ class Responsive_Add_Ons {
 				)
 			);
 		}
+		}
+
+		// Retrieve site_id and location parameters passed from frontend (or fallback to active import data)
+		$site_id       = isset( $_POST['site_id'] ) ? sanitize_key( $_POST['site_id'] ) : '';
+		$site_location = isset( $_POST['location'] ) ? sanitize_text_field( $_POST['location'] ) : '';
+
+		$import_data = get_option( 'responsive_ready_sites_import_data', array() );
+
+		if ( empty( $site_id ) || empty( $site_location ) ) {
+			// Fallback to active import data if POST fields are not present or not fully passed
+			$site_id       = isset( $import_data['id'] ) ? $import_data['id'] : $site_id;
+			$site_location = isset( $import_data['site_file_location'] ) ? $import_data['site_file_location'] : $site_location;
+
+			if ( empty( $site_location ) ) {
+				$page_builder = isset( $import_data['page_builder'] ) ? $import_data['page_builder'] : '';
+				if ( 'elementor' === $page_builder ) {
+					$site_location = 'responsive-ready-sites-and-pages-page-1'; // fallback page
+				} elseif ( 'gutenberg' === $page_builder ) {
+					$site_location = 'rst-blocks-page-1'; // fallback page
+				}
+			}
+		}
+
+		$demo_type = 'pro'; // Default to pro for secure failure state
+
+		// 1. Direct database option check
+		if ( ! empty( $site_location ) && ! empty( $site_id ) ) {
+			$option_data = get_site_option( $site_location, array() );
+			if ( is_array( $option_data ) ) {
+				$item_key = 'id-' . $site_id;
+				if ( isset( $option_data[ $item_key ] ) ) {
+					$demo_type = isset( $option_data[ $item_key ]['demo_type'] ) ? $option_data[ $item_key ]['demo_type'] : 'pro';
+				} else {
+					foreach ( $option_data as $page_data ) {
+						if ( isset( $page_data['id'] ) && intval( $site_id ) === intval( $page_data['id'] ) ) {
+							$demo_type = isset( $page_data['demo_type'] ) ? $page_data['demo_type'] : 'pro';
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		// 2. Fallback check: If the direct database lookup did not resolve to 'free', double check the securely stored active import data
+		if ( 'free' !== $demo_type && ! empty( $import_data ) ) {
+			$import_id = isset( $import_data['id'] ) ? $import_data['id'] : '';
+			if ( empty( $site_id ) || intval( $site_id ) === intval( $import_id ) ) {
+				$demo_type = isset( $import_data['demo_type'] ) ? $import_data['demo_type'] : $demo_type;
+			}
+		}
+
+		// 1. Free templates are allowed immediately
+		if ( 'free' === $demo_type ) {
+			wp_send_json_success(
+				array(
+					'connection_status' => 'active',
+					'error'             => false,
+				)
+			);
+		}
+
+		// 2. Pro templates require authorization from the Pro plugin via PHP hook
+		$is_authorized = apply_filters( 'rplus_addons_is_template_authorized', false, $site_id, $site_location );
+
+		if ( true === $is_authorized ) {
+			wp_send_json_success(
+				array(
+					'connection_status' => 'active',
+					'error'             => false,
+				)
+			);
+		} else {
+			$error_message = __( 'Responsive Pro is required to import this template.', 'responsive-add-ons' );
+			$required_plan_present = true;
+
+			if ( is_wp_error( $is_authorized ) ) {
+				$error_message = $is_authorized->get_error_message();
+				if ( 'plan_mismatch' === $is_authorized->get_error_code() ) {
+					$required_plan_present = false;
+				}
+			}
+
+			wp_send_json_error(
+				array(
+					'message'               => $error_message,
+					'error'                 => true,
+					'required_plan_present' => $required_plan_present,
+				)
+			);
+		}
 	}
 
 	public function responsive_site_builder() {
@@ -3619,5 +2986,45 @@ class Responsive_Add_Ons {
 
 		return $classes;
 	}
+
+	/**
+	 * Create Site Builder custom post type
+	 * 
+	 * @since 3.3.0
+	 */
+	public function responsive_site_builder_post_type() {
+		$labels = array(
+			'name'          => esc_html__( 'Site Builder', 'responsive-add-ons' ),
+			'singular_name' => esc_html__( 'Site Builder Layout', 'responsive-add-ons' ),
+			'search_items'  => esc_html__( 'Search Layout', 'responsive-add-ons' ),
+			'all_items'     => esc_html__( 'All Layouts', 'responsive-add-ons' ),
+			'edit_item'     => esc_html__( 'Edit Layout', 'responsive-add-ons' ),
+			'view_item'     => esc_html__( 'View Layout', 'responsive-add-ons' ),
+			'add_new'       => esc_html__( 'Add New', 'responsive-add-ons' ),
+			'update_item'   => esc_html__( 'Update Layout', 'responsive-add-ons' ),
+			'add_new_item'  => esc_html__( 'Add New', 'responsive-add-ons' ),
+			'new_item_name' => esc_html__( 'New Layout Name', 'responsive-add-ons' ),
+		);
+
+		$args = array(
+			'labels'              => $labels,
+			'public'              => true,
+			'show_ui'             => false,
+			'show_in_menu'        => false,
+			'show_in_nav_menus'   => false,
+			'query_var'           => true,
+			'can_export'          => true,
+			'show_in_admin_bar'   => false,
+			'exclude_from_search' => true,
+			'show_in_rest'        => false,
+			'rest_base'           => 'resp-site-builder',
+			'supports'            => apply_filters( 'responsive_site_builder_post_type_supports', array( 'title', 'editor', 'elementor', 'custom-fields' ) ),
+			'rewrite'             => array( 'slug' => apply_filters( 'responsive_site_builder_post_type_rewrite_slug', 'responsive-site-builder' ) ),
+		);
+
+		register_post_type( 'resp-site-builder', apply_filters( 'responsive_site_builder_post_type_args', $args ) );
+		
+	}
+
 
 }

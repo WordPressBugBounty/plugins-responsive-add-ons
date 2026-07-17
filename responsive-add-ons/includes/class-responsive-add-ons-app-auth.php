@@ -68,16 +68,9 @@ class Responsive_Add_Ons_App_Auth {
 	 */
 	public function __construct() {
 		if ( is_admin() ) {
-			add_action( 'wp_ajax_cyberchimps_app_start_auth', array( $this, 'ajax_auth_url' ) );
-			add_action( 'wp_ajax_cyberchimps_app_store_auth', array( $this, 'store_app_auth' ) );
-			add_action( 'wp_ajax_cyberchimps_app_delete_auth', array( $this, 'delete_app_auth' ) );
-			add_action( 'wp_ajax_cyberchimps_app_upgrade_user_plan', array( $this, 'responsive_addons_upgrade_user_plan' ) );
-			add_action( 'wp_ajax_cyberchimps_app_sync_user_plan', array( $this, 'responsive_addons_sync_user_plan' ) );
 			require_once RESPONSIVE_ADDONS_DIR . 'includes/settings/class-responsive-add-ons-settings.php';
 			$this->settings = new Responsive_Add_Ons_Settings();
 			register_deactivation_hook( __FILE__, array( $this, 'responsive_addons_deactivate_connection' ) );
-			// Check user connection status.
-			add_action( 'wp_ajax_responsive-ready-sites-fetch_user_connected_status', array( $this, 'check_user_saas_connection_status' ) );
 		}
 	}
 
@@ -155,7 +148,7 @@ class Responsive_Add_Ons_App_Auth {
 			$data = array();
 			if ( isset( $_POST['response'] ) && is_array( $_POST['response'] ) ) {
 				// Pre-sanitizing the response using a custom function to ensure all values are cleaned.
-				// PHPCS incorrectly flags this as unsanitized, so the warning is suppressed.
+				// PHPCS incorrectly flags this as unsanitized, so the waroning is suppressed.
 				// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$data = $this->recursive_sanitize_text_field( wp_unslash( $_POST['response'] ) );
 				// phpcs:enable

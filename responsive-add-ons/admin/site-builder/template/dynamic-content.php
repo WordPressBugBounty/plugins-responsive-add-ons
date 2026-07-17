@@ -1,18 +1,17 @@
 <?php
 /**
- * The template for displaying dynamic content.
+ * The template for displaying dynamic content (Site Builder single/archive layouts).
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ * Read-only backward-compat port of Responsive Pro's dynamic-content.php.
  *
- * @package Responsive_Add_ons
- * @since 3.3.2
+ * @package Responsive_Add_Ons
+ * @since   3.5.3
  */
 
-if( !defined( 'ABSPATH' ) )
-{
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 if ( isset( $args['layout_id'] ) ) {
-	Responsive_Add_Ons_Site_Builder_Markup::get_instance()->render_overridden_template( absint( $args['layout_id'] ) );
+	RASB_Legacy_Markup::get_instance()->render_overridden_template( absint( $args['layout_id'] ) );
 }

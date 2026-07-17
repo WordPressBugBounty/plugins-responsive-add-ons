@@ -1,11 +1,11 @@
-=== Responsive Plus – Elementor Templates & Starter Sites ===
+=== Responsive Starter Templates – Elementor Templates & Starter Sites ===
 Contributors: cyberchimps
 Donate Link: https://cyberchimps.com
 Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 3.5.2
+Stable tag: 3.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,16 +13,15 @@ Import free and pro Gutenberg and Elementor Templates for the Responsive WordPre
 
 == Description ==
 
-**The Responsive Plus plugin offers ready-to-import Starter Templates for Elementor and WordPress Block templates, which help you build WordPress websites with just a few clicks.**
+**The Responsive Starter Templates plugin offers ready-to-import Starter Templates for Elementor and WordPress Block templates, which help you build WordPress websites with just a few clicks.**
 
 The Starter Templates feature gives you access to a library of 250+ professionally designed website templates built using the Elementor page builder and WordPress block editor. To use a template, you simply import it, edit the content, and launch your website.
 
-The Responsive Plus plugin extends the popular [Cyberchimps Responsive theme](https://cyberchimps.com/responsive-theme/). It adds the following features:
+The Responsive Starter Templates plugin extends the popular [Cyberchimps Responsive theme](https://cyberchimps.com/responsive-theme/). It adds the following features:
 
 - One click demo import of ready-to-use Elementor & block templates.
 - Option to import the entire website or selected pages, which allows you to mix and match while building website.
 - You also get access to premium features like enhanced typography, color, and backgrounds and advanced WooCommerce settings within the Responsive Theme customizer.
-- You can use the advanced features of the plugin to White Label the Cyberchimps Responsive Theme, create stunning navigation with the free mega menu feature, and extend your website's functionality using the free plugin.
 
 = What are ready-to-use website starter templates? =
 The Responsive theme comes with **250+ ready-to-use [website starter templates](https://cyberchimps.com/wordpress-themes/)**.
@@ -44,7 +43,7 @@ You can also download single-page Starter Templates, pre-built Elementor section
 = Key Features =
 **Elementor Template Library:**
 
-Responsive Plus plugin offers 250+ ready-made templates.
+Responsive Starter Templates plugin offers 250+ ready-made templates.
 
 You can import complete sites as well as single pages like:
 
@@ -53,27 +52,7 @@ You can import complete sites as well as single pages like:
 - Service Page
 - Contact page and any other available page.
 
-Responsive Plus plugin also has 500+ built-in sections that you can download for free. Deliver exceptional WordPress websites with niche-specific sections, impress clients, and boost your business.
-
-**White Label Feature:**
-
-White-label features help you replace the Cyberchimps Responsive Theme branding with your brand.
-
-You can replace the original developer's name, logo, and other branding elements with your or your client's company. This feature allows you to create a personalized look and feel for the theme, making it your own product.
-
-**Mega Menu:**
-
-Transform your website with a visually appealing mega menu that adapts seamlessly to all devices. Your visitors will be able to easily navigate your website by showing a variety of categories and subcategories.
-
-The mega menu feature works with the Cyberchimps Responsive Theme. Please ensure the theme is activated to see the mega menu settings on your WordPress website.
-
-**Custom Fonts:**
-
-Using the Custom Fonts feature, you can upload personalized fonts to match your website's typography requirements. These fonts can be purchased or downloaded from free font resource websites because they are usually not available in the free Google Fonts Library.
-
-**WooCommerce Module:**
-
-Responsive Theme offers deep integration with the WooCommerce plugin to customize every aspect of your product pages. You can unlock additional WooCommerce features using the WooCommerce module to create your product page layout, typography, colors, live previews, and images!
+Responsive Starter Templates plugin also has 500+ built-in sections that you can download for free. Deliver exceptional WordPress websites with niche-specific sections, impress clients, and boost your business.
 
 = What website templates can I import? =
 Responsive Theme comes with 150+ ready-to-use [WordPress Starter templates](https://cyberchimps.com/responsive-starter-templates/) that are built using popular page builders like Elementor and WordPress Guternberg editor.
@@ -149,44 +128,44 @@ You'll find a variety of professionally designed starter templates categorized f
 
 
 
-= How to import Responsive Plus Plugin? =
+= How to import Responsive Starter Templates Plugin? =
 Here's how it works:
 
 [youtube https://www.youtube.com/watch?v=JNeQKg1QJhk&t=2s]
 
 == Use of 3rd Party Services ==
 
-To improve the user experience, Responsive Plus may use the following 3rd party services if the required feature is enabled:
+To improve the user experience, Responsive Starter Templates may use the following 3rd party services if the required feature is enabled:
 
 - Google Fonts – are loaded to add additional fonts to your website. Google’s [TOS](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
-- [Mixpanel](https://mixpanel.com/) - used to send data about the usage of the Responsive Plus plugin when you [agree with sharing usage data with us](https://cyberchimps.com/docs/responsive-plus/modules-settings/usage-tracking-policy/). [TOS](https://mixpanel.com/legal/terms-of-use/) and [Privacy Policy](https://mixpanel.com/legal/privacy-policy/)
+- [Mixpanel](https://mixpanel.com/) - used to send data about the usage of the Responsive Starter Templates plugin when you [agree with sharing usage data with us](https://cyberchimps.com/docs/responsive-plus/modules-settings/usage-tracking-policy/). [TOS](https://mixpanel.com/legal/terms-of-use/) and [Privacy Policy](https://mixpanel.com/legal/privacy-policy/)
 
 == Help Resources==
 
-Check out the following help resources to know more about Responsive Plus Plugin:
+Check out the following help resources to know more about Responsive Starter Templates Plugin:
 [Product Documentation](https://cyberchimps.com/docs-category/responsive-starter-templates-plugin/)
 [Video Guides](https://www.youtube.com/watch?v=hHCSmEfINSo)
 
 == Frequently Asked Questions ==
 
 = 1. Are all the Starter Templates free? =
-With Responsive Plus plugin, you get access to 150+ free and premium Starter Templates for Elementor and WordPress block editor.
+With Responsive Starter Templates plugin, you get access to 150+ free and premium Starter Templates for Elementor and WordPress block editor.
 
-= 2. Will Responsive Plus plugin work with my theme? =
-All the templates are built with customizer settings of Cyberchimps Responsive Theme to provide maximum control to you. Hence, to use the Responsive Plus plugin, we recommend you to install the free [Responsive Theme](https://wordpress.org/themes/responsive/).
+= 2. Will Responsive Starter Templates plugin work with my theme? =
+All the templates are built with customizer settings of Cyberchimps Responsive Theme to provide maximum control to you. Hence, to use the Responsive Starter Templates plugin, we recommend you to install the free [Responsive Theme](https://wordpress.org/themes/responsive/).
 
 = 3. Do I need to install any other plugins? =
 No! Once you install the plugin, it will take care of all other dependencies. You can sit back and let the Starter Templates plugin do the job for you.
 
 == Installation ==
 
-You can install the Responsive Plus plugin using any of the following two methods:
+You can install the Responsive Starter Templates plugin using any of the following two methods:
 
 **WordPress Admin Dashboard Installation**
 
-To install the Responsive Plus plugin manually from the WordPress admin dashboard:
+To install the Responsive Starter Templates plugin manually from the WordPress admin dashboard:
 
-1. Download the latest Responsive Plus plugin.
+1. Download the latest Responsive Starter Templates plugin.
 2. Login to your WordPress Dashboard
 3. Go to Plugins > Add New
 4. Upload the downloaded plugin zip file
@@ -194,14 +173,14 @@ To install the Responsive Plus plugin manually from the WordPress admin dashboar
 
 **FTP Installation**
 
-To install the Responsive Plus plugin via FTP:
+To install the Responsive Starter Templates plugin via FTP:
 
-1. Download Responsive Plus plugin zip
-2. Unzip the Responsive Plus zip file
+1. Download Responsive Starter Templates plugin zip
+2. Unzip the Responsive Starter Templates zip file
 3. Open your WordPress site via FTP. We would recommend you to use FileZilla
 4. From FTP, visit the root of the WordPress install
 5. Now visit wp-content folder > plugins
-6. Upload Responsive Plus unzipped folder from step 2
+6. Upload Responsive Starter Templates unzipped folder from step 2
 
 **How to use the plugin?**
 
@@ -215,14 +194,14 @@ Preview & click on Import site to import the site.
 
 You can also choose to import a template, instead of the whole site.
 
-You can import any of the free templates using the Responsive Plus Plugin.
+You can import any of the free templates using the Responsive Starter Templates Plugin.
 
 For importing the pro templates you need to install the Responsive Pro plugin that can be purchased from [CyberChimps Website](https://cyberchimps.com/pricing/?utm_source=wordpress-org&utm_medium=responsive-add-ons&utm_campaign=responsive-pricing&utm_content=faq-responsive-pro)
 
 With the Pro version you will get Premium templates, Priority support and automatic updates to Pro plugin.
 
 == What’s Next? ==
-If you like Responsive Plus Plugin, consider checking out our other WordPress Plugins:
+If you like Responsive Starter Templates Plugin, consider checking out our other WordPress Plugins:
 
 - [Responsive Blocks](https://wordpress.org/plugins/responsive-block-editor-addons/): Responsive Blocks offers a library of fully functional 50+ creative blocks that extend the customizability of your WordPress block editor.
 
@@ -233,16 +212,16 @@ If you like Responsive Plus Plugin, consider checking out our other WordPress Pl
 == Screenshots ==
 
 1. Go to Responsive > Templates to see all templates.
-2. Connect your website to Cyberchimps Responsive.
-3. Create your account.
-4. Connect your account to wordpress website.
-5. Check connection status in settings tab.
-6. Template importing process.
-7. Template importing completion step.
-8. Responsive Plus advanced features.
+2. Template importing completion step.
+3. Connect your website to Cyberchimps Responsive.
+4. Check connection status in settings tab.
 
 == Changelog ==
-= 3.5.2 - 25th June 2026 =
+= 3.5.3 - 17th July 2026 = 
+* New - Free templates can now be imported directly without requiring any account connection.
+* Improvement - Relocated Pro template features to Responsive Pro.
+
+= 3.5.2 - 24th June 2026 =
 * Improvement - Better categorization of starter templates in the plugin
 
 = 3.5.1 - 4th June 2026 =

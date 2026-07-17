@@ -1,21 +1,26 @@
 (function () {
     if (window.self === window.top) return;
-  
+
     const logo = document.querySelector('.custom-logo');
     const logoUrl = logo ? logo.src : null;
     const logoWidth = logo ? logo.naturalWidth : null;
     const logoHeight = logo ? logo.naturalHeight : null;
 
-    window.parent.postMessage(
-      { 
-          type: 'CC_PREVIEW_READY',
-          logoUrl: logoUrl,
-          logoWidth: logoWidth,
-          logoHeight: logoHeight
-      },
-      '*'
-    );
-  
+    function postPreviewReady() {
+        window.parent.postMessage(
+            {
+                type: 'CC_PREVIEW_READY',
+                logoUrl: logoUrl,
+                logoWidth: logoWidth,
+                logoHeight: logoHeight,
+            },
+            '*'
+        );
+    }
+
+    postPreviewReady();
+    window.addEventListener('load', postPreviewReady);
+
 
     window.addEventListener('message', (event) => {
 
@@ -46,10 +51,10 @@
                 prevHeadingColor &&
                 prevPalette3.toLowerCase() === prevHeadingColor.toLowerCase();
 
-    
+
             Object.entries(vars).forEach(([key, value]) => {
 
-                if(key !== '--responsive-global-headings-color') {
+                if (key !== '--responsive-global-headings-color') {
                     root.style.setProperty(key, value);
                 }
                 // Special handling for headings color
@@ -66,10 +71,10 @@
         }
 
         if (event.data?.type === 'SET_FONT_PRESET') {
-             const preset = event.data.payload;
-             if (!preset) return;
+            const preset = event.data.payload;
+            if (!preset) return;
 
-             if (preset.id === 'default') {
+            if (preset.id === 'default') {
                 // Remove custom font styles and link
                 const existingLink = document.getElementById('responsive-preview-fonts');
                 if (existingLink) existingLink.remove();
@@ -77,13 +82,13 @@
                 const existingStyle = document.getElementById('responsive-preview-font-styles');
                 if (existingStyle) existingStyle.remove();
                 return;
-             }
+            }
 
-             // Load Google Fonts
-             loadGoogleFonts(preset);
+            // Load Google Fonts
+            loadGoogleFonts(preset);
 
-             // Apply Styles
-             updateFontStyles(preset);
+            // Apply Styles
+            updateFontStyles(preset);
         }
 
         if (event.data?.type === 'SET_LOGO') {
@@ -105,23 +110,23 @@
                     const newLogoImg = document.createElement('img');
                     newLogoImg.className = 'custom-logo';
                     newLogoImg.itemProp = 'logo';
-                    
+
                     link.appendChild(newLogoImg);
-                    
+
                     if (document.querySelector('.site-logo')) {
-                         siteLogoContainer.appendChild(link);
+                        siteLogoContainer.appendChild(link);
                     } else {
                         siteLogoContainer.prepend(link);
-                     }
-                     
+                    }
+
                     logoImgs = document.querySelectorAll('.custom-logo');
                 }
             }
 
-            
+
             if (logoImgs.length > 0) {
                 logoImgs.forEach((logoImg) => {
-                    if(logo) {
+                    if (logo) {
                         logoImg.src = logo.url;
                         logoImg.srcset = ''; // Clear srcset to avoid browser selecting different size
                         // Remove fixed HTML attributes
@@ -129,10 +134,10 @@
                         logoImg.style.display = 'block';
                         logoImg.alt = logo.alt || 'Site Logo'; // Good practice to set alt
                     } else {
-                         // If logo is removed, we can hide the image or set src to empty
-                         logoImg.src = '';
-                         logoImg.srcset = '';
-                         logoImg.style.display = 'none';
+                        // If logo is removed, we can hide the image or set src to empty
+                        logoImg.src = '';
+                        logoImg.srcset = '';
+                        logoImg.style.display = 'none';
                     }
                 });
             }
@@ -184,4 +189,4 @@
         style.textContent = css;
     }
 
-  })();
+})();
