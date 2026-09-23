@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 3.5.3
+Stable tag: 3.5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -217,6 +217,9 @@ If you like Responsive Starter Templates Plugin, consider checking out our other
 4. Check connection status in settings tab.
 
 == Changelog ==
+= 3.5.4 - 23rd September 2026 =
+* Fix - Improved the organization and integration of WooCommerce-specific controls
+
 = 3.5.3 - 17th July 2026 = 
 * New - Free templates can now be imported directly without requiring any account connection.
 * Improvement - Relocated Pro template features to Responsive Pro.

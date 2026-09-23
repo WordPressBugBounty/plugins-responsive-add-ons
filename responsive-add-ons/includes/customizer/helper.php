@@ -91,16 +91,6 @@ if ( ! function_exists( 'responsive_addons_menu_search_icon' ) ) {
 	}
 }
 
-/**
- * Check if off canvas is active
- *
- * @return mixed
- */
-function enable_native_cart_popup_check() {
-	$val = get_theme_mod( 'responsive_enable_native_cart_popup', false );
-	return ( $val === true || $val === '1' || $val === 1 );
-}
-
 if ( ! function_exists( 'responsive_addons_checkbox_control' ) ) {
 	/**
 	 * Register a custom checkbox control in the WordPress Customizer.
@@ -221,201 +211,6 @@ if ( ! function_exists( 'responsive_addons_separator_control' ) ) {
 	}
 }
 
-if ( ! function_exists( 'responsive_addons_padding_control' ) ) {
-	/**
-	 * Responsive_addons_padding_control.
-	 *
-	 * @param  object  $wp_customize  [description].
-	 * @param  integer $element  [description].
-	 * @param  string  $section  [description].
-	 * @param  integer $priority [description].
-	 * @param  integer $default_values_y [description].
-	 * @param  integer $default_values_x [description].
-	 * @param  bool    $active_call [description].
-	 * @param  string  $label [description].
-	 * @param  integer $max [100 by default].
-	 * @return void
-	 */
-	function responsive_addons_padding_control( $wp_customize, $element, $section, $priority, $default_values_y = '', $default_values_x = '', $active_call = null, $label = 'Padding (px)', $max = 100 ) {
-		/**
-		 *  Padding control.
-		 */
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_top_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_y,
-			)
-		);
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_left_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_x,
-			)
-		);
-
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_bottom_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_y,
-			)
-		);
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_right_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_x,
-			)
-		);
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_tablet_top_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_y,
-			)
-		);
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_tablet_right_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_x,
-			)
-		);
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_tablet_bottom_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_y,
-			)
-		);
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_tablet_left_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_x,
-			)
-		);
-
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_mobile_top_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_y,
-			)
-		);
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_mobile_right_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_x,
-			)
-		);
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_mobile_bottom_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_y,
-			)
-		);
-		$wp_customize->add_setting(
-			'responsive_' . $element . '_mobile_left_padding',
-			array(
-				'transport'         => 'postMessage',
-				'sanitize_callback' => 'responsive_sanitize_number',
-				'default'           => $default_values_x,
-			)
-		);
-		$wp_customize->add_control(
-			new Responsive_Customizer_Dimensions_Control(
-				$wp_customize,
-				'responsive_' . $element . '_padding',
-				array(
-					'label'           => $label,
-					'section'         => $section,
-					'settings'        => array(
-						'desktop_top'    => 'responsive_' . $element . '_top_padding',
-						'desktop_right'  => 'responsive_' . $element . '_right_padding',
-						'desktop_bottom' => 'responsive_' . $element . '_bottom_padding',
-						'desktop_left'   => 'responsive_' . $element . '_left_padding',
-						'tablet_top'     => 'responsive_' . $element . '_tablet_top_padding',
-						'tablet_right'   => 'responsive_' . $element . '_tablet_right_padding',
-						'tablet_bottom'  => 'responsive_' . $element . '_tablet_bottom_padding',
-						'tablet_left'    => 'responsive_' . $element . '_tablet_left_padding',
-						'mobile_top'     => 'responsive_' . $element . '_mobile_top_padding',
-						'mobile_right'   => 'responsive_' . $element . '_mobile_right_padding',
-						'mobile_bottom'  => 'responsive_' . $element . '_mobile_bottom_padding',
-						'mobile_left'    => 'responsive_' . $element . '_mobile_left_padding',
-					),
-					'priority'        => $priority,
-					'active_callback' => $active_call,
-					'input_attrs'     => array(
-						'min'  => '',
-						'max'  => $max,
-						'step' => 1,
-					),
-				)
-			)
-		);
-	}
-}
-
-if ( ! function_exists( 'responsive_addons_rst_text_control' ) ) {
-	/**
-	 * Adds a text-based control to the WordPress Customizer.
-	 *
-	 * @param WP_Customize_Manager $wp_customize      The Customizer manager instance.
-	 * @param string               $element           The setting key suffix (appended to 'responsive_').
-	 * @param string               $label             The label text for the control.
-	 * @param string               $section           The Customizer section where this control will appear.
-	 * @param int                  $priority          The priority/order of this control in the section.
-	 * @param mixed                $default_val       The default value for the setting.
-	 * @param callable|null        $active_call       Optional callback to determine if control is active.
-	 * @param callable|string      $sanitize_function Optional sanitization callback (default: 'sanitize_text_field').
-	 * @param string               $type              The input type (default: 'text').
-	 * @param string               $transport         Transport method for preview updates ('refresh' or 'postMessage').
-	 *
-	 * @return void
-	 */
-	function responsive_addons_rst_text_control( $wp_customize, $element, $label, $section, $priority, $default_val, $active_call = null, $sanitize_function = 'sanitize_text_field', $type = 'text', $transport = 'refresh' ) {
-
-		$wp_customize->add_setting(
-			'responsive_' . $element,
-			array(
-				'default'           => $default_val,
-				'sanitize_callback' => $sanitize_function,
-				'transport'         => $transport,
-			)
-		);
-		$wp_customize->add_control(
-			new WP_Customize_Control(
-				$wp_customize,
-				'responsive_' . $element,
-				array(
-					'active_callback' => $active_call,
-					'label'           => $label,
-					'priority'        => $priority,
-					'section'         => $section,
-					'settings'        => 'responsive_' . $element,
-					'type'            => $type,
-				)
-			)
-		);
-	}
-}
-
 
 if ( ! function_exists( 'responsive_border_css' ) ) {
 	/**
@@ -477,31 +272,6 @@ if ( ! function_exists( 'responsive_spacing_css' ) ) {
 	}
 }
 
-if ( ! function_exists( 'responsive_popup_elements_positioning' ) ) {
-
-	/**
-	 * Returns popup elements positioning
-	 */
-	function responsive_popup_elements_positioning() {
-
-		// Default elements.
-		$sections = array( 'title', 'content', 'buttons', 'bottom_text' );
-
-		// Get elements from Customizer.
-		$sections = get_theme_mod( 'responsive_popup_elements_positioning', $sections );
-
-		// Turn into array if string.
-		if ( $sections && ! is_array( $sections ) ) {
-			$sections = explode( ',', $sections );
-		}
-
-		// Apply filters for easy modification.
-		$sections = apply_filters( 'responsive_popup_elements_positioning', $sections );
-
-		// Return sections.
-		return $sections;
-	}
-}
 // Add shortcode at initialisation.
 add_action( 'init', 'responsive_addons_register_woo_cart_shortcodes' );
 
@@ -637,6 +407,7 @@ if ( ! function_exists( 'woo_free_shipping_left' ) ) {
 				if ( $total >= $min_free_shipping_amount ) {
 					return do_shortcode( $content_reached );
 				} else {
+					$multiply_by = floatval( $multiply_by );
 					$content = str_replace( '%left_to_free%', '<span class="responsive-woo-left-to-free">' . wc_price( ( $min_free_shipping_amount - $total ) * $multiply_by ) . '</span>', $content );
 					$content = str_replace( '%free_shipping_min_amount%', '<span class="responsive-woo-left-to-free">' . wc_price( $min_free_shipping_amount * $multiply_by ) . '</span>', $content );
 					return $content;
@@ -689,9 +460,9 @@ if ( ! function_exists( 'woo_free_shipping_shortcode' ) ) {
 
 		$content         = $atts['content'];
 		$content_reached = $atts['content_reached'];
-		$multiply_by     = $atts['multiply_by'];
+		$multiply_by     = floatval( $atts['multiply_by'] );
 
-		return woo_free_shipping_left( "<span class='responsive-woo-free-shipping' data-content='$x' data-reach='$content_reached'>" . $content . '</span>', '<span class="responsive-woo-free-shipping">' . $content_reached . '</span>', $multiply_by );
+		return woo_free_shipping_left( "<span class='responsive-woo-free-shipping' data-content='" . esc_attr( $x ) . "' data-reach='" . esc_attr( $content_reached ) . "'>" . esc_html( $content ) . '</span>', '<span class="responsive-woo-free-shipping">' . esc_html( $content_reached ) . '</span>', $multiply_by );
 	}
 }
 
@@ -731,16 +502,6 @@ if ( ! function_exists( 'update_responsive_woo_free_shipping_left_shortcode' ) )
 add_action( 'wp_ajax_update_responsive_woo_free_shipping_left_shortcode', 'update_responsive_woo_free_shipping_left_shortcode' );
 add_action( 'wp_ajax_nopriv_update_responsive_woo_free_shipping_left_shortcode', 'update_responsive_woo_free_shipping_left_shortcode' );
 
-if ( ! function_exists( 'responsive_addons_distraction_free_woocommerce' ) ) {
-	/**
-	 * [responsive_addons_distraction_free_woocommerce description]
-	 *
-	 * @return [type] [description]
-	 */
-	function responsive_addons_distraction_free_woocommerce() {
-		return ( 1 === get_theme_mod( 'responsive_distraction_free_woocommerce', 0 ) ) ? true : false;
-	}
-}
 
 /**
  * Return current content layout.

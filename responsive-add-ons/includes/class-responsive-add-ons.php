@@ -210,10 +210,6 @@ class Responsive_Add_Ons {
 			add_action( 'wp_enqueue_scripts', array( $this, 'responsive_pro_css' ) );
 		}
 
-		if ( 'on' === get_option( 'rpro_woocommerce_enable' ) ) {
-			add_action( 'after_setup_theme', array( $this, 'load_woocommerce' ) );
-		}
-
 		// Ask for review notice.
 		add_action( 'admin_notices', array( $this, 'responsive_addons_ask_for_review_notice' ) );
 		add_action( 'admin_init', array( $this, 'responsive_addons_notice_dismissed' ) );
@@ -370,45 +366,6 @@ class Responsive_Add_Ons {
 		 * Responsive Addons Pro Customizer Controls.
 		 */
 		require plugin_dir_path( __FILE__ ) . 'customizer/class-responsive-addons-pro-customizer-controls.php';
-
-		$theme = wp_get_theme();
-
-		if ( 'on' === get_option( 'rpro_woocommerce_enable' ) && ( 'Responsive' === $theme->name || 'Responsive' === $theme->parent_theme ) ) {
-			/**
-			 * The class responsible for loading the Woocommerce Typography options
-			 */
-			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Typography' ) ) {
-				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-typography.php';
-			}
-
-			/**
-			 * The class responsible for loading the Shop Pagination options
-			 */
-			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Shop_Pagination' ) ) {
-				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-shop-pagination.php';
-			}
-
-			/**
-			 * The class responsible for loading the Breadcrumb and Toolbar disable options
-			 */
-			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Product_Catalog' ) ) {
-				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-product-catalog.php';
-			}
-
-			/**
-			 * The class responsible for loading the Header Cart Icon options
-			 */
-			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Cart' ) ) {
-				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-cart.php';
-			}
-
-			/**
-			 * The class responsible for loading the Woocommerce Typography options
-			 */
-			if ( ! class_exists( 'Responsive_Addons_Woocommerce_Single_Product' ) ) {
-				require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/settings/class-responsive-addons-woocommerce-single-product.php';
-			}
-		}
 
 		/**
 		 * The class responsible for loading the Custom Styles
@@ -2580,15 +2537,6 @@ class Responsive_Add_Ons {
 	public function responsive_pro_css() {
 		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 		wp_enqueue_style( 'responsive-pro-style', plugin_dir_url( __FILE__ ) . "css/style{$suffix}.css", array( 'responsive-style' ), RESPONSIVE_ADDONS_VER );
-	}
-
-	/**
-	 * Load woocommerce files.
-	 */
-	public function load_woocommerce() {
-		if ( ! class_exists( 'Responsive_Addons_Woocommerce_Ext' ) ) {
-			require_once plugin_dir_path( __DIR__ ) . 'includes/compatibility/woocommerce/customizer/class-responsive-addons-woocommerce-ext.php';
-		}
 	}
 
 
