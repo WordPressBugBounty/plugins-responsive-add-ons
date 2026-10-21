@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 3.5.4
+Stable tag: 3.5.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -217,6 +217,12 @@ If you like Responsive Starter Templates Plugin, consider checking out our other
 4. Check connection status in settings tab.
 
 == Changelog ==
+= 3.5.5 - 21st October 2026 =
+* Security Fix - Fixed a vulnerability that allowed Contributors to overwrite Elementor content on other users' published pages.
+* Security Fix - Fixed an unauthenticated REST API endpoint that exposed users' subscription plan details and associated product IDs.
+* Security Fix - Fixed an issue that allowed users without the unfiltered_html capability to import Elementor HTML widgets containing unfiltered script tags.
+* Security Fix - Fixed a Broken Object-Level Authorization (BOLA) vulnerability in Elementor page imports that allowed unauthorized modification of other users' page content.
+
 = 3.5.4 - 23rd September 2026 =
 * Fix - Improved the organization and integration of WooCommerce-specific controls
 

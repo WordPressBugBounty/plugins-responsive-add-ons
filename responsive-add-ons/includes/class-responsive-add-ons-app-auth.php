@@ -489,7 +489,8 @@ class Responsive_Add_Ons_App_Auth {
 			array(
 				'method'  => 'POST',
 				'headers' => array(
-					'Content-Type' => 'application/json',
+					'Content-Type'  => 'application/json',
+					'Authorization' => 'Bearer ' . $this->get_auth_key(),
 				),
 				'body'    => wp_json_encode(
 					array(

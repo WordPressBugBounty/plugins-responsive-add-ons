@@ -1171,6 +1171,12 @@ class Responsive_Add_Ons {
 			wp_send_json_error( __( 'You are not allowed to perform this action', 'responsive-add-ons' ) );
 		}
 
+		$post_id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+
+		if ( empty( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( __( 'You are not allowed to edit this post', 'responsive-add-ons' ) );
+		}
+
 		$api_url = isset( $_POST['url'] ) ? sanitize_text_field( wp_unslash( $_POST['url'] ) ) : '';
 
 		$response = wp_safe_remote_get( $api_url );
@@ -1191,16 +1197,80 @@ class Responsive_Add_Ons {
 
 		$meta = json_decode( $meta, true );
 
-		$post_id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : '';
-
-		if ( empty( $post_id ) || empty( $meta ) ) {
+		if ( empty( $meta ) ) {
 			wp_send_json_error( __( 'Invalid Post ID or Elementor Meta', 'responsive-add-ons' ) );
+		}
+
+		// Users without unfiltered_html must not store raw markup such as <script> through this import.
+		if ( ! current_user_can( 'unfiltered_html' ) ) {
+			$meta = $this->sanitize_elementor_markup( $meta );
 		}
 
 		$import      = new \Elementor\TemplateLibrary\Responsive_Ready_Sites_Batch_Processing_Elementor();
 		$import_data = $import->responsive_import_post_meta( $post_id, $meta );
 
 		wp_send_json_success( $import_data );
+	}
+
+	/**
+	 * Recursively sanitize markup inside imported Elementor data.
+	 *
+	 * Only string values that contain markup are passed through wp_kses(). Plain strings
+	 * (URLs, text) are left untouched, because wp_kses() rewrites bare ampersands to &amp;.
+	 *
+	 * @since 3.5.5
+	 *
+	 * @param  mixed $data Decoded Elementor data.
+	 * @return mixed Sanitized data.
+	 */
+	private function sanitize_elementor_markup( $data ) {
+
+		if ( is_array( $data ) ) {
+			foreach ( $data as $key => $value ) {
+				$data[ $key ] = $this->sanitize_elementor_markup( $value );
+			}
+			return $data;
+		}
+
+		if ( is_string( $data ) && preg_match( '#<[a-zA-Z/!]#', $data ) ) {
+			return wp_kses( $data, $this->get_elementor_import_allowed_html() );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Allowed HTML for Elementor markup imported by users without unfiltered_html.
+	 *
+	 * Starts from the wp_kses_post() allowlist and adds the embed and style tags that
+	 * Elementor HTML widgets commonly use. <script>, <svg> and event-handler attributes stay blocked.
+	 *
+	 * @since 3.5.5
+	 *
+	 * @return array Allowed tags and attributes.
+	 */
+	private function get_elementor_import_allowed_html() {
+
+		$allowed = wp_kses_allowed_html( 'post' );
+
+		$allowed['iframe'] = array(
+			'src'             => true,
+			'width'           => true,
+			'height'          => true,
+			'title'           => true,
+			'frameborder'     => true,
+			'allow'           => true,
+			'allowfullscreen' => true,
+			'loading'         => true,
+			'referrerpolicy'  => true,
+		);
+
+		$allowed['style'] = array(
+			'media' => true,
+			'type'  => true,
+		);
+
+		return $allowed;
 	}
 
 	/**
