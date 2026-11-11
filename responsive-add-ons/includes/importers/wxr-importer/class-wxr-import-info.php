@@ -5,6 +5,10 @@
  * @package WordPress Importer
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 if ( ! class_exists( 'WXR_Import_Info' ) ) {
 
 	/**

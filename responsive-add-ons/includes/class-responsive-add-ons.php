@@ -2773,11 +2773,8 @@ class Responsive_Add_Ons {
 		}
 
 		if ( 200 !== $response_code ) {
-			$formatted_message = sprintf(
-				/* translators: %1$s is the error message returned by the API. */
-				__( '%1$s', 'responsive-add-ons' ),
-				$message
-			);
+			// The message comes from the API response (or the translated fallbacks above).
+			$formatted_message = (string) $message;
 
 			wp_send_json_error(
 				array(

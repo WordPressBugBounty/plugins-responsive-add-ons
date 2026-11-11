@@ -6,6 +6,10 @@
  * @since 1.0.11
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 if ( class_exists( 'WP_Background_Process' ) ) :
 
 	/**

@@ -169,7 +169,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			if ( ! $is_valid ) {
 				$new_id = wp_insert_post(
 					array(
-						'post_title'  => __( 'Default Kit', 'elementor' ),
+						'post_title'  => __( 'Default Kit', 'responsive-add-ons' ),
 						'post_type'   => 'elementor_library',
 						'post_status' => 'publish',
 						'meta_input'  => array(
@@ -279,7 +279,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 		public function set_timeout_for_images( $timeout_value, $url ) {
 
 			// URL not contain `https://ccreadysites.cyberchimps.com` then return $timeout_value.
-			if ( strpos( $url, parse_url( CCRS_URL, PHP_URL_HOST ) ) === false ) {
+			if ( strpos( $url, wp_parse_url( CCRS_URL, PHP_URL_HOST ) ) === false ) {
 				return $timeout_value;
 			}
 

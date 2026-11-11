@@ -231,7 +231,7 @@ class Responsive_Add_Ons_App_Auth {
 			$wcam_lib_responsive_addons->wc_am_api_key_key => $app_settings['api']['token'] ?? '',
 			'product_id' => $app_settings['account']['product_id'] ?? '',
 			'instance'   => get_option($wcam_lib_responsive_addons->wc_am_instance_key),
-			'object'     => parse_url( site_url(), PHP_URL_HOST ),
+			'object'     => wp_parse_url( site_url(), PHP_URL_HOST ),
 		];
 
 		$api_key = '';

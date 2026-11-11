@@ -3,9 +3,9 @@ Contributors: cyberchimps
 Donate Link: https://cyberchimps.com
 Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 5.6
-Stable tag: 3.5.5
+Stable tag: 3.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -217,6 +217,9 @@ If you like Responsive Starter Templates Plugin, consider checking out our other
 4. Check connection status in settings tab.
 
 == Changelog ==
+= 3.5.6 - 11th November 2026 =
+* Fix - Fixed plugin check errors.
+
 = 3.5.5 - 21st October 2026 =
 * Security Fix - Fixed a vulnerability that allowed Contributors to overwrite Elementor content on other users' published pages.
 * Security Fix - Fixed an unauthenticated REST API endpoint that exposed users' subscription plan details and associated product IDs.

@@ -6,6 +6,11 @@
  * @since 0.2
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+
 if ( ! function_exists( 'check_is_pro_version_greater' ) ) {
 	/**
 	 * Verify if the version of responsive pro is greater or not.

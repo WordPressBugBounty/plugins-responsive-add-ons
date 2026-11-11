@@ -6,6 +6,10 @@
  * @since 2.0.3
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Menu' ) ) :
 
 	/**
