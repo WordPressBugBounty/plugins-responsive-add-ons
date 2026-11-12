@@ -92,7 +92,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 
 			add_action( 'responsive_ready_sites_import_complete', array( $this, 'clear_cache' ) );
 			add_action( 'responsive_ready_sites_import_complete', array( $this, 'set_elementor_content_width' ) );
-			add_action( 'init', array( $this, 'responsive_ready_sites_flush_rewrite_rules' ), 99 );
 
 			include_once $responsive_ready_sites_importers_dir . 'batch-processing/class-responsive-ready-sites-batch-processing.php';
 
@@ -130,13 +129,6 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				Elementor\Plugin::$instance->files_manager->clear_cache();
 			}
 			Responsive_Ready_Sites_Importer_Log::add( 'Complete ' );
-		}
-
-		public function responsive_ready_sites_flush_rewrite_rules() {
-			if ( '1' === get_option( 'responsive_ready_sites_flush_rewrite_pending', '0' ) ) {
-				delete_option( 'responsive_ready_sites_flush_rewrite_pending' );
-				flush_rewrite_rules();
-			}
 		}
 
 		/**
@@ -789,9 +781,13 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			);
 
 			update_option( 'responsive_current_active_site', $current_active_site_data, 'no' );
+
+			global $wp_rewrite;
 			// Set permalink structure to use post name.
-			update_option( 'permalink_structure', '/%postname%/' );
-			update_option( 'responsive_ready_sites_flush_rewrite_pending', '1' );
+			$wp_rewrite->set_permalink_structure( '/%postname%/' );
+
+			// Clear the stored rules so WordPress rebuilds them on the next request.
+			delete_option( 'rewrite_rules' );
 
 			// Map WooCommerce pages automatically based on standard slugs if WooCommerce is active.
 			if ( class_exists( 'WooCommerce' ) ) {
@@ -1313,26 +1309,19 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 		 * @return void
 		 */
 		private function send_import_error_email( $template_name = '', $stage = '', $primary = '', $secondary = '', $error_code = '', $error_text = '' ) {
-			// Gather environment information.
-			$php_version      = phpversion();
-			$wp_version       = get_bloginfo( 'version' );
-			$addons_version   = defined( 'RESPONSIVE_ADDONS_VER' ) ? RESPONSIVE_ADDONS_VER : 'Unknown';
-			$theme            = wp_get_theme();
-			$theme_name       = $theme->get( 'Name' );
-			$theme_version    = $theme->get( 'Version' );
-			$active_plugins   = (array) get_option( 'active_plugins', array() );
-			$site_url         = get_site_url();
-			$admin_email      = 'support@cyberchimps.com';
+					// Gather environment information.
+			$php_version    = phpversion();
+			$wp_version     = get_bloginfo( 'version' );
+			$addons_version = defined( 'RESPONSIVE_ADDONS_VER' ) ? RESPONSIVE_ADDONS_VER : 'Unknown';
+			$theme          = wp_get_theme();
+			$theme_name     = $theme->get( 'Name' );
+			$theme_version  = $theme->get( 'Version' );
+			$active_plugins = (array) get_option( 'active_plugins', array() );
+			$site_url       = get_site_url();
+			$admin_email    = 'support@cyberchimps.com';
 
-			// Get user IP address.
-			$user_ip = '';
-			if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-				$user_ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ) );
-			} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-				$user_ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
-			} elseif ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
-				$user_ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
-			}
+			// Get user IP address (validated).
+			$user_ip = $this->get_user_ip();
 
 			// Determine internet status based on error text.
 			$internet_status = 'Unknown';
@@ -1372,9 +1361,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			$plugins_list = array();
 			if ( ! empty( $active_plugins ) ) {
 				foreach ( $active_plugins as $plugin_file ) {
-					$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
-					$plugin_name = ! empty( $plugin_data['Name'] ) ? $plugin_data['Name'] : $plugin_file;
-					$plugin_ver  = ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : 'N/A';
+					$plugin_data    = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file );
+					$plugin_name    = ! empty( $plugin_data['Name'] ) ? $plugin_data['Name'] : $plugin_file;
+					$plugin_ver     = ! empty( $plugin_data['Version'] ) ? $plugin_data['Version'] : 'N/A';
 					$plugins_list[] = sprintf( '- %s (v%s)', $plugin_name, $plugin_ver );
 				}
 			}
@@ -1386,20 +1375,20 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			);
 
 			// Build email message.
-			$message = "Template Import Failed\n";
+			$message  = "Template Import Failed\n";
 			$message .= str_repeat( '=', 50 ) . "\n\n";
 
-			$message .= "Template Name: " . ( ! empty( $template_name ) ? $template_name : 'Not provided' ) . "\n";
-			$message .= "Failed Process: " . ( ! empty( $stage ) ? $stage : 'Unknown' ) . "\n";
+			$message .= 'Template Name: ' . ( ! empty( $template_name ) ? $template_name : 'Not provided' ) . "\n";
+			$message .= 'Failed Process: ' . ( ! empty( $stage ) ? $stage : 'Unknown' ) . "\n";
 			$message .= "Site URL: {$site_url}\n";
-			$message .= "Date: " . current_time( 'mysql' ) . "\n\n";
+			$message .= 'Date: ' . current_time( 'mysql' ) . "\n\n";
 
 			$message .= "Error Details:\n";
 			$message .= str_repeat( '-', 30 ) . "\n";
-			$message .= "Primary: " . ( ! empty( $primary ) ? $primary : 'N/A' ) . "\n";
-			$message .= "Secondary: " . ( ! empty( $secondary ) ? $secondary : 'N/A' ) . "\n";
-			$message .= "Error Code: " . ( ! empty( $error_code ) ? $error_code : 'N/A' ) . "\n";
-			$message .= "Error Types: " . implode( ', ', $error_types ) . "\n";
+			$message .= 'Primary: ' . ( ! empty( $primary ) ? $primary : 'N/A' ) . "\n";
+			$message .= 'Secondary: ' . ( ! empty( $secondary ) ? $secondary : 'N/A' ) . "\n";
+			$message .= 'Error Code: ' . ( ! empty( $error_code ) ? $error_code : 'N/A' ) . "\n";
+			$message .= 'Error Types: ' . implode( ', ', $error_types ) . "\n";
 			$message .= "Error Message:\n" . ( ! empty( $error_text ) ? $error_text : 'N/A' ) . "\n\n";
 
 			$message .= "Environment Information:\n";
@@ -1409,7 +1398,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			$message .= "Responsive Add-ons Version: {$addons_version}\n";
 			$message .= "Active Theme: {$theme_name} (v{$theme_version})\n";
 			$message .= "Internet Status: {$internet_status}\n";
-			$message .= "User IP: {$user_ip}\n";
+			$message .= 'User IP: ' . ( ! empty( $user_ip ) ? $user_ip : 'Unknown' ) . "\n";
 			$message .= "Country: {$country}\n\n";
 
 			$message .= "Active Plugins (Potential Conflicts):\n";
@@ -1429,7 +1418,43 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			$headers = array( 'Content-Type: text/plain; charset=UTF-8' );
 
 			// Send email.
-			$mail_sent = wp_mail( $to, $subject, $message, $headers );
+			wp_mail( $to, $subject, $message, $headers );
+		}
+
+		/**
+		 * Get the requesting user's IP address.
+		 *
+		 * Header values are client-supplied, so each one is validated as an IP address
+		 * before it is used. The result is only used in the import-failure support email.
+		 *
+		 * @return string Valid IP address, or an empty string.
+		 */
+		private function get_user_ip() {
+			$candidates = array();
+
+			// phpcs:disable WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders -- Values are validated with FILTER_VALIDATE_IP below.
+			if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+				$candidates[] = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ) );
+			}
+			if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+				$candidates[] = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+			}
+			if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+				$candidates[] = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+			}
+			// phpcs:enable WordPressVIPMinimum.Variables.ServerVariables.UserControlledHeaders
+
+			foreach ( $candidates as $candidate ) {
+				// X-Forwarded-For can be a comma-separated list; the first entry is the client.
+				$parts = explode( ',', $candidate );
+				$ip    = trim( $parts[0] );
+
+				if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+					return $ip;
+				}
+			}
+
+			return '';
 		}
 
 		/**
@@ -1557,9 +1582,9 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 			}
 
 			// Sanitize input data.
-			$demo_api_uri  = ! empty( $_POST['api_url'] ) ? esc_url_raw( $_POST['api_url'] ) : '';
-			$site_location = ! empty( $_POST['location'] ) ? sanitize_text_field( $_POST['location'] ) : '';
-			$tmpl_id       = ! empty( $_POST['site_id'] ) ? sanitize_key( $_POST['site_id'] ) : '';
+			$demo_api_uri  = ! empty( $_POST['api_url'] ) ? esc_url_raw( wp_unslash( $_POST['api_url'] ) ) : '';
+			$site_location = ! empty( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
+			$tmpl_id       = ! empty( $_POST['site_id'] ) ? sanitize_key( wp_unslash( $_POST['site_id'] ) ) : '';
 
 			if ( empty( $site_location ) ) {
 				wp_send_json_error( __( 'Invalid site location parameter.', 'responsive-add-ons' ) );
@@ -1622,7 +1647,7 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Importer' ) ) :
 				);
 
 				if ( is_wp_error( $response ) ) {
-					error_log( 'Mixpanel tracking failed: ' . $response->get_error_message() );
+					Responsive_Ready_Sites_Importer_Log::add( 'Mixpanel tracking failed: ' . $response->get_error_message() );
 				}
 			}
 

@@ -5,7 +5,7 @@ Tags: elementor templates, block templates, elementor, templates, gutenberg
 Requires at least: 5.0
 Tested up to: 7.1
 Requires PHP: 5.6
-Stable tag: 3.5.6
+Stable tag: 3.5.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -217,6 +217,12 @@ If you like Responsive Starter Templates Plugin, consider checking out our other
 4. Check connection status in settings tab.
 
 == Changelog ==
+= 3.5.7 - 12th November 2026 =
+* New - All Starter Templates Unlocked: Made all Starter Templates available across every plan.
+* Improved - Theme Compatibility Warnings: Added compatibility warnings for Responsive Starter Templates to alert users of potential theme conflicts.
+* Fix - Strengthened the codebase to further protect your website.
+* Fix - Fixed PHPCS coding standard issues and WordPress VIP compatibility bugs.
+
 = 3.5.6 - 11th November 2026 =
 * Fix - Fixed plugin check errors.
 

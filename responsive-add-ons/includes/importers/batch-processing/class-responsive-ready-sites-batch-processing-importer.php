@@ -101,7 +101,10 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 						update_site_option( 'responsive-ready-sites-and-pages-page-' . $page, $sites_and_pages );
 					}
 				} else {
-					error_log( 'API Error: ' . $response->get_error_message() );
+					$error = is_wp_error( $response ) ? $response->get_error_message() : 'HTTP ' . wp_remote_retrieve_response_code( $response );
+					if ( function_exists( 'wp_trigger_error' ) ) {
+						wp_trigger_error( __METHOD__, 'Responsive Ready Sites API Error: ' . $error, E_USER_WARNING );
+					}
 				}
 				return $sites_and_pages;
 			} else {
@@ -152,7 +155,12 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing_Importer' ) ) :
 						update_site_option( 'rst-blocks-page-' . $page, $blocks );
 					}
 				} else {
-					error_log( 'API Error: ' . $response->get_error_message() );
+					$error = is_wp_error( $response ) ? $response->get_error_message() : 'HTTP ' . wp_remote_retrieve_response_code( $response );
+
+					if ( function_exists( 'wp_trigger_error' ) ) {
+						wp_trigger_error( __METHOD__, 'Responsive Ready Sites Blocks API Error: ' . $error, E_USER_WARNING );
+					}
+
 				}
 				return $blocks;
 			} else {

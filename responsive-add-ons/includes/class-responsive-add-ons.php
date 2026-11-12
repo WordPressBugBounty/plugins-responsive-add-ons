@@ -244,7 +244,11 @@ class Responsive_Add_Ons {
 			wp_send_json_error( [ 'message' => __( 'Permission denied.', 'responsive-add-ons' ) ] );
 		}
 		
-		$slug = sanitize_text_field( $_POST['slug'] );
+		if ( empty( $_POST['slug'] ) ) {
+			wp_send_json_error( array( 'message' => __( 'Plugin slug is missing.', 'responsive-add-ons' ) ) );
+		}
+
+		$slug = sanitize_key( wp_unslash( $_POST['slug'] ) );
 
 		include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 		include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
@@ -337,6 +341,7 @@ class Responsive_Add_Ons {
 		if ( isset( $_GET['responsive-addons-notice-dismissed'] ) ) {
 			update_option( 'responsive_addons_review_notice_dismissed', true );
 			wp_safe_redirect( remove_query_arg( array( 'responsive-addons-notice-dismissed' ), wp_get_referer() ) );
+			exit;
 		}
 	}
 
@@ -347,6 +352,7 @@ class Responsive_Add_Ons {
 		if ( isset( $_GET['responsive-addons-review-notice-change-timeout'] ) ) {
 			set_transient( 'responsive_addons_ask_review_flag', true, DAY_IN_SECONDS );
 			wp_safe_redirect( remove_query_arg( array( 'responsive-addons-review-notice-change-timeout' ), wp_get_referer() ) );
+			exit;
 		}
 	}
 
@@ -405,7 +411,7 @@ class Responsive_Add_Ons {
 				<div class="responsive-addons-message-inner">
 					<div class="responsive-addons-message-icon">
 						<div class="">
-							<img src="<?php echo esc_attr( $image_path ); ?>" alt="Responsive Starter Templates">
+							<img src="<?php echo esc_url( $image_path ); ?>" alt="Responsive Starter Templates">
 						</div>
 					</div>
 					<div class="responsive-addons-message-content">
@@ -446,11 +452,11 @@ class Responsive_Add_Ons {
 					<div class="rst-banner-gradient rst-banner-gradient--3"></div>
 					<div class="rst-banner-gradient rst-banner-gradient--1"></div>
 					<div class="rst-banner-gradient rst-banner-gradient--2"></div>
-					<img class="rst-banner-frame-9" src="<?php echo esc_attr( $image_path_frame_9 ); ?>" alt="">
+					<img class="rst-banner-frame-9" src="<?php echo esc_url( $image_path_frame_9 ); ?>" alt="">
 				</div>
 				<div class="reponsive-welcome_banner-welcome-section-content">
 					<div class="rst-banner-logo-section">
-						<img class="rst-banner-logo" src="<?php echo esc_attr( $image_path_logo ); ?>" alt="<?php echo esc_attr__( 'Responsive Starter Templates', 'responsive-add-ons' ); ?>">
+						<img class="rst-banner-logo" src="<?php echo esc_url( $image_path_logo ); ?>" alt="<?php echo esc_attr__( 'Responsive Starter Templates', 'responsive-add-ons' ); ?>">
 					</div>
 
 					<div class="rst-banner-text-section">
@@ -1218,7 +1224,7 @@ class Responsive_Add_Ons {
 	 * Only string values that contain markup are passed through wp_kses(). Plain strings
 	 * (URLs, text) are left untouched, because wp_kses() rewrites bare ampersands to &amp;.
 	 *
-	 * @since 3.5.5
+	 * @since 3.5.6
 	 *
 	 * @param  mixed $data Decoded Elementor data.
 	 * @return mixed Sanitized data.
@@ -1667,10 +1673,11 @@ class Responsive_Add_Ons {
 			$theme = wp_get_theme();
 			if ( 'Responsive' === $theme->get( 'Name' ) && version_compare( $theme->get( 'Version' ), '4.8.8', '>=' ) ) {
 				wp_redirect( admin_url( 'themes.php?page=responsive#settings' ) );
+				exit;
 			} else {
 				wp_redirect( admin_url( '/options-general.php?page=wc_am_client_responsive_addons_pro_dashboard' ) );
+				exit;
 			}
-			exit();
 		}
 		?>
 			<!-- <div class="wrap"> -->
@@ -1794,7 +1801,7 @@ class Responsive_Add_Ons {
 									$class = 'active';
 								}
 								?>
-								<li data-page-builder="<?php echo esc_html( $page_builder['slug'] ); ?>" class="<?php echo esc_html( $class ); ?>">
+								<li data-page-builder="<?php echo esc_attr( $page_builder['slug'] ); ?>" class="<?php echo esc_attr( $class ); ?>">
 										<img src="<?php echo esc_url( RESPONSIVE_ADDONS_URI . 'admin/images/svgs/' . esc_html( $page_builder['slug'] ) . '.svg' ); ?>">
 									<div class="title"><?php echo esc_html( $page_builder['name'] ); ?></div>
 								</li>
@@ -1863,7 +1870,7 @@ class Responsive_Add_Ons {
 						</div>
 
 						<!-- Search Input -->
-						<input autocomplete="off" placeholder="<?php esc_html_e( 'Search', 'responsive-add-ons' ); ?>" 
+						<input autocomplete="off" placeholder="<?php esc_attr_e( 'Search', 'responsive-add-ons' ); ?>" 
 								type="textarea" aria-describedby="live-search-desc" 
 								id="wp-filter-search-input" class="wp-filter-search">
 
@@ -2740,7 +2747,11 @@ class Responsive_Add_Ons {
 		$status_args   = $wcam_lib_responsive_addons->status( $args, $product_id );
 		$ready_site_subscribe_checkbox = isset( $_POST['ready_sites_subscripiton_checkbox'] ) ? sanitize_key( wp_unslash( $_POST['ready_sites_subscripiton_checkbox'] ) ) : '';
 		$userEmail = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
-		$template_category_post = isset( $_POST['template_category'] ) ? json_decode( wp_unslash( $_POST['template_category'] ), true ) : array();
+		$template_category_post = isset( $_POST['template_category'] ) ? json_decode( sanitize_text_field( wp_unslash( $_POST['template_category'] ) ), true ) : array();
+		if ( ! is_array( $template_category_post ) ) {
+			$template_category_post = array();
+		}
+		$template_category_post = map_deep( $template_category_post, 'sanitize_text_field' );
 		if ( ! is_array( $template_category_post ) ) {
 			$template_category_post = array();
 		}
@@ -2845,8 +2856,8 @@ class Responsive_Add_Ons {
 		}
 
 		// Retrieve site_id and location parameters passed from frontend (or fallback to active import data)
-		$site_id       = isset( $_POST['site_id'] ) ? sanitize_key( $_POST['site_id'] ) : '';
-		$site_location = isset( $_POST['location'] ) ? sanitize_text_field( $_POST['location'] ) : '';
+		$site_id       = isset( $_POST['site_id'] ) ? sanitize_key( wp_unslash( $_POST['site_id'] ) ) : '';
+		$site_location = isset( $_POST['location'] ) ? sanitize_text_field( wp_unslash( $_POST['location'] ) ) : '';
 
 		$import_data = get_option( 'responsive_ready_sites_import_data', array() );
 

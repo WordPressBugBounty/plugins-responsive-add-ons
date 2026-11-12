@@ -60,7 +60,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 					</div>
 					<div class="rst-sites-template-library-filter-text-wrapper">
 						<label for="elementor-template-library-filter-text" class="elementor-screen-only"><?php esc_html_e( 'Search...', 'responsive-add-ons' ); ?></label>
-						<input id="wp-filter-search-input" autocomplete="off" placeholder="<?php esc_html_e( 'SEARCH', 'responsive-add-ons' ); ?>" class="">
+						<input id="wp-filter-search-input" autocomplete="off" placeholder="<?php esc_attr_e( 'SEARCH', 'responsive-add-ons' ); ?>" class="">
 						<i class="eicon-search"></i>
 					</div>
 				</div>
@@ -95,7 +95,7 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 				<div class="rst-sites-modal__header__logo">
 					<span class="rst-sites-modal__header__logo__icon-wrapper"></span>
 				</div>
-				<div class="back-to-layout" title="<?php esc_html_e( 'Back to Layout', 'responsive-add-ons' ); ?>" data-step="1"><i class="eicon-angle-left"></i></div>
+				<div class="back-to-layout" title="<?php esc_attr_e( 'Back to Layout', 'responsive-add-ons' ); ?>" data-step="1"><i class="eicon-angle-left"></i></div>
 				<div id="rst-pro-template"></div>
 			</div>
 			<div class="elementor-templates-modal__header__menu-area responsive-sites-step-1-wrap rst-sites-modal__options">
@@ -113,14 +113,14 @@ if ( class_exists( 'Responsive_Addons_Pro' ) ) {
 			<div class="elementor-templates-modal__header__items-area">
 				<div class="rst-sites-modal__header__close rst-sites-modal__header__close--normal rst-sites-modal__header__item">
 					<i class="dashicons close dashicons-no-alt" aria-hidden="true" title="<?php esc_html_e( 'Close', 'responsive-add-ons' ); ?>"></i>
-					<span class="elementor-screen-only"><?php esc_html_e( 'Close', 'responsive-add-ons' ); ?></span>
+					<span class="elementor-screen-only"><?php esc_attr_e( 'Close', 'responsive-add-ons' ); ?></span>
 				</div>
 				<?php
 				if ( $is_pro_greater ) {
 					?>
 				<div class="rst-sites-modal__header__sync rst-sites-modal__header__sync--normal rst-sites-modal__header__item">
 					<i class="dashicons dashicons-update" aria-hidden="true" title="<?php esc_html_e( 'Sync', 'responsive-add-ons' ); ?>"></i>
-					<span class="elementor-screen-only"><?php esc_html_e( 'Sync', 'responsive-add-ons' ); ?></span>
+					<span class="elementor-screen-only"><?php esc_attr_e( 'Sync', 'responsive-add-ons' ); ?></span>
 				</div>
 					<?php
 				}

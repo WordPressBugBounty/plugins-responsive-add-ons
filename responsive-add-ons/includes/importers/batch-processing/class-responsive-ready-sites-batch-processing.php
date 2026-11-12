@@ -175,28 +175,44 @@ if ( ! class_exists( 'Responsive_Ready_Sites_Batch_Processing' ) ) :
 		 */
 		public static function get_pages( $post_types = array() ) {
 
-			if ( $post_types ) {
-				$args = array(
-					'post_type'      => $post_types,
-
-					// Query performance optimization.
-					'fields'         => 'ids',
-					'no_found_rows'  => true,
-					'post_status'    => 'publish',
-					'posts_per_page' => -1,
-				);
-
-				$query = new WP_Query( $args );
-
-				// Have posts?
-				if ( $query->have_posts() ) :
-
-					return $query->posts;
-
-				endif;
+			if ( empty( $post_types ) ) {
+				return null;
 			}
 
-			return null;
+			$per_page = absint( apply_filters( 'responsive_ready_sites_get_pages_batch_size', 100 ) );
+			$per_page = $per_page ? min( $per_page, 100 ) : 100;
+
+			$paged    = 1;
+			$post_ids = array();
+
+			do {
+				$query = new WP_Query(
+					array(
+						'post_type'              => $post_types,
+						'post_status'            => 'publish',
+						'posts_per_page'         => $per_page,
+						'paged'                  => $paged,
+						'orderby'                => 'ID',
+						'order'                  => 'ASC',
+
+						// Query performance optimization.
+						'fields'                 => 'ids',
+						'no_found_rows'          => true,
+						'update_post_meta_cache' => false,
+						'update_post_term_cache' => false,
+					)
+				);
+
+				$batch = $query->posts;
+
+				if ( ! empty( $batch ) ) {
+					$post_ids = array_merge( $post_ids, $batch );
+				}
+
+				$paged++;
+			} while ( count( $batch ) === $per_page );
+
+			return ! empty( $post_ids ) ? $post_ids : null;
 		}
 
 		/**
